@@ -79,56 +79,58 @@ export default function Hero() {
         </div>
 
         {/* RIGHT */}
-
         <div className="flex items-center justify-center">
 
-          <div className="w-[520px] rounded-3xl border border-orange-500/20 bg-slate-900 p-10 shadow-2xl">
+  <div className="w-[520px] rounded-3xl border border-slate-700 bg-slate-900 p-10 shadow-2xl">
+<h3 className="text-3xl font-bold text-white">
+  Why AENA Technologies?
+</h3>
 
-            <h3 className="text-3xl font-bold text-white">
-              Engineering Excellence
-            </h3>
+<p className="mt-5 text-slate-400 leading-8">
+We help manufacturers extend the life of existing machinery through
+automation, electrical engineering and retrofit solutions.
+</p>
 
-            <p className="mt-4 text-slate-400 leading-8">
-              We specialize in industrial automation, PLC programming,
-              machine retrofit and modernization. Our mission is to
-              improve productivity, reliability and efficiency through
-              innovative engineering solutions.
-            </p>
+<div className="mt-8 space-y-4">
 
-            <div className="mt-10 space-y-5">
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>Industrial Machine Retrofit</span>
+  </div>
 
-              <div className="flex justify-between border-b border-slate-700 pb-3">
-                <span className="text-slate-400">Experience</span>
-                <span className="font-bold text-orange-400">10+ Years</span>
-              </div>
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>PLC & HMI Software</span>
+  </div>
 
-              <div className="flex justify-between border-b border-slate-700 pb-3">
-                <span className="text-slate-400">Completed Projects</span>
-                <span className="font-bold text-orange-400">50+</span>
-              </div>
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>Electrical Panel Design</span>
+  </div>
 
-              <div className="flex justify-between border-b border-slate-700 pb-3">
-                <span className="text-slate-400">Core Expertise</span>
-                <span className="font-bold text-orange-400">
-                  PLC • SCADA • Servo
-                </span>
-              </div>
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>Servo & Motion Systems</span>
+  </div>
 
-              <div className="flex justify-between border-b border-slate-700 pb-3">
-                <span className="text-slate-400">Machine Services</span>
-                <span className="font-bold text-orange-400">
-                  Retrofit & Modernization
-                </span>
-              </div>
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>Commissioning & Startup</span>
+  </div>
 
-              <div className="flex justify-between">
-                <span className="text-slate-400">Coverage</span>
-                <span className="font-bold text-orange-400">
-                  Worldwide
-                </span>
-              </div>
+</div>
 
-            </div>
+<div className="mt-10 rounded-xl border border-slate-700 bg-slate-950 p-5">
+
+  <p className="text-sm uppercase tracking-[2px] text-slate-500">
+    Service Region
+  </p>
+
+  <p className="mt-2 font-semibold text-orange-400">
+    Europe • Middle East • Central Asia
+  </p>
+
+</div>
 
           </div>
 
