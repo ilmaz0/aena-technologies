@@ -1,5 +1,5 @@
 import Image from "next/image";
-
+import Link from "next/link";
 export default function Hero() {
   return (
     <section className="min-h-screen bg-slate-950 text-white flex items-center pt-24">
@@ -32,15 +32,21 @@ export default function Hero() {
 </p>
           <div className="mt-12 flex gap-6">
 
-            <button className="rounded-xl bg-orange-500 px-8 py-4 font-bold hover:bg-orange-600 transition">
-              Get Quote
-            </button>
+  <Link
+    href="/contact"
+    className="rounded-xl bg-orange-500 px-8 py-4 font-bold transition hover:bg-orange-600"
+  >
+    Get Quote
+  </Link>
 
-            <button className="rounded-xl border border-white px-8 py-4 hover:bg-white hover:text-black transition">
-              View Projects
-            </button>
+  <Link
+    href="/projects"
+    className="rounded-xl border border-white px-8 py-4 transition hover:bg-white hover:text-black"
+  >
+    View Projects
+  </Link>
 
-          </div>
+</div>
 
           <div className="mt-12 grid grid-cols-2 gap-5 text-lg">
 
