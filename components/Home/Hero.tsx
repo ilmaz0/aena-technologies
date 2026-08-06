@@ -13,24 +13,23 @@ export default function Hero() {
           </span>
 
           <h1 className="text-6xl font-extrabold leading-tight">
-            Industrial
-            <br />
-            Automation
-            <br />
-            <span className="text-orange-400">
-              Machine Modernization
-            </span>
-            <br />
-            & Smart Manufacturing
-          </h1>
+  Machine
+  <br />
+  <span className="text-orange-400">
+    Retrofit
+  </span>
+  <br />
+  Automation &
+  <br />
+  Electrical Engineering
+</h1>
 
           <p className="mt-8 max-w-xl text-xl leading-8 text-slate-300">
-            We deliver industrial automation, machine retrofit,
-            electrical engineering and smart manufacturing
-            solutions that improve productivity, reliability
-            and operational efficiency.
-          </p>
-
+  We modernize industrial machines through PLC software,
+  electrical engineering, drive systems and commissioning.
+  Our retrofit solutions increase productivity without the
+  cost of purchasing new machinery.
+</p>
           <div className="mt-12 flex gap-6">
 
             <button className="rounded-xl bg-orange-500 px-8 py-4 font-bold hover:bg-orange-600 transition">
@@ -43,14 +42,39 @@ export default function Hero() {
 
           </div>
 
-          <div className="mt-12 grid grid-cols-2 gap-4">
+          <div className="mt-12 grid grid-cols-2 gap-5 text-lg">
 
-            <div>✔ PLC Programming</div>
-            <div>✔ SCADA Systems</div>
-            <div>✔ Machine Retrofit</div>
-            <div>✔ Servo Motion</div>
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>Machine Retrofit</span>
+  </div>
 
-          </div>
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>PLC Programming</span>
+  </div>
+
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>Electrical Engineering</span>
+  </div>
+
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>Servo & Motion Control</span>
+  </div>
+
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>Commissioning</span>
+  </div>
+
+  <div className="flex items-center gap-3">
+    <span className="text-orange-400 text-xl">✓</span>
+    <span>Technical Support</span>
+  </div>
+
+</div>
 
         </div>
 
