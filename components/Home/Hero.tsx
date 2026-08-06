@@ -50,7 +50,37 @@ export default function Hero() {
 
           <div className="mt-12 grid grid-cols-2 gap-5 text-lg">
 
-  <div className="flex items-center gap-3">
+
+            <div className="mt-10">
+  <p className="mb-4 text-sm uppercase tracking-[3px] text-slate-500">
+    Trusted Technologies
+  </p>
+
+  <div className="flex flex-wrap gap-3">
+
+    {[
+      "SIEMENS",
+      "MITSUBISHI",
+      "YASKAWA",
+      "OMRON",
+      "DELTA",
+      "SCHNEIDER",
+    ].map((brand) => (
+      <span
+        key={brand}
+        className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-orange-400 hover:text-orange-400"
+      >
+        {brand}
+      </span>
+    ))}
+
+  </div>
+</div>
+
+  <div 
+
+
+  className="flex items-center gap-3">
     <span className="text-orange-400 text-xl">✓</span>
     <span>Machine Retrofit</span>
   </div>
@@ -136,6 +166,14 @@ automation, electrical engineering and retrofit solutions.
     Europe • Middle East • Central Asia
   </p>
 
+</div>
+<div className="mt-8">
+  <Link
+    href="/contact"
+    className="block w-full rounded-xl bg-orange-500 py-4 text-center font-semibold transition hover:bg-orange-600"
+  >
+    Request Your Project Evaluation
+  </Link>
 </div>
 
           </div>
