@@ -26,13 +26,7 @@ export default function Navbar() {
   </p>
 </div>
   <div>
-    <h2 className="text-2xl font-extrabold text-white">
-      AENA
-    </h2>
-
-    <p className="text-sm uppercase tracking-[4px] text-orange-400">
-      Engineering
-    </p>
+   
   </div>
 </Link>
 
