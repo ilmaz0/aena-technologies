@@ -116,7 +116,7 @@ export default function Hero() {
 
 <div className="mt-14">
 
-  ...
+ 
 
 </div>
 
