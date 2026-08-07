@@ -111,38 +111,7 @@ export default function Hero() {
 
 </div>
 
-          <div className="mt-12 grid grid-cols-2 gap-5 text-lg">
-
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>Machine Retrofit</span>
-  </div>
-
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>PLC Programming</span>
-  </div>
-
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>Electrical Engineering</span>
-  </div>
-
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>Servo & Motion Control</span>
-  </div>
-
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>Commissioning</span>
-  </div>
-
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>Technical Support</span>
-  </div>
-
+          
 </div>
 
         </div>
