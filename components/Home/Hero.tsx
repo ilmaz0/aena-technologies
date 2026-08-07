@@ -8,10 +8,6 @@ export default function Hero() {
         {/* LEFT */}
         <div className="flex flex-col justify-center">
 
-          <span className="mb-6 text-orange-400 font-semibold tracking-[3px] uppercase">
-            AENA Technologies
-          </span>
-
           <h1 className="text-6xl font-extrabold leading-tight">
   Machine
   <br />
