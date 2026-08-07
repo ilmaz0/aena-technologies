@@ -44,14 +44,17 @@ export default function Hero() {
 
 </div>
 
-          <div className="mt-12">
+      {/* TECHNOLOGIES */}
 
-  <p className="mb-6 text-sm uppercase tracking-[4px] text-slate-500">
+<div className="mt-14">
+
+  <p className="mb-8 text-sm uppercase tracking-[5px] text-slate-500">
     Technologies We Work With
   </p>
 
-  {[
-    [
+  <div className="grid grid-cols-4 gap-5">
+
+    {[
       "siemens",
       "abb",
       "rittal",
@@ -60,32 +63,51 @@ export default function Hero() {
       "omron",
       "yaskawa",
       "schneider",
-    ],
-    [
       "festo",
       "smc",
       "ifm",
       "lenze",
       "leuze",
       "delta",
-    ],
-  ].map((row, index) => (
-    <div
-      key={index}
-      className="mb-6 flex flex-wrap items-center gap-8"
-    >
-      {row.map((brand) => (
+    ].map((brand) => (
+      <div
+        key={brand}
+        className="
+          h-20
+          rounded-xl
+          border
+          border-slate-800
+          bg-slate-900
+          flex
+          items-center
+          justify-center
+          hover:border-orange-500
+          hover:bg-slate-800
+          transition-all
+          duration-300
+        "
+      >
         <Image
-          key={brand}
-          src={`/logos/${brand}.png`}
-          alt={brand}
-          width={120}
-          height={40}
-          className="h-8 w-auto opacity-70 transition duration-300 hover:opacity-100"
-        />
-      ))}
-    </div>
-  ))}
+  src={`/logos/${brand}.png`}
+  alt={brand}
+  width={120}
+  height={45}
+  className="
+    max-h-10
+    w-auto
+    object-contain
+    grayscale
+    opacity-70
+    transition
+    duration-300
+    hover:grayscale-0
+    hover:opacity-100
+  "
+/>
+      </div>
+    ))}
+
+  </div>
 
 </div>
 
