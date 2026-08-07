@@ -112,70 +112,84 @@ export default function Hero() {
 </div>
 
 
+{/* TECHNOLOGIES */}
+
+<div className="mt-14">
+
+  ...
+
+</div>
+
+</div>
+
+{/* RIGHT */}
+
+<div className="flex items-center justify-center">
 
   <div className="w-[520px] rounded-3xl border border-slate-700 bg-slate-900 p-10 shadow-2xl">
-<h3 className="text-3xl font-bold text-white">
-  Why AENA Technologies?
-</h3>
 
-<p className="mt-5 text-slate-400 leading-8">
-We help manufacturers extend the life of existing machinery through
-automation, electrical engineering and retrofit solutions.
-</p>
+    <h3 className="text-3xl font-bold text-white">
+      Why AENA Technologies?
+    </h3>
 
-<div className="mt-8 space-y-4">
+    <p className="mt-5 text-slate-400 leading-8">
+      We help manufacturers extend the life of existing machinery through
+      automation, electrical engineering and retrofit solutions.
+    </p>
 
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>Industrial Machine Retrofit</span>
-  </div>
+    <div className="mt-8 space-y-4">
 
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>PLC & HMI Software</span>
-  </div>
+      <div className="flex items-center gap-3">
+        <span className="text-orange-400 text-xl">✓</span>
+        <span>Industrial Machine Retrofit</span>
+      </div>
 
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>Electrical Panel Design</span>
-  </div>
+      <div className="flex items-center gap-3">
+        <span className="text-orange-400 text-xl">✓</span>
+        <span>PLC & HMI Software</span>
+      </div>
 
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>Servo & Motion Systems</span>
-  </div>
+      <div className="flex items-center gap-3">
+        <span className="text-orange-400 text-xl">✓</span>
+        <span>Electrical Panel Design</span>
+      </div>
 
-  <div className="flex items-center gap-3">
-    <span className="text-orange-400 text-xl">✓</span>
-    <span>Commissioning & Startup</span>
+      <div className="flex items-center gap-3">
+        <span className="text-orange-400 text-xl">✓</span>
+        <span>Servo & Motion Systems</span>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <span className="text-orange-400 text-xl">✓</span>
+        <span>Commissioning & Startup</span>
+      </div>
+
+    </div>
+
+    <div className="mt-10 rounded-xl border border-slate-700 bg-slate-950 p-5">
+
+      <p className="text-sm uppercase tracking-[2px] text-slate-500">
+        Service Region
+      </p>
+
+      <p className="mt-2 font-semibold text-orange-400">
+        Europe • Middle East • Central Asia
+      </p>
+
+    </div>
+
+    <div className="mt-8">
+      <Link
+        href="/contact"
+        className="block w-full rounded-xl bg-orange-500 py-4 text-center font-semibold transition hover:bg-orange-600"
+      >
+        Request Your Project Evaluation
+      </Link>
+    </div>
+
   </div>
 
 </div>
-
-<div className="mt-10 rounded-xl border border-slate-700 bg-slate-950 p-5">
-
-  <p className="text-sm uppercase tracking-[2px] text-slate-500">
-    Service Region
-  </p>
-
-  <p className="mt-2 font-semibold text-orange-400">
-    Europe • Middle East • Central Asia
-  </p>
-
-</div>
-<div className="mt-8">
-  <Link
-    href="/contact"
-    className="block w-full rounded-xl bg-orange-500 py-4 text-center font-semibold transition hover:bg-orange-600"
-  >
-    Request Your Project Evaluation
-  </Link>
-</div>
-
-          </div>
-
-        </div>
-
       </div>
     </section>
   );
