@@ -57,6 +57,8 @@ export default function Hero() {
   {[
     [
       "siemens",
+      "abb",
+      "rittal",
       "mitsubishi",
       "beckhoff",
       "omron",
