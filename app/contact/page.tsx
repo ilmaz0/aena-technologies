@@ -9,16 +9,16 @@ export default function ContactPage() {
         <div className="mx-auto max-w-7xl px-8">
 
           <p className="uppercase tracking-[4px] font-semibold text-orange-400">
-            Contact
+            Technical Evaluation
           </p>
 
           <h1 className="mt-4 text-6xl font-extrabold">
-            Let's Discuss Your Project
+            Request a Technical Evaluation
           </h1>
 
           <p className="mt-8 max-w-3xl text-xl leading-8 text-slate-400">
-            Looking for industrial automation, machine retrofit or electrical
-            engineering support? Get in touch with AENA Technologies.
+            Describe your machine, upload technical information and receive a
+            professional engineering evaluation from AENA Technologies.
           </p>
 
         </div>
@@ -35,9 +35,53 @@ export default function ContactPage() {
 
           <div>
 
-            <h2 className="text-4xl font-bold">
-              Contact Information
-            </h2>
+           <h2 className="text-4xl font-bold">
+  How It Works
+</h2>
+
+<div className="mt-10 space-y-8">
+
+  <div>
+    <h3 className="font-semibold text-orange-400">
+      Step 1
+    </h3>
+
+    <p className="mt-2 text-slate-400">
+      Tell us about your machine and production process.
+    </p>
+  </div>
+
+  <div>
+    <h3 className="font-semibold text-orange-400">
+      Step 2
+    </h3>
+
+    <p className="mt-2 text-slate-400">
+      Upload photos, electrical drawings or videos if available.
+    </p>
+  </div>
+
+  <div>
+    <h3 className="font-semibold text-orange-400">
+      Step 3
+    </h3>
+
+    <p className="mt-2 text-slate-400">
+      Our engineering team performs a technical evaluation.
+    </p>
+  </div>
+
+  <div>
+    <h3 className="font-semibold text-orange-400">
+      Step 4
+    </h3>
+
+    <p className="mt-2 text-slate-400">
+      Receive a detailed proposal together with remote support options.
+    </p>
+  </div>
+
+</div>
 
             <div className="mt-10 space-y-8">
 
@@ -78,28 +122,46 @@ export default function ContactPage() {
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
 
             <h2 className="text-3xl font-bold">
-              Request a Quote
+              Project Information
             </h2>
 
             <form className="mt-8 space-y-6">
 
-              <input
-                type="text"
-                placeholder="Full Name"
-                className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
-              />
+             <input
+  type="text"
+  placeholder="Company Name"
+  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+/>
 
-              <input
-                type="email"
-                placeholder="Email Address"
-                className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
-              />
+<input
+  type="text"
+  placeholder="Contact Person"
+  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+/>
 
-              <input
-                type="text"
-                placeholder="Company"
-                className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
-              />
+<input
+  type="email"
+  placeholder="Email Address"
+  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+/>
+
+<input
+  type="text"
+  placeholder="Country"
+  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+/>
+
+<input
+  type="text"
+  placeholder="WhatsApp Number"
+  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+/>
+
+<input
+  type="text"
+  placeholder="Machine Type"
+  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+/>
 
               <textarea
                 rows={6}

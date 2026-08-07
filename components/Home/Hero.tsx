@@ -72,7 +72,7 @@ export default function Hero() {
       >
         {brand}
       </span>
-    ))}
+    ))} 
 
   </div>
 </div>
