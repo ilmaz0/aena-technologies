@@ -77,7 +77,7 @@ export default function Hero() {
       {row.map((brand) => (
         <Image
           key={brand}
-          src={`/logos/${brand}.svg`}
+          src={`/logos/${brand}.png`}
           alt={brand}
           width={120}
           height={40}
