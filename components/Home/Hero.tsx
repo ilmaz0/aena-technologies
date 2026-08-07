@@ -111,13 +111,7 @@ export default function Hero() {
 
 </div>
 
-          
-</div>
 
-        </div>
-
-        {/* RIGHT */}
-        <div className="flex items-center justify-center">
 
   <div className="w-[520px] rounded-3xl border border-slate-700 bg-slate-900 p-10 shadow-2xl">
 <h3 className="text-3xl font-bold text-white">
