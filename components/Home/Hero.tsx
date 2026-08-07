@@ -48,10 +48,7 @@ export default function Hero() {
 
 </div>
 
-          <div className="mt-12 grid grid-cols-2 gap-5 text-lg">
-
-
-    <div className="mt-12">
+          <div className="mt-12">
 
   <p className="mb-6 text-sm uppercase tracking-[4px] text-slate-500">
     Technologies We Work With
@@ -94,8 +91,9 @@ export default function Hero() {
 
 </div>
 
+          <div className="mt-12 grid grid-cols-2 gap-5 text-lg">
 
-  className="flex items-center gap-3">
+  <div className="flex items-center gap-3">
     <span className="text-orange-400 text-xl">✓</span>
     <span>Machine Retrofit</span>
   </div>
