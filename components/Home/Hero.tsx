@@ -51,33 +51,48 @@ export default function Hero() {
           <div className="mt-12 grid grid-cols-2 gap-5 text-lg">
 
 
-            <div className="mt-10">
-  <p className="mb-4 text-sm uppercase tracking-[3px] text-slate-500">
-    Trusted Technologies
+    <div className="mt-12">
+
+  <p className="mb-6 text-sm uppercase tracking-[4px] text-slate-500">
+    Technologies We Work With
   </p>
 
-  <div className="flex flex-wrap gap-3">
+  {[
+    [
+      "siemens",
+      "mitsubishi",
+      "beckhoff",
+      "omron",
+      "yaskawa",
+      "schneider",
+    ],
+    [
+      "festo",
+      "smc",
+      "ifm",
+      "lenze",
+      "leuze",
+      "delta",
+    ],
+  ].map((row, index) => (
+    <div
+      key={index}
+      className="mb-6 flex flex-wrap items-center gap-8"
+    >
+      {row.map((brand) => (
+        <Image
+          key={brand}
+          src={`/logos/${brand}.svg`}
+          alt={brand}
+          width={120}
+          height={40}
+          className="h-8 w-auto opacity-70 transition duration-300 hover:opacity-100"
+        />
+      ))}
+    </div>
+  ))}
 
-    {[
-      "SIEMENS",
-      "MITSUBISHI",
-      "YASKAWA",
-      "OMRON",
-      "DELTA",
-      "SCHNEIDER",
-    ].map((brand) => (
-      <span
-        key={brand}
-        className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-orange-400 hover:text-orange-400"
-      >
-        {brand}
-      </span>
-    ))} 
-
-  </div>
 </div>
-
-  <div 
 
 
   className="flex items-center gap-3">

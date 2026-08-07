@@ -9,13 +9,22 @@ export default function Navbar() {
         {/* Logo */}
 <Link href="/" className="flex items-center gap-4">
   <Image
-    src="/images/aena4.png"
-    alt="AENA Technologies"
-    width={120}
-    height={120}  
-    className="object-contain"
-  />
+  src="/images/aena4.png"
+  alt="AENA Technologies"
+  width={80}
+  height={80}
+  className="object-contain"
+/>
 
+<div>
+  <h2 className="text-3xl font-extrabold">
+    AENA
+  </h2>
+
+  <p className="text-orange-400 tracking-[6px] uppercase">
+    ENGINEERING
+  </p>
+</div>
   <div>
     <h2 className="text-2xl font-extrabold text-white">
       AENA
@@ -42,9 +51,7 @@ export default function Navbar() {
         </nav>
 
         {/* Buton */}
-        <button className="rounded-xl bg-orange-500 px-7 py-3 font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/30">
-          Request a Quote
-        </button>
+       <div className="w-32"></div>
 
       </div>
     </header>
