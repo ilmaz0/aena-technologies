@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function ServicesPage() {
   const services = [
     {
@@ -87,27 +89,31 @@ export default function ServicesPage() {
       </section>
 
       {/* CTA */}
+{/* CTA */}
 
-      <section className="bg-orange-500 py-20">
+<section className="bg-orange-500 py-20">
 
-        <div className="mx-auto max-w-5xl px-8 text-center">
+  <div className="mx-auto max-w-5xl px-8 text-center">
 
-          <h2 className="text-5xl font-bold text-white">
-            Ready to Upgrade Your Machine?
-          </h2>
+    <h2 className="text-5xl font-bold text-white">
+      Ready to Upgrade Your Machine?
+    </h2>
 
-          <p className="mt-6 text-xl text-orange-100">
-            Contact AENA Technologies for industrial automation,
-            retrofit and modernization solutions.
-          </p>
+    <p className="mt-6 text-xl text-orange-100">
+      Contact AENA Technologies for industrial automation,
+      retrofit and modernization solutions.
+    </p>
 
-          <button className="mt-10 rounded-xl bg-white px-8 py-4 font-bold text-orange-500 hover:bg-slate-100">
-            Request a Quote
-          </button>
+    <Link
+      href="/contact"
+      className="mt-10 inline-block rounded-xl bg-white px-8 py-4 font-bold text-orange-500 transition hover:bg-slate-100"
+    >
+      Request a Quote
+    </Link>
 
-        </div>
+  </div>
 
-      </section>
+</section>
 
     </main>
   );
