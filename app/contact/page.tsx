@@ -2,20 +2,108 @@
 
 import { FormEvent, useState } from "react";
 
+const WHATSAPP_NUMBER = "905061234843";
+
 export default function ContactPage() {
   const [sending, setSending] = useState(false);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleWhatsApp = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const name = formData.get("name")?.toString() || "";
+    const email = formData.get("email")?.toString() || "";
+    const company = formData.get("company")?.toString() || "";
+    const phone = formData.get("phone")?.toString() || "";
+    const service = formData.get("service")?.toString() || "";
+    const machine = formData.get("machine")?.toString() || "";
+    const project = formData.get("project")?.toString() || "";
+
+    const message = `
+*AENA Technologies*
+*Technical Evaluation Request*
+
+*Name:* ${name}
+
+*Company:* ${company}
+
+*Email:* ${email}
+
+*Phone / WhatsApp:* ${phone}
+
+*Service Required:* ${service}
+
+*Machine Type / Model:* ${machine}
+
+*Project Description:*
+${project}
+
+-------------------------
+
+Sent from AENA Technologies website.
+`;
+
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      message
+    )}`;
+
+    window.open(whatsappUrl, "_blank");
+  };
+
+  const handleEmail = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setSending(true);
 
-    // Şimdilik test
-    console.log("Technical evaluation request submitted");
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const name = formData.get("name")?.toString() || "";
+    const email = formData.get("email")?.toString() || "";
+    const company = formData.get("company")?.toString() || "";
+    const phone = formData.get("phone")?.toString() || "";
+    const service = formData.get("service")?.toString() || "";
+    const machine = formData.get("machine")?.toString() || "";
+    const project = formData.get("project")?.toString() || "";
+
+    const subject = `AENA Technical Evaluation - ${company}`;
+
+    const body = `
+AENA Technologies
+Technical Evaluation Request
+
+Name:
+${name}
+
+Company:
+${company}
+
+Email:
+${email}
+
+Phone / WhatsApp:
+${phone}
+
+Service Required:
+${service}
+
+Machine Type / Model:
+${machine}
+
+Project Description:
+${project}
+`;
+
+    const mailtoUrl = `mailto:info@aenatechnologies.com?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailtoUrl;
 
     setTimeout(() => {
       setSending(false);
-      alert("Your request has been received.");
     }, 1000);
   };
 
@@ -25,7 +113,6 @@ export default function ContactPage() {
       {/* HERO */}
 
       <section className="border-b border-slate-800 py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <p className="font-semibold uppercase tracking-[4px] text-orange-400">
@@ -42,7 +129,6 @@ export default function ContactPage() {
           </p>
 
         </div>
-
       </section>
 
       {/* CONTENT */}
@@ -62,28 +148,40 @@ export default function ContactPage() {
             <div className="mt-8 space-y-6">
 
               <div className="flex gap-4">
-                <span className="text-xl font-bold text-orange-400">01</span>
+                <span className="text-xl font-bold text-orange-400">
+                  01
+                </span>
+
                 <p className="text-slate-400">
                   Tell us about your machine and production process.
                 </p>
               </div>
 
               <div className="flex gap-4">
-                <span className="text-xl font-bold text-orange-400">02</span>
+                <span className="text-xl font-bold text-orange-400">
+                  02
+                </span>
+
                 <p className="text-slate-400">
                   Upload photos, electrical drawings or videos if available.
                 </p>
               </div>
 
               <div className="flex gap-4">
-                <span className="text-xl font-bold text-orange-400">03</span>
+                <span className="text-xl font-bold text-orange-400">
+                  03
+                </span>
+
                 <p className="text-slate-400">
                   Our engineering team performs a technical evaluation.
                 </p>
               </div>
 
               <div className="flex gap-4">
-                <span className="text-xl font-bold text-orange-400">04</span>
+                <span className="text-xl font-bold text-orange-400">
+                  04
+                </span>
+
                 <p className="text-slate-400">
                   Receive a detailed proposal together with remote support
                   options.
@@ -116,21 +214,11 @@ export default function ContactPage() {
 
               <div>
                 <h3 className="font-semibold text-orange-400">
-                  LinkedIn
-                </h3>
-
-                <p className="mt-2 text-slate-400">
-                  AENA Technologies
-                </p>
-              </div>
-
-              <div>
-                <h3 className="font-semibold text-orange-400">
                   WhatsApp
                 </h3>
 
                 <p className="mt-2 text-slate-400">
-                  Available for international support
+                  +90 506 123 4843
                 </p>
               </div>
 
@@ -151,7 +239,7 @@ export default function ContactPage() {
             </p>
 
             <form
-              onSubmit={handleSubmit}
+              onSubmit={handleWhatsApp}
               className="mt-8 space-y-6"
             >
 
@@ -195,34 +283,33 @@ export default function ContactPage() {
                   Select Required Service
                 </option>
 
-                <option value="machine-retrofit">
+                <option value="Machine Retrofit">
                   Machine Retrofit
                 </option>
 
-                <option value="plc">
+                <option value="PLC / HMI Programming">
                   PLC / HMI Programming
                 </option>
 
-                <option value="electrical">
+                <option value="Electrical Engineering">
                   Electrical Engineering
                 </option>
 
-                <option value="servo">
+                <option value="Servo & Motion Control">
                   Servo & Motion Control
                 </option>
 
-                <option value="scada">
+                <option value="SCADA / Monitoring">
                   SCADA / Monitoring
                 </option>
 
-                <option value="factory-automation">
+                <option value="Factory Automation">
                   Factory Automation
                 </option>
 
-                <option value="remote-support">
+                <option value="Remote Technical Support">
                   Remote Technical Support
                 </option>
-
               </select>
 
               <input
@@ -240,29 +327,43 @@ export default function ContactPage() {
                 className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
               />
 
-              <div>
-                <label className="mb-2 block text-sm text-slate-400">
-                  Upload Technical Files
-                </label>
+              {/* WHATSAPP */}
 
-                <input
-                  type="file"
-                  name="files"
-                  multiple
-                  accept=".jpg,.jpeg,.png,.pdf,.mp4,.dwg,.zip"
-                  className="w-full rounded-lg bg-slate-800 p-4 text-sm text-slate-400"
-                />
-              </div>
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-green-600 py-4 font-bold transition hover:bg-green-700"
+              >
+                Send Request via WhatsApp
+              </button>
+
+            </form>
+
+            {/* EMAIL */}
+
+            <form
+              onSubmit={handleEmail}
+              className="mt-4"
+            >
+
+              <input
+                type="hidden"
+                name="name"
+              />
 
               <button
                 type="submit"
                 disabled={sending}
-                className="w-full rounded-xl bg-orange-500 py-4 font-bold transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-xl border border-slate-600 py-4 font-bold transition hover:border-orange-500 hover:bg-slate-800 disabled:opacity-50"
               >
-                {sending ? "Sending Request..." : "Send Technical Request"}
+                Send Request by Email
               </button>
 
             </form>
+
+            <p className="mt-5 text-center text-xs text-slate-500">
+              Your technical information will be used only to evaluate your
+              project and prepare an engineering proposal.
+            </p>
 
           </div>
 
