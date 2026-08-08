@@ -90,8 +90,8 @@ export default function Hero() {
         <Image
   src={`/logos/${brand}.png`}
   alt={brand}
-  width={120}
-  height={45}
+  width={140}
+  height={60}
   className="
     max-h-10
     w-auto
