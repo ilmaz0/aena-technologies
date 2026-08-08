@@ -1,4 +1,24 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+
 export default function ContactPage() {
+  const [sending, setSending] = useState(false);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setSending(true);
+
+    // Şimdilik test
+    console.log("Technical evaluation request submitted");
+
+    setTimeout(() => {
+      setSending(false);
+      alert("Your request has been received.");
+    }, 1000);
+  };
+
   return (
     <main className="bg-slate-950 text-white">
 
@@ -8,11 +28,11 @@ export default function ContactPage() {
 
         <div className="mx-auto max-w-7xl px-8">
 
-          <p className="uppercase tracking-[4px] font-semibold text-orange-400">
+          <p className="font-semibold uppercase tracking-[4px] text-orange-400">
             Technical Evaluation
           </p>
 
-          <h1 className="mt-4 text-6xl font-extrabold">
+          <h1 className="mt-4 text-5xl font-extrabold md:text-6xl">
             Request a Technical Evaluation
           </h1>
 
@@ -35,79 +55,80 @@ export default function ContactPage() {
 
           <div>
 
-           <h2 className="text-4xl font-bold">
-  How It Works
-</h2>
+            <h2 className="text-4xl font-bold">
+              How It Works
+            </h2>
 
-<div className="mt-10 space-y-8">
+            <div className="mt-8 space-y-6">
 
-  <div>
-    <h3 className="font-semibold text-orange-400">
-      Step 1
-    </h3>
+              <div className="flex gap-4">
+                <span className="text-xl font-bold text-orange-400">01</span>
+                <p className="text-slate-400">
+                  Tell us about your machine and production process.
+                </p>
+              </div>
 
-    <p className="mt-2 text-slate-400">
-      Tell us about your machine and production process.
-    </p>
-  </div>
+              <div className="flex gap-4">
+                <span className="text-xl font-bold text-orange-400">02</span>
+                <p className="text-slate-400">
+                  Upload photos, electrical drawings or videos if available.
+                </p>
+              </div>
 
-  <div>
-    <h3 className="font-semibold text-orange-400">
-      Step 2
-    </h3>
+              <div className="flex gap-4">
+                <span className="text-xl font-bold text-orange-400">03</span>
+                <p className="text-slate-400">
+                  Our engineering team performs a technical evaluation.
+                </p>
+              </div>
 
-    <p className="mt-2 text-slate-400">
-      Upload photos, electrical drawings or videos if available.
-    </p>
-  </div>
+              <div className="flex gap-4">
+                <span className="text-xl font-bold text-orange-400">04</span>
+                <p className="text-slate-400">
+                  Receive a detailed proposal together with remote support
+                  options.
+                </p>
+              </div>
 
-  <div>
-    <h3 className="font-semibold text-orange-400">
-      Step 3
-    </h3>
+            </div>
 
-    <p className="mt-2 text-slate-400">
-      Our engineering team performs a technical evaluation.
-    </p>
-  </div>
-
-  <div>
-    <h3 className="font-semibold text-orange-400">
-      Step 4
-    </h3>
-
-    <p className="mt-2 text-slate-400">
-      Receive a detailed proposal together with remote support options.
-    </p>
-  </div>
-
-</div>
-
-            <div className="mt-10 space-y-8">
+            <div className="mt-12 space-y-8">
 
               <div>
-                <h3 className="text-orange-400 font-semibold">Location</h3>
+                <h3 className="font-semibold text-orange-400">
+                  Location
+                </h3>
+
                 <p className="mt-2 text-slate-400">
                   Adana, Türkiye
                 </p>
               </div>
 
               <div>
-                <h3 className="text-orange-400 font-semibold">Email</h3>
+                <h3 className="font-semibold text-orange-400">
+                  Email
+                </h3>
+
                 <p className="mt-2 text-slate-400">
                   info@aenatechnologies.com
                 </p>
               </div>
 
               <div>
-                <h3 className="text-orange-400 font-semibold">LinkedIn</h3>
+                <h3 className="font-semibold text-orange-400">
+                  LinkedIn
+                </h3>
+
                 <p className="mt-2 text-slate-400">
                   AENA Technologies
                 </p>
               </div>
 
               <div>
-                <h3 className="text-orange-400 font-semibold">WhatsApp</h3>
+                <h3 className="font-semibold text-orange-400">
+                  WhatsApp
+                </h3>
+
                 <p className="mt-2 text-slate-400">
                   Available for international support
                 </p>
@@ -125,55 +146,120 @@ export default function ContactPage() {
               Project Information
             </h2>
 
-            <form className="mt-8 space-y-6">
+            <p className="mt-3 text-slate-400">
+              Provide as much technical information as possible.
+            </p>
 
-             <input
-  type="text"
-  placeholder="Company Name"
-  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
-/>
+            <form
+              onSubmit={handleSubmit}
+              className="mt-8 space-y-6"
+            >
 
-<input
-  type="text"
-  placeholder="Contact Person"
-  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
-/>
-
-<input
-  type="email"
-  placeholder="Email Address"
-  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
-/>
-
-<input
-  type="text"
-  placeholder="Country"
-  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
-/>
-
-<input
-  type="text"
-  placeholder="WhatsApp Number"
-  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
-/>
-
-<input
-  type="text"
-  placeholder="Machine Type"
-  className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
-/>
-
-              <textarea
-                rows={6}
-                placeholder="Tell us about your project..."
+              <input
+                type="text"
+                name="name"
+                placeholder="Full Name"
+                required
                 className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
               />
 
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                required
+                className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+              />
+
+              <input
+                type="text"
+                name="company"
+                placeholder="Company Name"
+                required
+                className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+              />
+
+              <input
+                type="text"
+                name="phone"
+                placeholder="Phone / WhatsApp"
+                className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+              />
+
+              <select
+                name="service"
+                required
+                className="w-full rounded-lg bg-slate-800 p-4 text-slate-300 outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option value="">
+                  Select Required Service
+                </option>
+
+                <option value="machine-retrofit">
+                  Machine Retrofit
+                </option>
+
+                <option value="plc">
+                  PLC / HMI Programming
+                </option>
+
+                <option value="electrical">
+                  Electrical Engineering
+                </option>
+
+                <option value="servo">
+                  Servo & Motion Control
+                </option>
+
+                <option value="scada">
+                  SCADA / Monitoring
+                </option>
+
+                <option value="factory-automation">
+                  Factory Automation
+                </option>
+
+                <option value="remote-support">
+                  Remote Technical Support
+                </option>
+
+              </select>
+
+              <input
+                type="text"
+                name="machine"
+                placeholder="Machine Type / Model"
+                className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+              />
+
+              <textarea
+                name="project"
+                rows={7}
+                required
+                placeholder="Describe the machine, existing automation system, problem and required modification..."
+                className="w-full rounded-lg bg-slate-800 p-4 outline-none focus:ring-2 focus:ring-orange-500"
+              />
+
+              <div>
+                <label className="mb-2 block text-sm text-slate-400">
+                  Upload Technical Files
+                </label>
+
+                <input
+                  type="file"
+                  name="files"
+                  multiple
+                  accept=".jpg,.jpeg,.png,.pdf,.mp4,.dwg,.zip"
+                  className="w-full rounded-lg bg-slate-800 p-4 text-sm text-slate-400"
+                />
+              </div>
+
               <button
                 type="submit"
-                className="w-full rounded-xl bg-orange-500 py-4 font-bold hover:bg-orange-600 transition"
+                disabled={sending}
+                className="w-full rounded-xl bg-orange-500 py-4 font-bold transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Send Request
+                {sending ? "Sending Request..." : "Send Technical Request"}
               </button>
 
             </form>
