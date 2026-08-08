@@ -15,7 +15,7 @@ export default function CTA() {
           retrofit solutions.
         </p>
 
-        <div className="mt-12 flex justify-center gap-6">
+        <div className="mt-12 flex justifgit y-center gap-6">
 
           <Link
             href="/contact"
