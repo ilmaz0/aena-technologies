@@ -8,7 +8,7 @@ import Capabilities from "@/components/Home/Capabilities";
 import Industries from "@/components/Home/Industries";
 import Process from "@/components/Home/Process";
 import Problems from "@/components/Home/Problems";
-
+import CTA from "@/components/Home/CTA";
 
 export default function Home() {
   return (
@@ -23,6 +23,7 @@ export default function Home() {
       <Industries />
       <Process />
       <Problems />
+       <CTA />
     </>
   );
 }
