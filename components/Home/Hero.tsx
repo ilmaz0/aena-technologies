@@ -46,13 +46,15 @@ export default function Hero() {
 
       {/* TECHNOLOGIES */}
 
+{/* TECHNOLOGIES */}
+
 <div className="mt-14">
 
   <p className="mb-8 text-sm uppercase tracking-[5px] text-slate-500">
     Technologies We Work With
   </p>
 
-  <div className="grid grid-cols-4 gap-5">
+  <div className="grid grid-cols-4 gap-4">
 
     {[
       "siemens",
@@ -70,47 +72,51 @@ export default function Hero() {
       "leuze",
       "delta",
     ].map((brand) => (
+
       <div
         key={brand}
         className="
-          h-20
+          flex
+          h-[76px]
+          items-center
+          justify-center
           rounded-xl
           border
           border-slate-800
-          bg-slate-900
-          flex
-          items-center
-          justify-center
-          hover:border-orange-500
-          hover:bg-slate-800
+          bg-slate-900/70
+          px-3
           transition-all
           duration-300
+          hover:border-orange-500/60
+          hover:bg-slate-800
         "
       >
+
         <Image
-  src={`/logos/${brand}.png`}
-  alt={brand}
-  width={140}
-  height={60}
-  className="
-    max-h-10
-    w-auto
-    object-contain
-    grayscale
-    opacity-70
-    transition
-    duration-300
-    hover:grayscale-0
-    hover:opacity-100
-  "
-/>
+          src={`/logos/${brand}.png`}
+          alt={`${brand} automation`}
+          width={220}
+          height={70}
+          className="
+            h-[52px]
+            w-[170px]
+            object-contain
+            grayscale
+            opacity-60
+            transition-all
+            duration-300
+            hover:grayscale-0
+            hover:opacity-100
+          "
+        />
+
       </div>
+
     ))}
 
   </div>
 
 </div>
-
 
 {/* TECHNOLOGIES */}
 
