@@ -74,7 +74,7 @@ export default function Hero() {
     key={brand}
     className="
       flex
-      h-[100px]
+      h-[60px]
       w-full
       items-center
       justify-center
@@ -96,8 +96,8 @@ export default function Hero() {
       width={300}
       height={100}
       className="
-        h-[60px]
-        w-[180px]
+        h-[50px]
+        w-[155px]
         object-contain
       "
     />
