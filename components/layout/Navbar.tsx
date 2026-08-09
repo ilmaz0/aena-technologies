@@ -12,7 +12,7 @@ export default function Navbar() {
           className="flex shrink-0 items-center"
         >
           <Image
-            src="/logo.png"
+            src="/images/aena4.png"
             alt="AENA Technologies"
             width={150}
             height={45}
