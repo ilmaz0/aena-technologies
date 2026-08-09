@@ -90,15 +90,15 @@ export default function Hero() {
         hover:bg-slate-800
       "
     >
-      <div className="flex h-[50px] w-[150px] items-center justify-center">
+      <div className="flex h-[44px] w-[130px] items-center justify-center">
         <Image
           src={`/logos/${brand}.png`}
           alt={`${brand} automation`}
           width={300}
           height={100}
           className="
-            max-h-[45px]
-            max-w-[140px]
+            max-h-[40px]
+            max-w-[120px]
             object-contain
           "
         />
