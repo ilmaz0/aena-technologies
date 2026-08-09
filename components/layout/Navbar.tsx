@@ -13,7 +13,8 @@ export default function Navbar() {
             alt="AENA Technologies"
             width={150}
             height={45}
-            className="h-auto w-[95px] sm:w-[120px] lg:w-[150px]"
+            priority
+            className="h-auto w-[90px] sm:w-[120px] lg:w-[150px]"
           />
         </Link>
 
@@ -58,7 +59,7 @@ export default function Navbar() {
         </nav>
 
         {/* Sağ boşluk */}
-        <div className="w-0 sm:w-4 lg:w-8"></div>
+        <div className="w-0 sm:w-4 lg:w-8" />
 
       </div>
     </header>
