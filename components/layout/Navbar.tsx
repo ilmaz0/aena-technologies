@@ -18,7 +18,7 @@ export default function Navbar() {
             height={45}
             priority
             className="h-auto w-[90px] sm:w-[120px] lg:w-[150px]"
-          />
+          /> 
         </Link>
 
         {/* Menü */}
