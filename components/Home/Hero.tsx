@@ -54,79 +54,62 @@ export default function Hero() {
     Technologies We Work With
   </p>
 
-  <div className="grid grid-cols-4 gap-4">
-
-    {[
-      "siemens",
-      "abb",
-      "rittal",
-      "mitsubishi",
-      "beckhoff",
-      "omron",
-      "yaskawa",
-      "schneider",
-      "festo",
-      "smc",
-      "ifm",
-      "lenze",
-      "leuze",
-      "delta",
-    ].map((brand) => (
-
-      <div
-        key={brand}
-        className="
-          flex
-          h-[76px]
-          items-center
-          justify-center
-          rounded-xl
-          border
-          border-slate-800
-          bg-slate-900/70
-          px-3
-          transition-all
-          duration-300
-          hover:border-orange-500/60
-          hover:bg-slate-800
-        "
-      >
-
-        <Image
-          src={`/logos/${brand}.png`}
-          alt={`${brand} automation`}
-          width={300}
-          height={100}
-          className="
-            h-[52px]
-            w-[170px]
-            object-contain
-            grayscale
-            opacity-60
-            transition-all
-            duration-300
-            hover:grayscale-0
-            hover:opacity-100
-          "
-        />
-
-      </div>
-
-    ))}
+{[
+  "siemens",
+  "abb",
+  "rittal",
+  "mitsubishi",
+  "beckhoff",
+  "omron",
+  "yaskawa",
+  "schneider",
+  "festo",
+  "smc",
+  "ifm",
+  "lenze",
+  "leuze",
+  "delta",
+].map((brand) => (
+  <div
+    key={brand}
+    className="
+      flex
+      h-[120px]
+      items-center
+      justify-center
+      rounded-xl
+      border
+      border-slate-800
+      bg-slate-900/70
+      px-5
+      transition-all
+      duration-300
+      hover:border-orange-500/60
+      hover:bg-slate-800
+    "
+  >
+    <Image
+      src={`/logos/${brand}.png`}
+      alt={`${brand} automation`}
+      width={300}
+      height={100}
+      className="
+        h-[80px]
+        w-[240px]
+        object-contain
+        transition-all
+        duration-300
+        hover:scale-105
+      "
+    />
+  </div>
+))}
+    
 
   </div>
 
 </div>
 
-{/* TECHNOLOGIES */}
-
-<div className="mt-14">
-
- 
-
-</div>
-
-</div>
 
 {/* RIGHT */}
 
