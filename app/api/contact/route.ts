@@ -109,18 +109,17 @@ export async function POST(request: Request) {
       `,
     });
 
-    if (error) {
-      console.error("Resend error:", error);
+   if (error) {
+  console.error("RESEND ERROR:", error);
 
-      return Response.json(
-        {
-          success: false,
-          message: "Email could not be sent.",
-        },
-        { status: 500 }
-      );
-    }
-
+  return Response.json(
+    {
+      success: false,
+      message: error.message || "Email could not be sent.",
+    },
+    { status: 500 }
+  );
+}
     return Response.json({
       success: true,
       message: "Request sent successfully.",
