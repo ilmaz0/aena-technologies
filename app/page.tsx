@@ -12,8 +12,7 @@ import CTA from "@/components/Home/CTA";
 
 export default function Home() {
   return (
-    <>
-      <Navbar />
+    <> 
       <Hero />
       <Stats />
        <WhyChoose />

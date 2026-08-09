@@ -3,11 +3,14 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <header className="w-full">
+    <header className="w-full border-b border-slate-800/50 bg-slate-950">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-3 py-4 sm:px-6 lg:px-8">
 
         {/* Logo */}
-        <Link href="/" className="shrink-0">
+        <Link
+          href="/"
+          className="flex shrink-0 items-center"
+        >
           <Image
             src="/logo.png"
             alt="AENA Technologies"
@@ -23,35 +26,35 @@ export default function Navbar() {
 
           <Link
             href="/"
-            className="transition duration-300 hover:text-orange-400"
+            className="text-white transition duration-300 hover:text-orange-400"
           >
             Home
           </Link>
 
           <Link
             href="/services"
-            className="transition duration-300 hover:text-orange-400"
+            className="text-white transition duration-300 hover:text-orange-400"
           >
             Services
           </Link>
 
           <Link
             href="/projects"
-            className="transition duration-300 hover:text-orange-400"
+            className="text-white transition duration-300 hover:text-orange-400"
           >
             Projects
           </Link>
 
           <Link
             href="/about"
-            className="transition duration-300 hover:text-orange-400"
+            className="text-white transition duration-300 hover:text-orange-400"
           >
             About
           </Link>
 
           <Link
             href="/contact"
-            className="transition duration-300 hover:text-orange-400"
+            className="text-white transition duration-300 hover:text-orange-400"
           >
             Contact
           </Link>
