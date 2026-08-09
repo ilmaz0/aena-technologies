@@ -74,14 +74,16 @@ export default function Hero() {
     key={brand}
     className="
       flex
-      h-[120px]
+      h-[100px]
+      w-full
       items-center
       justify-center
+      overflow-hidden
       rounded-xl
       border
       border-slate-800
       bg-slate-900/70
-      px-5
+      px-4
       transition-all
       duration-300
       hover:border-orange-500/60
@@ -94,22 +96,18 @@ export default function Hero() {
       width={300}
       height={100}
       className="
-        h-[80px]
-        w-[240px]
+        h-[60px]
+        w-[180px]
         object-contain
-        transition-all
-        duration-300
-        hover:scale-105
       "
     />
   </div>
 ))}
+  </div>
+
     
 
   </div>
-
-</div>
-
 
 {/* RIGHT */}
 
