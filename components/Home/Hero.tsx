@@ -70,7 +70,7 @@ export default function Hero() {
     "lenze",
     "leuze",
     "delta",
-  ].map((brand) => ( generally in the mission adimals message olla toomaz to your shtry models which keeps kertaps off in making a lot ofnext committee talk to swaptem artists almost tipped downon balance knew kefledlate master muham stuff in may sort of shame a dultet muslim of my case whether video is the chizhat
+  ].map((brand) => (
     <div
       key={brand}
       className="
