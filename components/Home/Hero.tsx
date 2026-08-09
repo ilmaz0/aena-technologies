@@ -51,58 +51,62 @@ export default function Hero() {
 <div className="mt-14">
 
   <p className="mb-8 text-sm uppercase tracking-[5px] text-slate-500">
-    Technologies We Work With
-  </p>
+  Technologies We Work With
+</p>
 
-{[
-  "siemens",
-  "abb",
-  "rittal",
-  "mitsubishi",
-  "beckhoff",
-  "omron",
-  "yaskawa",
-  "schneider",
-  "festo",
-  "smc",
-  "ifm",
-  "lenze",
-  "leuze",
-  "delta",
-].map((brand) => (
-  <div
-    key={brand}
-    className="
-      flex
-      h-[60px]
-      w-full
-      items-center
-      justify-center
-      overflow-hidden
-      rounded-xl
-      border
-      border-slate-800
-      bg-slate-900/70
-      px-4
-      transition-all
-      duration-300
-      hover:border-orange-500/60
-      hover:bg-slate-800
-    "
-  >
-    <Image
-      src={`/logos/${brand}.png`}
-      alt={`${brand} automation`}
-      width={300}
-      height={100}
+<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+  {[
+    "siemens",
+    "abb",
+    "rittal",
+    "mitsubishi",
+    "beckhoff",
+    "omron",
+    "yaskawa",
+    "schneider",
+    "festo",
+    "smc",
+    "ifm",
+    "lenze",
+    "leuze",
+    "delta",
+  ].map((brand) => (
+    <div
+      key={brand}
       className="
-        h-[50px]
-        w-[155px]
-        object-contain
+        flex
+        h-[72px]
+        w-full
+        items-center
+        justify-center
+        rounded-xl
+        border
+        border-slate-800
+        bg-slate-900/70
+        px-3
+        transition-all
+        duration-300
+        hover:border-orange-500/60
+        hover:bg-slate-800
       "
-    />
-  </div>
-))}
+    >
+      <div className="flex h-[50px] w-[150px] items-center justify-center">
+        <Image
+          src={`/logos/${brand}.png`}
+          alt={`${brand} automation`}
+          width={300}
+          height={100}
+          className="
+            max-h-[45px]
+            max-w-[140px]
+            object-contain
+          "
+        />
+      </div>
+    </div>
+  ))}
+</div>
+
   </div>
 
     
