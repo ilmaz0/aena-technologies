@@ -2,45 +2,44 @@ export default function Services() {
   const services = [
     {
       icon: "⚙️",
-      title: "Machine Retrofit",
+      title: "Industrial Machine Retrofit",
       description:
-        "Upgrade existing production lines with modern automation technologies.",
+        "Modernize existing industrial machinery and production lines with PLC upgrades, electrical systems, drives, sensors and modern automation technologies. Machine retrofit solutions extend equipment lifetime and reduce the cost of new machinery.",
     },
     {
       icon: "🤖",
-      title: "PLC Programming",
+      title: "PLC & HMI Programming",
       description:
-        "Professional PLC software development for Siemens, Allen Bradley and Delta.",
+        "PLC and HMI software development, modification and modernization for Siemens, Rockwell Automation (Allen-Bradley), Mitsubishi and Delta automation systems.",
     },
     {
       icon: "🖥️",
       title: "SCADA Systems",
       description:
-        "Real-time monitoring, reporting and industrial visualization solutions.",
+        "Industrial SCADA development for real-time machine monitoring, production data collection, alarms, reporting and visualization of manufacturing processes.",
     },
     {
       icon: "⚡",
       title: "Electrical Engineering",
       description:
-        "Industrial control panels, power distribution and electrical design.",
+        "Industrial electrical engineering including control panel design, electrical cabinet modernization, power distribution, machine wiring and automation system integration.",
     },
     {
       icon: "🎯",
-      title: "Servo Motion",
+      title: "Servo & Motion Control",
       description:
-        "High-precision servo control and motion synchronization systems.",
+        "Servo motor, drive and motion control solutions for high-precision machinery, speed synchronization, positioning and automated production systems.",
     },
     {
       icon: "🏭",
       title: "Factory Automation",
       description:
-        "Complete automation solutions for plastic, packaging and manufacturing.",
+        "Complete industrial automation solutions for plastic, packaging, recycling, film production and manufacturing machinery, from system design to commissioning.",
     },
   ];
 
   return (
-    <section className="bg-slate-950 py-28 text-white">
-
+    <section>
       <div className="mx-auto max-w-7xl px-10">
 
         <div className="text-center">
@@ -50,13 +49,15 @@ export default function Services() {
           </span>
 
           <h2 className="mt-4 text-5xl font-bold">
-            Industrial Automation & Machine Retrofit
+            Industrial Automation & Machine Retrofit Services
           </h2>
 
           <p className="mx-auto mt-6 max-w-3xl text-lg text-slate-400">
-            From machine modernization to complete factory automation,
-            we provide reliable engineering services that increase
-            productivity and reduce downtime.
+            AENA Technologies provides industrial automation, machine
+            retrofit and modernization services for machinery and
+            production lines. We combine PLC programming, electrical
+            engineering, drive systems, motion control and commissioning
+            to improve machine performance and reduce downtime.
           </p>
 
         </div>
@@ -67,12 +68,37 @@ export default function Services() {
 
             <div
               key={service.title}
-             className="rounded-2xl border border-slate-800 bg-slate-900 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-orange-500 hover:shadow-xl hover:shadow-orange-500/10"
+              className="
+                rounded-2xl
+                border
+                border-slate-800
+                bg-slate-900
+                p-8
+                transition-all
+                duration-300
+                hover:-translate-y-2
+                hover:border-orange-500
+                hover:shadow-xl
+                hover:shadow-orange-500/10
+              "
             >
 
-              <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-orange-500/10 text-5xl border border-orange-500/20">
-  {service.icon}
-</div>
+              <div
+                className="
+                  flex
+                  h-20
+                  w-20
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  border
+                  border-orange-500/20
+                  bg-orange-500/10
+                  text-5xl
+                "
+              >
+                {service.icon}
+              </div>
 
               <h3 className="mt-6 text-2xl font-bold">
                 {service.title}
@@ -83,8 +109,9 @@ export default function Services() {
               </p>
 
               <p className="mt-8 text-sm uppercase tracking-[2px] text-orange-400">
-  Customized Solutions
-</p>
+                Customized Solutions
+              </p>
+
             </div>
 
           ))}
@@ -92,7 +119,6 @@ export default function Services() {
         </div>
 
       </div>
-
     </section>
   );
 }
