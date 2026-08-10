@@ -26,10 +26,10 @@ export async function POST(request: Request) {
 
     // Resend API key'i sadece API isteği geldiğinde oku
     const apiKey = process.env.RESEND_API_KEY;
-    console.log("RESEND KEY CHECK:", {
-  exists: !!process.env.RESEND_API_KEY,
-  length: process.env.RESEND_API_KEY?.length,
-});
+   console.log("TEST KEY CHECK:", {
+  exists: !!process.env.RESEND_TEST_KEY,
+  length: process.env.RESEND_TEST_KEY?.length ?? 0,
+});;
 
     if (!apiKey) {
       console.error("RESEND_API_KEY is not configured.");
