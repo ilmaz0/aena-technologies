@@ -8,24 +8,30 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://www.aenatechnologies.com"),
 
   title: {
-    default: "AENA Technologies | Industrial Automation & Machine Retrofit",
+    default:
+      "Industrial Machine Retrofit & Automation | AENA Technologies",
     template: "%s | AENA Technologies",
   },
 
   description:
-    "AENA Technologies provides industrial automation, machine retrofit, machine modernization, PLC programming, electrical engineering and control systems services.",
+    "AENA Technologies provides industrial machine retrofit, industrial automation, machine modernization, PLC and HMI programming, electrical engineering, drive systems, servo motion control and commissioning services in Turkey, Europe, Middle East and Central Asia.",
 
   keywords: [
-    "industrial automation",
+    "industrial machine retrofit",
     "machine retrofit",
+    "industrial automation",
     "machine modernization",
     "industrial automation Turkey",
     "machine retrofit Turkey",
+    "industrial automation company Turkey",
     "PLC programming",
     "PLC automation",
-    "SCADA",
+    "HMI programming",
+    "SCADA systems",
     "electrical engineering",
-    "machine automation",
+    "electrical panel design",
+    "servo motion control",
+    "drive systems",
     "production line modernization",
     "industrial control systems",
   ],
@@ -46,6 +52,7 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+
     googleBot: {
       index: true,
       follow: true,
@@ -58,18 +65,20 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://www.aenatechnologies.com",
-    title: "AENA Technologies | Industrial Automation & Machine Retrofit",
+    title:
+      "Industrial Machine Retrofit & Automation | AENA Technologies",
     description:
-      "Industrial automation, machine retrofit, machine modernization, PLC, SCADA and electrical engineering services.",
+      "Industrial machine retrofit, automation, PLC programming, electrical engineering, drive systems and machine modernization services.",
     siteName: "AENA Technologies",
     locale: "en_US",
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "AENA Technologies | Industrial Automation & Machine Retrofit",
+    title:
+      "Industrial Machine Retrofit & Automation | AENA Technologies",
     description:
-      "Industrial automation, machine retrofit, machine modernization, PLC, SCADA and electrical engineering services.",
+      "Industrial machine retrofit, industrial automation, PLC, electrical engineering and machine modernization services.",
   },
 };
 
@@ -80,7 +89,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-[#020617] text-white antialiased">
         <Navbar />
 
         <main>{children}</main>
