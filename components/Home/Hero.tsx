@@ -5,202 +5,355 @@ export default function Hero() {
   const brands = [
     "siemens",
     "abb",
-    "rittal",
     "mitsubishi",
     "beckhoff",
+    "schneider",
     "omron",
     "yaskawa",
-    "schneider",
     "festo",
-    "smc",
-    "ifm",
-    "lenze",
-    "leuze",
-    "delta",
   ];
 
   return (
-    <>
-      {/* HERO */}
-      <div className="grid grid-cols-2 items-start gap-6 sm:gap-10 lg:gap-16">
+    <section className="border-b border-slate-800 bg-[#020617]">
+      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
 
-        {/* LEFT */}
-        <div className="flex min-w-0 flex-col justify-center">
+        {/* HERO MAIN */}
+        <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
 
-          <h1 className="text-[clamp(2rem,5vw,3.75rem)] font-extrabold leading-[1.05] tracking-tight text-white">
-            Industrial Machine
-            <br />
-            Retrofit
-            <br />
-            <span className="text-orange-500">
-              Automation &
-            </span>
-            <br />
-            Engineering
-          </h1>
+          {/* LEFT SIDE */}
+          <div className="min-w-0">
 
-          <p className="mt-6 max-w-xl text-[clamp(0.85rem,1.8vw,1.25rem)] leading-7 text-slate-300 sm:mt-8 sm:leading-8">
-            AENA Technologies provides industrial machine retrofit,
-            automation and modernization services for manufacturers
-            and production lines. We modernize existing machinery
-            through PLC and HMI programming, electrical engineering,
-            drive systems, motion control and commissioning.
-          </p>
-
-          {/* TECHNOLOGIES */}
-          <div className="mt-10 sm:mt-14">
-
-            <p className="mb-6 text-[10px] uppercase tracking-[3px] text-slate-500 sm:text-sm sm:tracking-[5px]">
-              Industrial Automation Technologies
+            <p className="mb-5 text-xs font-semibold uppercase tracking-[4px] text-orange-400 sm:text-sm">
+              Industrial Automation & Machine Modernization
             </p>
 
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {brands.map((brand) => (
-                <div
-                  key={brand}
+            <h1 className="text-[clamp(2.7rem,6vw,5rem)] font-extrabold leading-[0.98] tracking-tight text-white">
+              Industrial
+              <br />
+              Machine
+              <br />
+              <span className="text-orange-500">
+                Retrofit
+              </span>
+            </h1>
+
+            <h2 className="mt-6 text-[clamp(1.4rem,3vw,2.25rem)] font-bold leading-tight text-slate-200">
+              Automation & Electrical Engineering
+            </h2>
+
+            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
+              Modernize your existing machinery without replacing the entire
+              production system. AENA Technologies provides industrial machine
+              retrofit, PLC & HMI programming, electrical engineering, drive
+              systems, servo motion control and commissioning.
+            </p>
+
+            {/* TECHNICAL SERVICES */}
+            <div className="mt-7 flex flex-wrap gap-2">
+              {[
+                "PLC & HMI",
+                "Drive Systems",
+                "Servo & Motion",
+                "Electrical Panels",
+                "SCADA",
+                "Commissioning",
+              ].map((item) => (
+                <span
+                  key={item}
                   className="
-                    flex
-                    h-[58px]
-                    min-w-0
-                    items-center
-                    justify-center
-                    rounded-lg
+                    rounded-full
                     border
-                    border-slate-800
-                    bg-slate-900/70
-                    px-2
-                    transition-all
-                    duration-300
-                    hover:border-orange-500/60
-                    hover:bg-slate-800
+                    border-slate-700
+                    bg-slate-900/80
+                    px-3
+                    py-1.5
+                    text-xs
+                    font-medium
+                    text-slate-300
+                    sm:text-sm
                   "
                 >
-                  <div className="flex h-[40px] w-full items-center justify-center">
-                    <Image
-                      src={`/logos/${brand}.png`}
-                      alt={`${brand} industrial automation`}
-                      width={300}
-                      height={100}
-                      className="
-                        max-h-[36px]
-                        max-w-[105px]
-                        object-contain
-                      "
-                    />
-                  </div>
-                </div>
+                  {item}
+                </span>
               ))}
             </div>
 
-          </div>
-        </div>
+            {/* CTA */}
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
 
-        {/* RIGHT */}
-        <div className="min-w-0">
+              <Link
+                href="/contact"
+                className="
+                  rounded-xl
+                  bg-orange-500
+                  px-6
+                  py-4
+                  text-center
+                  text-sm
+                  font-bold
+                  text-white
+                  transition
+                  duration-300
+                  hover:bg-orange-600
+                  hover:shadow-lg
+                  hover:shadow-orange-500/20
+                  sm:px-8
+                "
+              >
+                Request a Retrofit Evaluation
+              </Link>
 
-          <h2 className="text-[clamp(1.25rem,3vw,1.875rem)] font-bold leading-tight text-white">
-            Industrial Automation & Machine Modernization
-          </h2>
+              <Link
+                href="/projects"
+                className="
+                  rounded-xl
+                  border
+                  border-slate-700
+                  bg-slate-900/50
+                  px-6
+                  py-4
+                  text-center
+                  text-sm
+                  font-bold
+                  text-white
+                  transition
+                  duration-300
+                  hover:border-orange-500
+                  hover:bg-slate-900
+                  sm:px-8
+                "
+              >
+                View Our Projects
+              </Link>
 
-          <p className="mt-4 text-[clamp(0.8rem,1.6vw,1rem)] leading-6 text-slate-400 sm:mt-5 sm:leading-8">
-            We help manufacturers extend the life of existing machinery
-            through industrial automation, electrical engineering and
-            machine retrofit solutions.
-          </p>
-
-          <div className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
-
-            <div className="flex items-start gap-2 sm:gap-3">
-              <span className="text-base text-orange-400 sm:text-xl">
-                ✓
-              </span>
-              <span className="text-sm sm:text-base">
-                Industrial Machine Retrofit
-              </span>
             </div>
 
-            <div className="flex items-start gap-2 sm:gap-3">
-              <span className="text-base text-orange-400 sm:text-xl">
-                ✓
-              </span>
-              <span className="text-sm sm:text-base">
-                PLC & HMI Programming
-              </span>
+            {/* SERVICE REGION */}
+            <div className="mt-7">
+
+              <p className="text-xs uppercase tracking-[3px] text-slate-500">
+                Serving Manufacturers Across
+              </p>
+
+              <p className="mt-2 text-sm font-semibold text-orange-400 sm:text-base">
+                Turkey • Europe • Middle East • Central Asia
+              </p>
+
             </div>
-
-            <div className="flex items-start gap-2 sm:gap-3">
-              <span className="text-base text-orange-400 sm:text-xl">
-                ✓
-              </span>
-              <span className="text-sm sm:text-base">
-                Electrical Panel Design & Modernization
-              </span>
-            </div>
-
-            <div className="flex items-start gap-2 sm:gap-3">
-              <span className="text-base text-orange-400 sm:text-xl">
-                ✓
-              </span>
-              <span className="text-sm sm:text-base">
-                Servo & Motion Control Systems
-              </span>
-            </div>
-
-            <div className="flex items-start gap-2 sm:gap-3">
-              <span className="text-base text-orange-400 sm:text-xl">
-                ✓
-              </span>
-              <span className="text-sm sm:text-base">
-                Commissioning & Machine Startup
-              </span>
-            </div>
-
-          </div>
-
-          {/* SERVICE REGION */}
-          <div className="mt-7 rounded-xl border border-slate-700 bg-slate-950 p-4 sm:mt-10 sm:p-5">
-
-            <p className="text-[10px] uppercase tracking-[2px] text-slate-500 sm:text-sm">
-              Service Region
-            </p>
-
-            <p className="mt-2 text-xs font-semibold leading-5 text-orange-400 sm:text-sm">
-              Turkey • Europe • Middle East • Central Asia
-            </p>
 
           </div>
 
-          {/* CTA */}
-          <div className="mt-6 sm:mt-8">
+          {/* RIGHT SIDE */}
+          <div className="relative min-w-0">
 
-            <Link
-              href="/contact"
+            {/* MAIN VISUAL PANEL */}
+            <div
               className="
-                block
-                w-full
-                rounded-xl
-                bg-orange-500
-                px-3
-                py-3
-                text-center
-                text-xs
-                font-semibold
-                leading-5
-                transition
-                hover:bg-orange-600
-                sm:px-4
-                sm:py-4
-                sm:text-sm
+                relative
+                overflow-hidden
+                rounded-3xl
+                border
+                border-slate-700
+                bg-gradient-to-br
+                from-slate-900
+                via-slate-950
+                to-[#020617]
+                p-6
+                shadow-2xl
+                shadow-black/30
+                sm:p-8
               "
             >
-              Request Your Project Evaluation
-            </Link>
+
+              {/* Decorative grid */}
+              <div
+                className="
+                  pointer-events-none
+                  absolute
+                  inset-0
+                  opacity-[0.08]
+                  [background-image:linear-gradient(rgba(148,163,184,0.4)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.4)_1px,transparent_1px)]
+                  [background-size:32px_32px]
+                "
+              />
+
+              <div className="relative">
+
+                <div className="flex items-center justify-between">
+
+                  <span className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+                    AENA Retrofit System
+                  </span>
+
+                  <span className="flex items-center gap-2 text-xs text-emerald-400">
+                    <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                    ENGINEERING
+                  </span>
+
+                </div>
+
+                {/* CENTRAL MACHINE REPRESENTATION */}
+                <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-950/80 p-5">
+
+                  <div className="flex items-center gap-4">
+
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-orange-500/30 bg-orange-500/10 text-3xl">
+                      ⚙️
+                    </div>
+
+                    <div>
+                      <p className="text-lg font-bold text-white">
+                        Machine Modernization
+                      </p>
+
+                      <p className="mt-1 text-sm text-slate-400">
+                        Existing machinery → modern automation
+                      </p>
+                    </div>
+
+                  </div>
+
+                  {/* PROCESS FLOW */}
+                  <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
+
+                    {[
+                      "PLC",
+                      "HMI",
+                      "DRIVES",
+                      "SERVO",
+                    ].map((item, index) => (
+                      <div
+                        key={item}
+                        className="
+                          rounded-xl
+                          border
+                          border-slate-700
+                          bg-slate-900
+                          p-3
+                          text-center
+                        "
+                      >
+                        <div className="text-xs font-bold text-orange-400">
+                          0{index + 1}
+                        </div>
+
+                        <div className="mt-1 text-sm font-semibold text-slate-200">
+                          {item}
+                        </div>
+                      </div>
+                    ))}
+
+                  </div>
+
+                </div>
+
+                {/* BENEFITS */}
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+
+                  <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+                    <p className="text-xs uppercase tracking-wider text-slate-500">
+                      Focus
+                    </p>
+
+                    <p className="mt-2 text-sm font-bold text-white">
+                      Machine Retrofit
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+                    <p className="text-xs uppercase tracking-wider text-slate-500">
+                      Goal
+                    </p>
+
+                    <p className="mt-2 text-sm font-bold text-white">
+                      Reduce Downtime
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+                    <p className="text-xs uppercase tracking-wider text-slate-500">
+                      Result
+                    </p>
+
+                    <p className="mt-2 text-sm font-bold text-white">
+                      Extend Machine Life
+                    </p>
+                  </div>
+
+                </div>
+
+                {/* BOTTOM MESSAGE */}
+                <div className="mt-5 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
+
+                  <p className="text-sm leading-6 text-slate-300">
+                    Upgrade your existing production machinery with modern
+                    automation technology instead of investing in completely
+                    new equipment.
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* TECHNOLOGIES */}
+        <div className="mt-16 border-t border-slate-800 pt-10 sm:mt-20">
+
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+
+            <div>
+              <p className="text-xs uppercase tracking-[3px] text-slate-500">
+                Technologies We Work With
+              </p>
+
+              <p className="mt-2 text-sm text-slate-400">
+                Industrial automation platforms and control technologies
+              </p>
+            </div>
+
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+
+            {brands.map((brand) => (
+              <div
+                key={brand}
+                className="
+                  flex
+                  h-16
+                  items-center
+                  justify-center
+                  rounded-xl
+                  border
+                  border-slate-800
+                  bg-slate-900/60
+                  px-3
+                  transition
+                  duration-300
+                  hover:border-orange-500/50
+                  hover:bg-slate-800
+                "
+              >
+                <Image
+                  src={`/logos/${brand}.png`}
+                  alt={`${brand} industrial automation`}
+                  width={220}
+                  height={80}
+                  className="max-h-8 max-w-[100px] object-contain"
+                />
+              </div>
+            ))}
 
           </div>
 
         </div>
 
       </div>
-    </>
+    </section>
   );
 }

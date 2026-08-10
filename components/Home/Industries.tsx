@@ -1,40 +1,39 @@
 export default function Industries() {
   const industries = [
     {
-      title: "Plastic Industry",
+      title: "Plastic Machinery",
       icon: "🏭",
-      desc: "Extrusion, blown film, recycling, bag making and packaging machines.",
+      desc: "Machine retrofit and industrial automation for extrusion, blown film, bag making, granule production and plastic processing machinery. Services include PLC modernization, drive replacement and electrical panel upgrades.",
     },
     {
-      title: "Packaging",
+      title: "Packaging Machinery",
       icon: "📦",
-      desc: "Stretch film, transfer systems and automated packaging solutions.",
+      desc: "Automation and modernization for stretch film machines, transfer systems, automatic cutting machines and packaging production lines, improving productivity and reducing downtime.",
     },
     {
-      title: "Cable Industry",
+      title: "Cable Manufacturing",
       icon: "⚡",
-      desc: "Cable pay-off systems, winding and drive synchronization.",
+      desc: "Industrial automation solutions for cable pay-off systems, winding machines, synchronized drive systems and production line control.",
     },
     {
-      title: "Recycling",
+      title: "Recycling Machinery",
       icon: "♻️",
-      desc: "PET washing lines, dosing systems and process automation.",
+      desc: "Automation and machine retrofit for PET washing lines, recycling systems, dosing equipment and process control applications.",
     },
     {
       title: "Machine Builders",
       icon: "⚙️",
-      desc: "Electrical engineering and automation for new machine manufacturers.",
+      desc: "Electrical engineering, PLC programming, HMI development and automation support for manufacturers building new industrial machinery.",
     },
     {
       title: "Industrial Plants",
       icon: "🏢",
-      desc: "Maintenance, modernization and production efficiency improvements.",
+      desc: "Machine modernization, electrical panel revision, automation upgrades and production efficiency improvements for existing industrial facilities.",
     },
   ];
 
   return (
-    <section className="bg-slate-900 py-28 text-white">
-
+    <section>
       <div className="mx-auto max-w-7xl px-8">
 
         <div className="text-center">
@@ -44,12 +43,14 @@ export default function Industries() {
           </span>
 
           <h2 className="mt-4 text-5xl font-bold">
-            Industries We Serve
+            Industries We Serve with Machine Retrofit & Automation
           </h2>
 
           <p className="mx-auto mt-6 max-w-3xl text-xl text-slate-400">
-            We provide engineering solutions across multiple industrial sectors,
-            delivering reliable automation and modernization services.
+            AENA Technologies provides industrial automation, machine retrofit
+            and modernization services for plastic, packaging, recycling,
+            cable manufacturing and industrial production facilities across
+            Turkey, Europe, the Middle East and Central Asia.
           </p>
 
         </div>
@@ -80,7 +81,6 @@ export default function Industries() {
         </div>
 
       </div>
-
     </section>
   );
 }
