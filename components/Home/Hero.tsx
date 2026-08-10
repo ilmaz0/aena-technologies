@@ -11,22 +11,45 @@ export default function Hero() {
     "omron",
     "yaskawa",
     "festo",
+    "smc",
+    "ifm",
+    "lenze",
+    "leuze",
+    "delta",
+    "rittal",
   ];
+
+  const technicalServices = [
+    "PLC & HMI",
+    "Drive Systems",
+    "Servo & Motion",
+    "Electrical Panels",
+    "SCADA",
+    "Commissioning",
+  ];
+
+  const processItems = ["PLC", "HMI", "DRIVES", "SERVO"];
 
   return (
     <section className="border-b border-slate-800 bg-[#020617]">
-      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24">
+      <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-10 lg:py-18">
 
         {/* HERO MAIN */}
-        <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
 
           {/* LEFT SIDE */}
           <div className="min-w-0">
 
-            <p className="mb-5 text-xs font-semibold uppercase tracking-[4px] text-orange-400 sm:text-sm">
-              Industrial Automation & Machine Modernization
-            </p>
+            {/* EYEBROW */}
+            <div className="mb-6 flex items-center gap-3">
+              <span className="h-px w-10 bg-orange-500" />
 
+              <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400 sm:text-sm sm:tracking-[4px]">
+                Industrial Automation & Retrofit
+              </p>
+            </div>
+
+            {/* MAIN TITLE */}
             <h1 className="text-[clamp(2.7rem,6vw,5rem)] font-extrabold leading-[0.98] tracking-tight text-white">
               Industrial
               <br />
@@ -37,10 +60,11 @@ export default function Hero() {
               </span>
             </h1>
 
-            <h2 className="mt-6 text-[clamp(1.4rem,3vw,2.25rem)] font-bold leading-tight text-slate-200">
+            <h2 className="mt-5 text-[clamp(1.4rem,3vw,2.25rem)] font-bold leading-tight text-slate-200">
               Automation & Electrical Engineering
             </h2>
 
+            {/* DESCRIPTION */}
             <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
               Modernize your existing machinery without replacing the entire
               production system. AENA Technologies provides industrial machine
@@ -50,14 +74,7 @@ export default function Hero() {
 
             {/* TECHNICAL SERVICES */}
             <div className="mt-7 flex flex-wrap gap-2">
-              {[
-                "PLC & HMI",
-                "Drive Systems",
-                "Servo & Motion",
-                "Electrical Panels",
-                "SCADA",
-                "Commissioning",
-              ].map((item) => (
+              {technicalServices.map((item) => (
                 <span
                   key={item}
                   className="
@@ -70,6 +87,10 @@ export default function Hero() {
                     text-xs
                     font-medium
                     text-slate-300
+                    transition
+                    duration-300
+                    hover:border-orange-500/50
+                    hover:text-white
                     sm:text-sm
                   "
                 >
@@ -100,7 +121,7 @@ export default function Hero() {
                   sm:px-8
                 "
               >
-                Request a Retrofit Evaluation
+                Request a Retrofit Evaluation →
               </Link>
 
               <Link
@@ -130,7 +151,6 @@ export default function Hero() {
 
             {/* SERVICE REGION */}
             <div className="mt-7">
-
               <p className="text-xs uppercase tracking-[3px] text-slate-500">
                 Serving Manufacturers Across
               </p>
@@ -138,10 +158,10 @@ export default function Hero() {
               <p className="mt-2 text-sm font-semibold text-orange-400 sm:text-base">
                 Turkey • Europe • Middle East • Central Asia
               </p>
-
             </div>
 
           </div>
+
 
           {/* RIGHT SIDE */}
           <div className="relative min-w-0">
@@ -165,7 +185,7 @@ export default function Hero() {
               "
             >
 
-              {/* Decorative grid */}
+              {/* Decorative Grid */}
               <div
                 className="
                   pointer-events-none
@@ -179,6 +199,7 @@ export default function Hero() {
 
               <div className="relative">
 
+                {/* PANEL HEADER */}
                 <div className="flex items-center justify-between">
 
                   <span className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
@@ -192,12 +213,27 @@ export default function Hero() {
 
                 </div>
 
-                {/* CENTRAL MACHINE REPRESENTATION */}
-                <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-950/80 p-5">
+
+                {/* CENTRAL MACHINE */}
+                <div className="mt-7 rounded-2xl border border-slate-700 bg-slate-950/80 p-5">
 
                   <div className="flex items-center gap-4">
 
-                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl border border-orange-500/30 bg-orange-500/10 text-3xl">
+                    <div
+                      className="
+                        flex
+                        h-16
+                        w-16
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-xl
+                        border
+                        border-orange-500/30
+                        bg-orange-500/10
+                        text-3xl
+                      "
+                    >
                       ⚙️
                     </div>
 
@@ -213,15 +249,11 @@ export default function Hero() {
 
                   </div>
 
+
                   {/* PROCESS FLOW */}
                   <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
 
-                    {[
-                      "PLC",
-                      "HMI",
-                      "DRIVES",
-                      "SERVO",
-                    ].map((item, index) => (
+                    {processItems.map((item, index) => (
                       <div
                         key={item}
                         className="
@@ -231,6 +263,9 @@ export default function Hero() {
                           bg-slate-900
                           p-3
                           text-center
+                          transition
+                          duration-300
+                          hover:border-orange-500/50
                         "
                       >
                         <div className="text-xs font-bold text-orange-400">
@@ -247,6 +282,7 @@ export default function Hero() {
 
                 </div>
 
+
                 {/* BENEFITS */}
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
 
@@ -260,6 +296,7 @@ export default function Hero() {
                     </p>
                   </div>
 
+
                   <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
                     <p className="text-xs uppercase tracking-wider text-slate-500">
                       Goal
@@ -269,6 +306,7 @@ export default function Hero() {
                       Reduce Downtime
                     </p>
                   </div>
+
 
                   <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
                     <p className="text-xs uppercase tracking-wider text-slate-500">
@@ -282,7 +320,8 @@ export default function Hero() {
 
                 </div>
 
-                {/* BOTTOM MESSAGE */}
+
+                {/* MESSAGE */}
                 <div className="mt-5 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
 
                   <p className="text-sm leading-6 text-slate-300">
@@ -294,48 +333,54 @@ export default function Hero() {
                 </div>
 
               </div>
-
             </div>
 
           </div>
 
         </div>
 
+
         {/* TECHNOLOGIES */}
-        <div className="mt-16 border-t border-slate-800 pt-10 sm:mt-20">
+        <div className="mt-14 border-t border-slate-800 pt-9 sm:mt-16 sm:pt-10">
 
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-xs uppercase tracking-[3px] text-slate-500">
+              Technologies We Work With
+            </p>
 
-            <div>
-              <p className="text-xs uppercase tracking-[3px] text-slate-500">
-                Technologies We Work With
-              </p>
+            <p className="mt-2 text-sm text-slate-400">
+              Industrial automation platforms and control technologies
+            </p>
 
-              <p className="mt-2 text-sm text-slate-400">
-                Industrial automation platforms and control technologies
-              </p>
-            </div>
-
+            {/* SEO TEXT */}
+            <p className="mt-2 max-w-4xl text-xs leading-6 text-slate-500">
+              Siemens, ABB, Mitsubishi Electric, Beckhoff, Schneider Electric,
+              Omron, Yaskawa, Festo, SMC, IFM, Lenze, Leuze, Delta and Rittal
+              industrial automation technologies.
+            </p>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+
+          {/* BRAND GRID */}
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
 
             {brands.map((brand) => (
               <div
                 key={brand}
                 className="
                   flex
-                  h-16
+                  h-20
                   items-center
                   justify-center
                   rounded-xl
                   border
                   border-slate-800
                   bg-slate-900/60
-                  px-3
+                  px-4
                   transition
                   duration-300
-                  hover:border-orange-500/50
+                  hover:-translate-y-1
+                  hover:border-orange-500/60
                   hover:bg-slate-800
                 "
               >
@@ -344,7 +389,11 @@ export default function Hero() {
                   alt={`${brand} industrial automation`}
                   width={220}
                   height={80}
-                  className="max-h-8 max-w-[100px] object-contain"
+                  className="
+                    max-h-10
+                    max-w-[130px]
+                    object-contain
+                  "
                 />
               </div>
             ))}
