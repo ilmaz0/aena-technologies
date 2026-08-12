@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata = {
@@ -156,6 +157,7 @@ export default function HemigstoneProjectPage() {
                 key={item}
                 className="rounded-xl border border-slate-800 bg-slate-900 p-6"
               >
+
                 <span className="text-orange-400">
                   ✓
                 </span>
@@ -163,6 +165,7 @@ export default function HemigstoneProjectPage() {
                 <p className="mt-3 font-semibold">
                   {item}
                 </p>
+
               </div>
             ))}
 
@@ -194,6 +197,74 @@ export default function HemigstoneProjectPage() {
                 {technology}
               </span>
             ))}
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* PROJECT GALLERY */}
+      <section className="py-16 sm:py-20">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+
+          <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-400">
+            Project Gallery
+          </p>
+
+          <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
+            Machine Retrofit & Automation
+          </h2>
+
+          <p className="mt-5 max-w-3xl text-base leading-7 text-slate-400 sm:text-lg">
+            Selected images from the electrical, automation and control
+            system modernization of the machine.
+          </p>
+
+
+          {/* GALLERY */}
+          <div className="mt-10 grid gap-5 md:grid-cols-2">
+
+            {/* IMAGE 1 */}
+            <div className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+
+              <Image
+                src="/projects/hemigstone/hemigstone1.jpg.jpeg"
+                alt="Athletic bag cutting machine retrofit by AENA Technologies"
+                width={900}
+                height={600}
+                className="h-[280px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[320px]"
+              />
+
+            </div>
+
+
+            {/* IMAGE 2 */}
+            <div className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
+
+              <Image
+                src="/projects/hemigstone/hemigstone2.jpg.jpeg"
+                alt="Industrial machine control and electrical system retrofit"
+                width={900}
+                height={600}
+                className="h-[280px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[320px]"
+              />
+
+            </div>
+
+
+            {/* IMAGE 3 */}
+            <div className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 md:col-span-2 md:mx-auto md:w-2/3">
+
+              <Image
+                src="/projects/hemigstone/hemigstone3.jpg.jpeg"
+                alt="Hemigstone industrial machine modernization project"
+                width={1200}
+                height={800}
+                className="h-[280px] w-full object-cover transition duration-500 group-hover:scale-105 sm:h-[360px]"
+              />
+
+            </div>
 
           </div>
 
