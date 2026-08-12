@@ -55,7 +55,6 @@ export default function ProjectsPage() {
         "Smooth and reliable machine operation was restored.",
     },
 
-    // HEMIGSTONE PROJECT
     {
       title: "Plastic Bag Cutting Machine Retrofit",
       challenge:
@@ -91,14 +90,11 @@ export default function ProjectsPage() {
         </div>
       </section>
 
-
       {/* PROJECTS */}
       <section className="py-24">
-
         <div className="mx-auto max-w-7xl space-y-10 px-8">
 
           {projects.map((project) => (
-
             <div
               key={project.title}
               className="rounded-3xl border border-slate-800 bg-slate-900 p-10"
@@ -108,7 +104,6 @@ export default function ProjectsPage() {
               <h2 className="text-3xl font-bold">
                 {project.title}
               </h2>
-
 
               {/* PROJECT INFORMATION */}
               <div className="mt-10 grid gap-8 md:grid-cols-3">
@@ -124,7 +119,6 @@ export default function ProjectsPage() {
                   </p>
                 </div>
 
-
                 {/* SOLUTION */}
                 <div>
                   <h3 className="font-bold text-orange-400">
@@ -135,7 +129,6 @@ export default function ProjectsPage() {
                     {project.solution}
                   </p>
                 </div>
-
 
                 {/* RESULT */}
                 <div>
@@ -149,7 +142,6 @@ export default function ProjectsPage() {
                 </div>
 
               </div>
-
 
               {/* VIEW PROJECT BUTTON */}
               {project.href && (
@@ -170,11 +162,9 @@ export default function ProjectsPage() {
               )}
 
             </div>
-
           ))}
 
         </div>
-
       </section>
 
     </main>
