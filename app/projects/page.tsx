@@ -24,8 +24,6 @@ export default function ProjectsPage() {
       href: "/projects/flake-washing-line",
     },
 
-  
-
     {
       title: "Stretch Film Extrusion Line",
       challenge:
@@ -34,6 +32,7 @@ export default function ProjectsPage() {
         "Renewed electrical cabinet components, pressure sensors, cooling systems and optimized machine operation.",
       result:
         "Improved production stability and reduced downtime.",
+      href: "/projects/stretch-film-extrusion-line",
     },
 
     {
@@ -105,16 +104,17 @@ export default function ProjectsPage() {
               className="rounded-3xl border border-slate-800 bg-slate-900 p-10"
             >
 
+              {/* PROJECT TITLE */}
               <h2 className="text-3xl font-bold">
                 {project.title}
               </h2>
 
 
+              {/* PROJECT INFORMATION */}
               <div className="mt-10 grid gap-8 md:grid-cols-3">
 
                 {/* CHALLENGE */}
                 <div>
-
                   <h3 className="font-bold text-orange-400">
                     Challenge
                   </h3>
@@ -122,13 +122,11 @@ export default function ProjectsPage() {
                   <p className="mt-3 leading-8 text-slate-400">
                     {project.challenge}
                   </p>
-
                 </div>
 
 
                 {/* SOLUTION */}
                 <div>
-
                   <h3 className="font-bold text-orange-400">
                     Engineering Solution
                   </h3>
@@ -136,13 +134,11 @@ export default function ProjectsPage() {
                   <p className="mt-3 leading-8 text-slate-400">
                     {project.solution}
                   </p>
-
                 </div>
 
 
                 {/* RESULT */}
                 <div>
-
                   <h3 className="font-bold text-orange-400">
                     Result
                   </h3>
@@ -150,13 +146,12 @@ export default function ProjectsPage() {
                   <p className="mt-3 leading-8 text-slate-400">
                     {project.result}
                   </p>
-
                 </div>
 
               </div>
 
 
-              {/* PROJECT DETAIL BUTTON */}
+              {/* VIEW PROJECT BUTTON */}
               {project.href && (
                 <div className="mt-10 border-t border-slate-800 pt-8">
 
@@ -169,7 +164,6 @@ export default function ProjectsPage() {
                     <span className="ml-3 text-lg">
                       →
                     </span>
-
                   </Link>
 
                 </div>
