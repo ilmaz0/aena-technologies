@@ -21,6 +21,7 @@ export default function ProjectsPage() {
         "Designed the electrical system, PLC software, automatic dosing, slip-ring integration and level control.",
       result:
         "Successfully commissioned with stable automatic operation.",
+      href: "/projects/flake-washing-line",
     },
 
     {
