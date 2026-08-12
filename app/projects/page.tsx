@@ -10,7 +10,9 @@ export default function ProjectsPage() {
         "Redesigned the electrical cabinet, developed new PLC software, optimized the mechanical system and recommissioned the machine.",
       result:
         "Production was restored at the customer's target operating speed.",
+      href: "/projects/stretch-transfer-machine",
     },
+
     {
       title: "PET Flake Washing Line",
       challenge:
@@ -20,6 +22,7 @@ export default function ProjectsPage() {
       result:
         "Successfully commissioned with stable automatic operation.",
     },
+
     {
       title: "Plastic Bag Production Machine",
       challenge:
@@ -29,6 +32,7 @@ export default function ProjectsPage() {
       result:
         "Production line returned to reliable operation.",
     },
+
     {
       title: "Stretch Film Extrusion Line",
       challenge:
@@ -38,6 +42,7 @@ export default function ProjectsPage() {
       result:
         "Improved production stability and reduced downtime.",
     },
+
     {
       title: "Colines Thickness Gauge",
       challenge:
@@ -47,6 +52,7 @@ export default function ProjectsPage() {
       result:
         "Thickness measurement system returned to full operation.",
     },
+
     {
       title: "Cable Pay-Off Machine",
       challenge:
@@ -93,6 +99,7 @@ export default function ProjectsPage() {
         </div>
       </section>
 
+
       {/* PROJECTS */}
       <section className="py-24">
 
@@ -109,10 +116,12 @@ export default function ProjectsPage() {
                 {project.title}
               </h2>
 
+
               <div className="mt-10 grid gap-8 md:grid-cols-3">
 
                 {/* CHALLENGE */}
                 <div>
+
                   <h3 className="font-bold text-orange-400">
                     Challenge
                   </h3>
@@ -120,10 +129,13 @@ export default function ProjectsPage() {
                   <p className="mt-3 leading-8 text-slate-400">
                     {project.challenge}
                   </p>
+
                 </div>
+
 
                 {/* SOLUTION */}
                 <div>
+
                   <h3 className="font-bold text-orange-400">
                     Engineering Solution
                   </h3>
@@ -131,10 +143,13 @@ export default function ProjectsPage() {
                   <p className="mt-3 leading-8 text-slate-400">
                     {project.solution}
                   </p>
+
                 </div>
+
 
                 {/* RESULT */}
                 <div>
+
                   <h3 className="font-bold text-orange-400">
                     Result
                   </h3>
@@ -142,9 +157,11 @@ export default function ProjectsPage() {
                   <p className="mt-3 leading-8 text-slate-400">
                     {project.result}
                   </p>
+
                 </div>
 
               </div>
+
 
               {/* PROJECT DETAIL BUTTON */}
               {project.href && (
@@ -155,9 +172,11 @@ export default function ProjectsPage() {
                     className="inline-flex items-center rounded-xl border border-orange-500/70 bg-orange-500 px-6 py-3 text-sm font-bold uppercase tracking-[1.5px] text-white transition duration-300 hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20"
                   >
                     View Project
+
                     <span className="ml-3 text-lg">
                       →
                     </span>
+
                   </Link>
 
                 </div>
