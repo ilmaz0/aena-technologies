@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 export const metadata = {
@@ -303,11 +302,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
                   </p>
                 </div>
 
-                <Image
+                <img
                   src="/projects/stretch film extrusion line/before3.jpeg"
                   alt="Stretch film extrusion line before retrofit"
-                  width={1200}
-                  height={800}
                   className="h-auto w-full object-cover"
                 />
 
@@ -323,11 +320,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
                   </p>
                 </div>
 
-                <Image
+                <img
                   src="/projects/stretch film extrusion line/after3.jpeg"
                   alt="Stretch film extrusion line after retrofit"
-                  width={1200}
-                  height={800}
                   className="h-auto w-full object-cover"
                 />
 
@@ -359,11 +354,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
               {/* AFTER 1 */}
               <div className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
 
-                <Image
+                <img
                   src="/projects/stretch film extrusion line/after1.jpeg"
                   alt="Stretch film extrusion line retrofit after modernization"
-                  width={1200}
-                  height={800}
                   className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
                 />
 
@@ -373,11 +366,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
               {/* AFTER 2 */}
               <div className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
 
-                <Image
+                <img
                   src="/projects/stretch film extrusion line/after2.jpeg"
                   alt="Stretch film extrusion line electrical modernization"
-                  width={1200}
-                  height={800}
                   className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
                 />
 
