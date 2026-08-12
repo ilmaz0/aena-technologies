@@ -24,15 +24,7 @@ export default function ProjectsPage() {
       href: "/projects/flake-washing-line",
     },
 
-    {
-      title: "Plastic Bag Production Machine",
-      challenge:
-        "Electrical, electronic and mechanical failures caused unstable production.",
-      solution:
-        "Replaced faulty electronics, installed missing sensors, repaired drive systems and recommissioned the machine.",
-      result:
-        "Production line returned to reliable operation.",
-    },
+  
 
     {
       title: "Stretch Film Extrusion Line",
@@ -66,7 +58,7 @@ export default function ProjectsPage() {
 
     // HEMIGSTONE PROJECT
     {
-      title: "Athletic Bag Cutting Machine Retrofit",
+      title: "Plastic Bag Cutting Machine Retrofit",
       challenge:
         "The existing machine required electrical and automation improvements to achieve more reliable operation and easier maintenance.",
       solution:
