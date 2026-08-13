@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata = {
@@ -54,9 +55,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
         </div>
       </section>
 
-
       {/* PROJECT OVERVIEW */}
       <section className="py-20 sm:py-24">
+
         <div className="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-3 lg:px-8">
 
           <div className="lg:col-span-2">
@@ -86,7 +87,6 @@ export default function StretchFilmExtrusionLineProjectPage() {
             </p>
 
           </div>
-
 
           {/* PROJECT INFO */}
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-7">
@@ -119,9 +119,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
         </div>
       </section>
 
-
       {/* CHALLENGE */}
       <section className="border-y border-slate-800 bg-slate-900/40 py-20 sm:py-24">
+
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
           <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-400">
@@ -147,9 +147,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
         </div>
       </section>
 
-
       {/* ENGINEERING SOLUTION */}
       <section className="py-20 sm:py-24">
+
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
           <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-400">
@@ -193,9 +193,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
         </div>
       </section>
 
-
       {/* SCOPE OF WORK */}
       <section className="border-y border-slate-800 bg-slate-900/40 py-20 sm:py-24">
+
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
           <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-400">
@@ -209,6 +209,7 @@ export default function StretchFilmExtrusionLineProjectPage() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
             {scope.map((item) => (
+
               <div
                 key={item}
                 className="rounded-xl border border-slate-800 bg-slate-900 p-6"
@@ -223,6 +224,7 @@ export default function StretchFilmExtrusionLineProjectPage() {
                 </p>
 
               </div>
+
             ))}
 
           </div>
@@ -230,9 +232,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
         </div>
       </section>
 
-
       {/* RESULT */}
       <section className="py-20 sm:py-24">
+
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
           <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-400">
@@ -257,9 +259,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
         </div>
       </section>
 
-
       {/* PROJECT GALLERY */}
       <section className="border-y border-slate-800 bg-slate-900/40 py-20 sm:py-24">
+
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
           <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-400">
@@ -276,11 +278,11 @@ export default function StretchFilmExtrusionLineProjectPage() {
             modernization.
           </p>
 
-
           {/* BEFORE / AFTER COMPARISON */}
           <div className="mt-12">
 
             <div className="mb-6 flex items-center gap-4">
+
               <div className="h-px flex-1 bg-slate-800" />
 
               <h3 className="text-sm font-bold uppercase tracking-[3px] text-orange-400">
@@ -288,41 +290,48 @@ export default function StretchFilmExtrusionLineProjectPage() {
               </h3>
 
               <div className="h-px flex-1 bg-slate-800" />
-            </div>
 
+            </div>
 
             <div className="grid gap-6 md:grid-cols-2">
 
-              {/* BEFORE 3 */}
+              {/* BEFORE */}
               <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
 
                 <div className="border-b border-slate-800 px-6 py-4">
+
                   <p className="text-sm font-bold uppercase tracking-[2px] text-slate-400">
                     Before Retrofit
                   </p>
+
                 </div>
 
-                <img
-                  src="/projects/stretch film extrusion line/before3.jpeg"
+                <Image
+                  src="/projects/stretch-film-extrusion-line/before3.jpeg"
                   alt="Stretch film extrusion line before retrofit"
+                  width={1200}
+                  height={800}
                   className="h-auto w-full object-cover"
                 />
 
               </div>
 
-
-              {/* AFTER 3 */}
+              {/* AFTER */}
               <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
 
                 <div className="border-b border-slate-800 px-6 py-4">
+
                   <p className="text-sm font-bold uppercase tracking-[2px] text-orange-400">
                     After Retrofit
                   </p>
+
                 </div>
 
-                <img
-                  src="/projects/stretch film extrusion line/after3.jpeg"
+                <Image
+                  src="/projects/stretch-film-extrusion-line/after3.jpeg"
                   alt="Stretch film extrusion line after retrofit"
+                  width={1200}
+                  height={800}
                   className="h-auto w-full object-cover"
                 />
 
@@ -331,7 +340,6 @@ export default function StretchFilmExtrusionLineProjectPage() {
             </div>
 
           </div>
-
 
           {/* AFTER GALLERY */}
           <div className="mt-16">
@@ -348,27 +356,29 @@ export default function StretchFilmExtrusionLineProjectPage() {
 
             </div>
 
-
             <div className="grid gap-6 md:grid-cols-2">
 
               {/* AFTER 1 */}
               <div className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
 
-                <img
-                  src="/projects/stretch film extrusion line/after1.jpeg"
+                <Image
+                  src="/projects/stretch-film-extrusion-line/after1.jpeg"
                   alt="Stretch film extrusion line retrofit after modernization"
+                  width={1200}
+                  height={800}
                   className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
                 />
 
               </div>
 
-
               {/* AFTER 2 */}
               <div className="group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
 
-                <img
-                  src="/projects/stretch film extrusion line/after2.jpeg"
+                <Image
+                  src="/projects/stretch-film-extrusion-line/after2.jpeg"
                   alt="Stretch film extrusion line electrical modernization"
+                  width={1200}
+                  height={800}
                   className="h-auto w-full object-cover transition duration-500 group-hover:scale-105"
                 />
 
@@ -381,9 +391,9 @@ export default function StretchFilmExtrusionLineProjectPage() {
         </div>
       </section>
 
-
       {/* TECHNOLOGIES */}
       <section className="py-20 sm:py-24">
+
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
           <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-400">
@@ -397,19 +407,20 @@ export default function StretchFilmExtrusionLineProjectPage() {
           <div className="mt-10 flex flex-wrap gap-3">
 
             {technologies.map((technology) => (
+
               <span
                 key={technology}
                 className="rounded-full border border-slate-700 bg-slate-950 px-5 py-3 text-sm text-slate-300"
               >
                 {technology}
               </span>
+
             ))}
 
           </div>
 
         </div>
       </section>
-
 
       {/* CTA */}
       <section className="bg-orange-500 py-20">

@@ -92,23 +92,22 @@ export default function ProjectsPage() {
 
       {/* PROJECTS */}
       <section className="py-24">
+
         <div className="mx-auto max-w-7xl space-y-10 px-8">
 
           {projects.map((project) => (
+
             <div
               key={project.title}
               className="rounded-3xl border border-slate-800 bg-slate-900 p-10"
             >
 
-              {/* PROJECT TITLE */}
               <h2 className="text-3xl font-bold">
                 {project.title}
               </h2>
 
-              {/* PROJECT INFORMATION */}
               <div className="mt-10 grid gap-8 md:grid-cols-3">
 
-                {/* CHALLENGE */}
                 <div>
                   <h3 className="font-bold text-orange-400">
                     Challenge
@@ -119,7 +118,6 @@ export default function ProjectsPage() {
                   </p>
                 </div>
 
-                {/* SOLUTION */}
                 <div>
                   <h3 className="font-bold text-orange-400">
                     Engineering Solution
@@ -130,7 +128,6 @@ export default function ProjectsPage() {
                   </p>
                 </div>
 
-                {/* RESULT */}
                 <div>
                   <h3 className="font-bold text-orange-400">
                     Result
@@ -143,7 +140,6 @@ export default function ProjectsPage() {
 
               </div>
 
-              {/* VIEW PROJECT BUTTON */}
               {project.href && (
                 <div className="mt-10 border-t border-slate-800 pt-8">
 
@@ -162,9 +158,11 @@ export default function ProjectsPage() {
               )}
 
             </div>
+
           ))}
 
         </div>
+
       </section>
 
     </main>
