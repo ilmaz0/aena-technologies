@@ -101,14 +101,15 @@ export default function AboutPage() {
             </p>
 
             {/* LinkedIn */}
-            <a
-              href="YOUR_LINKEDIN_URL"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-8 inline-flex items-center rounded-lg border border-slate-700 px-5 py-3 text-sm font-semibold text-white transition hover:border-orange-500 hover:text-orange-400"
-            >
-              View LinkedIn Profile →
-            </a>
+           {/* LinkedIn */}
+<a
+  href="https://www.linkedin.com/in/emreyilmazautomation/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="mt-8 inline-flex items-center rounded-lg border border-slate-700 px-5 py-3 text-sm font-semibold text-white transition hover:border-orange-500 hover:text-orange-400"
+>
+  View LinkedIn Profile →
+</a>
 
           </div>
 
