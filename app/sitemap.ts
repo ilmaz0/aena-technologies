@@ -5,10 +5,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     {
-      url: baseUrl,
+      url: `${baseUrl}/`,
       lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: 1,
+      priority: 1.0,
     },
 
     {
@@ -36,10 +36,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/contact`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.8,
+      priority: 0.7,
     },
 
-    // PROJECTS
+    // Project pages
 
     {
       url: `${baseUrl}/projects/stretch-transfer-machine`,
@@ -59,7 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/projects/stretch-film-extrusion-line`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9,
+      priority: 0.8,
     },
 
     {
