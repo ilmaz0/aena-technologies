@@ -14,27 +14,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "AENA Technologies provides industrial machine retrofit, industrial automation, machine modernization, PLC and HMI programming, electrical engineering, drive systems, servo motion control and commissioning services in Turkey, Europe, Middle East and Central Asia.",
-
-  keywords: [
-    "industrial machine retrofit",
-    "machine retrofit",
-    "industrial automation",
-    "machine modernization",
-    "industrial automation Turkey",
-    "machine retrofit Turkey",
-    "industrial automation company Turkey",
-    "PLC programming",
-    "PLC automation",
-    "HMI programming",
-    "SCADA systems",
-    "electrical engineering",
-    "electrical panel design",
-    "servo motion control",
-    "drive systems",
-    "production line modernization",
-    "industrial control systems",
-  ],
+    "AENA Technologies provides industrial machine retrofit, machine modernization, industrial automation, PLC and HMI programming, electrical engineering, drive systems, servo motion control and commissioning services for industrial machinery in Turkey, Europe, the Middle East and Central Asia.",
 
   authors: [
     {
@@ -46,7 +26,7 @@ export const metadata: Metadata = {
   publisher: "AENA Technologies",
 
   alternates: {
-    canonical: "https://www.aenatechnologies.com",
+    canonical: "/",
   },
 
   robots: {
@@ -78,7 +58,11 @@ export const metadata: Metadata = {
     title:
       "Industrial Machine Retrofit & Automation | AENA Technologies",
     description:
-      "Industrial machine retrofit, industrial automation, PLC, electrical engineering and machine modernization services.",
+      "Industrial machine retrofit, industrial automation, PLC, electrical engineering, drive systems and machine modernization services.",
+  },
+
+  icons: {
+    icon: "/favicon.ico",
   },
 };
 
