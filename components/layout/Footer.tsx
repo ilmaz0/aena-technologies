@@ -8,7 +8,6 @@ export default function Footer() {
         {/* Company */}
 
         <div>
-
           <h2 className="text-2xl font-bold">
             AENA Technologies
           </h2>
@@ -19,13 +18,12 @@ export default function Footer() {
             Electrical Engineering
             and Production Line Modernization.
           </p>
-
         </div>
+
 
         {/* Services */}
 
         <div>
-
           <h3 className="mb-5 text-lg font-bold">
             Services
           </h3>
@@ -43,13 +41,12 @@ export default function Footer() {
             <li>SCADA Systems</li>
 
           </ul>
-
         </div>
+
 
         {/* Company */}
 
         <div>
-
           <h3 className="mb-5 text-lg font-bold">
             Company
           </h3>
@@ -87,37 +84,49 @@ export default function Footer() {
             </li>
 
           </ul>
-
         </div>
+
 
         {/* Contact */}
 
         <div>
-
           <h3 className="mb-5 text-lg font-bold">
             Contact
           </h3>
 
           <ul className="space-y-3 text-slate-400">
 
-            <li>Adana / Türkiye</li>
+            <li>
+              Adana / Türkiye
+            </li>
 
-            <li>info@aenatechnologies.com</li>
+            <li>
+              info@aenatechnologies.com
+            </li>
 
-            <li>WhatsApp</li>
+            <li>
+              WhatsApp
+            </li>
 
-            <li>LinkedIn</li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/emreyilmazautomation/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-orange-400"
+              >
+                LinkedIn
+              </a>
+            </li>
 
           </ul>
-
         </div>
 
       </div>
 
+
       <div className="border-t border-slate-800 py-6 text-center text-slate-500">
-
         © 2026 AENA Technologies. All Rights Reserved.
-
       </div>
 
     </footer>
