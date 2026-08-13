@@ -61,9 +61,6 @@ export const metadata: Metadata = {
       "Industrial machine retrofit, industrial automation, PLC, electrical engineering, drive systems and machine modernization services.",
   },
 
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({
