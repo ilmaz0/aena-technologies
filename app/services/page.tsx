@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Industrial Automation & Machine Retrofit Services",
+  title: "Industrial Automation & Machine Retrofit Services | AENA Technologies",
 
   description:
     "AENA Technologies provides industrial automation, machine retrofit, machine modernization, PLC programming, electrical engineering, SCADA, drive systems, servo motion control, commissioning and industrial troubleshooting services.",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
       "Industrial Automation & Machine Retrofit Services | AENA Technologies",
 
     description:
-      "Explore AENA Technologies industrial engineering services including machine retrofit, PLC programming, electrical engineering, drives, servo motion control, SCADA and commissioning.",
+      "Explore AENA Technologies industrial engineering services including machine retrofit, PLC programming, electrical engineering, drive systems, servo motion control, SCADA and commissioning.",
 
     url: "https://www.aenatechnologies.com/services",
 
@@ -116,7 +116,6 @@ export default function ServicesPage() {
         </div>
       </section>
 
-
       {/* SERVICES */}
 
       <section className="py-24">
@@ -140,7 +139,6 @@ export default function ServicesPage() {
             </p>
 
           </div>
-
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 
@@ -178,7 +176,6 @@ export default function ServicesPage() {
 
       </section>
 
-
       {/* WHY RETROFIT */}
 
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
@@ -210,7 +207,7 @@ export default function ServicesPage() {
             <p>
               AENA Technologies evaluates the existing machine, identifies
               obsolete or unreliable components and develops a modernization
-              strategy based on the machine's production requirements.
+              strategy based on the machine&apos;s production requirements.
             </p>
 
             <p>
@@ -225,7 +222,6 @@ export default function ServicesPage() {
         </div>
 
       </section>
-
 
       {/* SERVICE REGION */}
 
@@ -250,7 +246,6 @@ export default function ServicesPage() {
         </div>
 
       </section>
-
 
       {/* CTA */}
 
