@@ -1,9 +1,34 @@
 import Link from "next/link";
 
 export const metadata = {
-  title: "Industrial Automation Services",
+  title: "Industrial Automation Services | PLC, HMI, Drives & Motion Control",
   description:
-    "Industrial automation solutions including PLC, HMI, drives, sensors, machine control systems and production line automation by AENA Technologies.",
+    "Industrial automation engineering services including PLC programming, HMI, drives, servo motion control, sensors, industrial communication, legacy system integration, gateway solutions and machine commissioning by AENA Technologies.",
+  keywords: [
+    "industrial automation",
+    "industrial automation services",
+    "industrial automation engineering",
+    "industrial automation Turkey",
+    "PLC programming",
+    "PLC automation",
+    "HMI programming",
+    "machine automation",
+    "industrial control systems",
+    "industrial communication",
+    "industrial communication systems",
+    "drive integration",
+    "servo motion control",
+    "machine control systems",
+    "production line automation",
+    "legacy automation systems",
+    "legacy drive replacement",
+    "drive communication mapping",
+    "industrial gateway",
+    "PLC gateway integration",
+    "automation retrofit",
+    "machine commissioning",
+    "industrial troubleshooting",
+  ],
 };
 
 export default function IndustrialAutomationPage() {
@@ -16,6 +41,9 @@ export default function IndustrialAutomationPage() {
     "Machine control systems",
     "Production line automation",
     "Industrial communication systems",
+    "Legacy automation integration",
+    "Drive communication mapping",
+    "Gateway-based communication",
     "Machine troubleshooting",
     "Automation commissioning",
   ];
@@ -46,9 +74,10 @@ export default function IndustrialAutomationPage() {
           </p>
 
           <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-500">
-            From PLC and HMI systems to drives, sensors, industrial
-            communication and commissioning, we provide complete automation
-            engineering solutions for industrial machinery.
+            From PLC and HMI systems to drives, servo systems, sensors,
+            industrial communication, gateway integration and commissioning,
+            we provide practical automation engineering solutions for
+            industrial machinery.
           </p>
 
         </div>
@@ -83,13 +112,15 @@ export default function IndustrialAutomationPage() {
             <p>
               AENA Technologies provides automation engineering for new
               machines as well as existing equipment requiring modernization,
-              troubleshooting or performance improvements.
+              troubleshooting, communication upgrades or performance
+              improvements.
             </p>
 
             <p>
               The automation system can be designed around the machine&apos;s
-              process requirements, production sequence, safety requirements
-              and available electrical infrastructure.
+              process requirements, production sequence, safety requirements,
+              communication architecture and available electrical
+              infrastructure.
             </p>
 
           </div>
@@ -127,7 +158,7 @@ export default function IndustrialAutomationPage() {
             {capabilities.map((item) => (
               <div
                 key={item}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-6"
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-6 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
               >
 
                 <span className="text-orange-400">
@@ -183,8 +214,8 @@ export default function IndustrialAutomationPage() {
 
               <p>
                 Automation projects can include machine sequences, sensor
-                processing, drive control, alarms, interlocks and operator
-                interfaces.
+                processing, drive control, alarms, interlocks, production
+                logic and operator interfaces.
               </p>
 
             </div>
@@ -229,9 +260,184 @@ export default function IndustrialAutomationPage() {
               </p>
 
               <p>
-                Existing drives can also be evaluated for parameter
-                optimization, troubleshooting or replacement with suitable
-                equivalent equipment.
+                Existing drives can be evaluated for parameter optimization,
+                troubleshooting or replacement with suitable equivalent
+                equipment.
+              </p>
+
+              <p>
+                When an obsolete drive is no longer available, the replacement
+                process may require electrical compatibility checks,
+                parameter conversion, communication analysis and adaptation
+                to the existing machine control system.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* LEGACY SYSTEMS */}
+
+      <section className="py-24">
+
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="grid gap-16 lg:grid-cols-2">
+
+            <div>
+
+              <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+                Legacy Automation
+              </p>
+
+              <h2 className="mt-4 text-4xl font-bold">
+                Integrating New Components with Existing Machine Systems
+              </h2>
+
+            </div>
+
+            <div className="space-y-6 text-lg leading-8 text-slate-400">
+
+              <p>
+                Older industrial machines can contain drives, sensors,
+                controllers and communication systems that are no longer
+                supported or available on the market.
+              </p>
+
+              <p>
+                Replacing one component is not always a simple
+                plug-and-play operation. The new component may use different
+                electrical connections, communication protocols, parameter
+                structures or data formats.
+              </p>
+
+              <p>
+                AENA Technologies evaluates the electrical and communication
+                requirements of the replacement component before integrating
+                it into the existing automation architecture.
+              </p>
+
+              <p>
+                Where direct compatibility is not possible, an interface,
+                mapping layer or gateway-based solution can be considered to
+                translate the required signals or communication data between
+                the new device and the existing control system.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* COMMUNICATION MAPPING */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="grid gap-16 lg:grid-cols-2">
+
+            <div>
+
+              <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+                Communication Mapping
+              </p>
+
+              <h2 className="mt-4 text-4xl font-bold">
+                Mapping New Drives & Devices to Existing PLC Systems
+              </h2>
+
+            </div>
+
+            <div className="space-y-6 text-lg leading-8 text-slate-400">
+
+              <p>
+                Some machine retrofits cannot be completed by simply changing
+                the physical device. The PLC may still expect the data
+                structure, command words, status words or register layout of
+                the original component.
+              </p>
+
+              <p>
+                In such cases, the new device can be analyzed and the required
+                communication data can be mapped to the structure expected by
+                the existing control system.
+              </p>
+
+              <p>
+                Depending on the application, this can involve register
+                mapping, command and status-word conversion, data scaling,
+                signal translation or protocol adaptation.
+              </p>
+
+              <p>
+                The objective is to allow the existing machine control
+                architecture to communicate with the replacement device
+                without unnecessarily redesigning the complete PLC system.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* GATEWAY */}
+
+      <section className="py-24">
+
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="grid gap-16 lg:grid-cols-2">
+
+            <div>
+
+              <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+                Gateway Integration
+              </p>
+
+              <h2 className="mt-4 text-4xl font-bold">
+                Gateway-Based Industrial Communication
+              </h2>
+
+            </div>
+
+            <div className="space-y-6 text-lg leading-8 text-slate-400">
+
+              <p>
+                A gateway can be used when two industrial devices cannot
+                communicate directly because they use different communication
+                protocols or data structures.
+              </p>
+
+              <p>
+                A gateway-based architecture can provide an intermediate
+                communication layer between the PLC, the replacement drive
+                and other machine devices.
+              </p>
+
+              <p>
+                Depending on the application, the gateway can read data from
+                one communication system, process or map the required values
+                and make them available to another system.
+              </p>
+
+              <p>
+                This approach can be especially useful when the existing PLC
+                software is difficult to modify or when the original device
+                has been discontinued.
               </p>
 
             </div>
@@ -245,7 +451,7 @@ export default function IndustrialAutomationPage() {
 
       {/* INDUSTRIAL COMMUNICATION */}
 
-      <section className="py-24">
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
 
         <div className="mx-auto max-w-7xl px-8">
 
@@ -258,7 +464,7 @@ export default function IndustrialAutomationPage() {
               </p>
 
               <h2 className="mt-4 text-4xl font-bold">
-                Machine Communication & Integration
+                PLC, Drive & Machine Communication
               </h2>
 
             </div>
@@ -267,19 +473,81 @@ export default function IndustrialAutomationPage() {
 
               <p>
                 Modern industrial machines often rely on communication
-                networks between PLCs, drives, remote I/O, HMIs and other
-                automation devices.
+                networks between PLCs, drives, remote I/O, HMIs, sensors and
+                other automation devices.
               </p>
 
               <p>
-                Automation systems can be integrated using appropriate
-                industrial communication architectures according to the
-                machine requirements.
+                Communication systems can be integrated according to the
+                machine architecture and required data exchange.
               </p>
 
               <p>
-                Existing communication systems can also be analyzed during
-                retrofit and troubleshooting projects.
+                Existing communication networks can also be analyzed during
+                retrofit and troubleshooting projects to identify protocol,
+                addressing, mapping and configuration problems.
+              </p>
+
+              <p>
+                The engineering approach may include communication testing,
+                device configuration, data mapping and gateway integration
+                where required.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* SENSORS */}
+
+      <section className="py-24">
+
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="grid gap-16 lg:grid-cols-2">
+
+            <div>
+
+              <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+                Sensors & Field Devices
+              </p>
+
+              <h2 className="mt-4 text-4xl font-bold">
+                Sensor Integration & Equivalent Component Replacement
+              </h2>
+
+            </div>
+
+            <div className="space-y-6 text-lg leading-8 text-slate-400">
+
+              <p>
+                Industrial automation systems often depend on sensors for
+                position, speed, temperature, pressure, level, proximity and
+                process measurement.
+              </p>
+
+              <p>
+                When an original sensor becomes unavailable, a suitable
+                equivalent product may need to be selected according to its
+                electrical, mechanical and signal characteristics.
+              </p>
+
+              <p>
+                Compatibility can include supply voltage, output type,
+                PNP/NPN configuration, analog signal range, connector,
+                mounting dimensions, sensing distance and communication
+                interface.
+              </p>
+
+              <p>
+                For communication-based sensors and smart devices, the
+                communication protocol, addressing and data structure must
+                also be considered before integration.
               </p>
 
             </div>
@@ -327,8 +595,8 @@ export default function IndustrialAutomationPage() {
 
               <p>
                 Troubleshooting can include component testing, parameter
-                analysis, communication diagnostics and machine sequence
-                investigation.
+                analysis, communication diagnostics, signal tracing and
+                machine sequence investigation.
               </p>
 
             </div>

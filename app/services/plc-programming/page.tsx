@@ -3,7 +3,7 @@ import Link from "next/link";
 export const metadata = {
   title: "PLC Programming & Troubleshooting Services",
   description:
-    "PLC programming, PLC troubleshooting, PLC replacement, PLC migration and machine automation services for Siemens, Mitsubishi and industrial control systems by AENA Technologies.",
+    "PLC programming, PLC troubleshooting, PLC replacement, PLC migration, industrial communication mapping, drive integration and machine automation services for Siemens, Mitsubishi and industrial control systems by AENA Technologies.",
 };
 
 export default function PLCProgrammingPage() {
@@ -17,6 +17,8 @@ export default function PLCProgrammingPage() {
     "Machine retrofit PLC integration",
     "HMI and PLC integration",
     "Drive and PLC communication",
+    "Industrial communication mapping",
+    "Legacy equipment integration",
     "Industrial commissioning",
   ];
 
@@ -47,7 +49,8 @@ export default function PLCProgrammingPage() {
           <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-500">
             AENA Technologies works with PLC-based control systems for machine
             automation, retrofit projects, obsolete controller replacement,
-            HMI integration, drive communication and industrial commissioning.
+            HMI integration, drive communication, industrial communication
+            mapping and machine commissioning.
           </p>
 
         </div>
@@ -253,6 +256,8 @@ export default function PLCProgrammingPage() {
 
           <div className="grid gap-8 md:grid-cols-2">
 
+            {/* SIEMENS */}
+
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
 
               <p className="font-semibold uppercase tracking-[3px] text-orange-400">
@@ -281,6 +286,8 @@ export default function PLCProgrammingPage() {
 
             </div>
 
+
+            {/* MITSUBISHI */}
 
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
 
@@ -365,9 +372,198 @@ export default function PLCProgrammingPage() {
       </section>
 
 
-      {/* RETROFIT */}
+      {/* LEGACY COMMUNICATION */}
 
       <section className="py-24">
+
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="grid gap-16 lg:grid-cols-2">
+
+            <div>
+
+              <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+                Legacy Integration
+              </p>
+
+              <h2 className="mt-4 text-4xl font-bold">
+                Legacy PLC & New Equipment Integration
+              </h2>
+
+              <p className="mt-6 text-lg leading-8 text-slate-400">
+                Integrating modern automation equipment into an existing
+                machine can be more complex than simply replacing the
+                hardware.
+              </p>
+
+            </div>
+
+            <div className="space-y-6 text-lg leading-8 text-slate-400">
+
+              <p>
+                A replacement drive, servo controller, sensor or remote I/O
+                device may use a different communication protocol, telegram
+                structure, register layout or data format than the original
+                equipment.
+              </p>
+
+              <p>
+                In retrofit applications, the existing PLC architecture can
+                be analyzed and the required data exchanged between the old
+                control system and the new equipment can be mapped.
+              </p>
+
+              <p>
+                Depending on the application, communication mapping,
+                protocol conversion or an industrial gateway can be used to
+                establish compatibility between the existing machine
+                controller and the replacement equipment.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* MAPPING & GATEWAY */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="text-center">
+
+            <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+              Communication Mapping
+            </p>
+
+            <h2 className="mt-4 text-4xl font-bold sm:text-5xl">
+              Mapping & Gateway Solutions for Machine Retrofit
+            </h2>
+
+            <p className="mx-auto mt-6 max-w-4xl text-lg leading-8 text-slate-400">
+              When a new component cannot communicate directly with an
+              existing PLC or machine controller, the communication layer
+              itself may need to be adapted.
+            </p>
+
+          </div>
+
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+            {[
+              {
+                title: "Data Mapping",
+                text:
+                  "Mapping commands, status information, references, feedback values and alarms between different device structures.",
+              },
+              {
+                title: "Protocol Conversion",
+                text:
+                  "Evaluating communication protocol differences and implementing suitable conversion methods where required.",
+              },
+              {
+                title: "Industrial Gateway",
+                text:
+                  "Using a gateway or communication interface to connect equipment that cannot communicate directly.",
+              },
+              {
+                title: "Legacy Compatibility",
+                text:
+                  "Adapting new equipment to an existing machine architecture while minimizing unnecessary PLC modifications.",
+              },
+            ].map((item) => (
+
+              <div
+                key={item.title}
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-7"
+              >
+
+                <div className="mb-5 h-1 w-12 rounded-full bg-orange-500" />
+
+                <h3 className="text-xl font-bold">
+                  {item.title}
+                </h3>
+
+                <p className="mt-4 leading-7 text-slate-400">
+                  {item.text}
+                </p>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* DRIVE REPLACEMENT EXAMPLE */}
+
+      <section className="py-24">
+
+        <div className="mx-auto max-w-5xl px-8">
+
+          <div className="rounded-3xl border border-orange-500/20 bg-slate-900 p-10">
+
+            <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+              Retrofit Communication Example
+            </p>
+
+            <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
+              Replacing an Obsolete Drive Without Redesigning the Entire
+              Control System
+            </h2>
+
+            <div className="mt-8 space-y-6 text-lg leading-8 text-slate-400">
+
+              <p>
+                An existing machine may contain an obsolete drive that is no
+                longer available. A modern replacement drive may have
+                different communication characteristics even when its
+                electrical and mechanical functions are suitable.
+              </p>
+
+              <p>
+                The replacement process can therefore involve checking
+                electrical connections, control signals, communication
+                protocol, telegram structure, parameter references and
+                feedback values.
+              </p>
+
+              <p>
+                Where appropriate, the new equipment can be integrated using
+                data mapping or an industrial gateway so that the existing
+                control architecture can continue to exchange the required
+                commands, status information and feedback.
+              </p>
+
+              <p>
+                The exact approach depends on the PLC, drive, communication
+                protocol and machine architecture. The objective is to
+                achieve reliable integration without making unnecessary
+                changes to the existing machine control system.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* RETROFIT */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
 
         <div className="mx-auto max-w-5xl px-8 text-center">
 
@@ -389,7 +585,8 @@ export default function PLCProgrammingPage() {
           <p className="mt-6 text-lg leading-8 text-slate-400">
             Retrofit projects may include PLC replacement, HMI modernization,
             sensor integration, drive replacement, electrical cabinet
-            revision, software redevelopment and commissioning.
+            revision, software redevelopment, communication mapping and
+            commissioning.
           </p>
 
         </div>
@@ -399,7 +596,7 @@ export default function PLCProgrammingPage() {
 
       {/* COMMISSIONING */}
 
-      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+      <section className="py-24">
 
         <div className="mx-auto max-w-5xl px-8 text-center">
 
