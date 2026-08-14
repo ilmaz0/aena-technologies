@@ -1,3 +1,30 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Industrial Automation Engineer & Machine Retrofit Services",
+
+  description:
+    "AENA Technologies provides industrial automation, machine retrofit, machine modernization, PLC programming, electrical engineering and industrial control solutions in Turkey and international markets.",
+
+  alternates: {
+    canonical: "/about",
+  },
+
+  openGraph: {
+    title:
+      "Industrial Automation Engineer & Machine Retrofit | AENA Technologies",
+
+    description:
+      "Learn about AENA Technologies and its engineering expertise in industrial automation, machine retrofit, electrical engineering, PLC, drives and motion control.",
+
+    url: "https://www.aenatechnologies.com/about",
+
+    siteName: "AENA Technologies",
+
+    type: "website",
+  },
+};
+
 export default function AboutPage() {
   return (
     <main className="bg-slate-950 text-white">
@@ -101,15 +128,14 @@ export default function AboutPage() {
             </p>
 
             {/* LinkedIn */}
-           {/* LinkedIn */}
-<a
-  href="https://www.linkedin.com/in/emreyilmazautomation/"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="mt-8 inline-flex items-center rounded-lg border border-slate-700 px-5 py-3 text-sm font-semibold text-white transition hover:border-orange-500 hover:text-orange-400"
->
-  View LinkedIn Profile →
-</a>
+            <a
+              href="https://www.linkedin.com/in/emreyilmazautomation/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-8 inline-flex items-center rounded-lg border border-slate-700 px-5 py-3 text-sm font-semibold text-white transition hover:border-orange-500 hover:text-orange-400"
+            >
+              View LinkedIn Profile →
+            </a>
 
           </div>
 
@@ -166,6 +192,7 @@ export default function AboutPage() {
                 <h3 className="mt-4 font-semibold">
                   {item}
                 </h3>
+
               </div>
 
             ))}

@@ -1,4 +1,30 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Industrial Automation & Machine Retrofit Services",
+
+  description:
+    "AENA Technologies provides industrial automation, machine retrofit, machine modernization, PLC programming, electrical engineering, SCADA, drive systems, servo motion control, commissioning and industrial troubleshooting services.",
+
+  alternates: {
+    canonical: "/services",
+  },
+
+  openGraph: {
+    title:
+      "Industrial Automation & Machine Retrofit Services | AENA Technologies",
+
+    description:
+      "Explore AENA Technologies industrial engineering services including machine retrofit, PLC programming, electrical engineering, drives, servo motion control, SCADA and commissioning.",
+
+    url: "https://www.aenatechnologies.com/services",
+
+    siteName: "AENA Technologies",
+
+    type: "website",
+  },
+};
 
 export default function ServicesPage() {
   const services = [

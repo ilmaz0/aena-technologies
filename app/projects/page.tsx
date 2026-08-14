@@ -1,4 +1,30 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Industrial Automation & Machine Retrofit Projects",
+
+  description:
+    "Explore AENA Technologies industrial automation, machine retrofit, electrical engineering and machine modernization projects including recycling, extrusion, packaging and production machinery.",
+
+  alternates: {
+    canonical: "/projects",
+  },
+
+  openGraph: {
+    title:
+      "Industrial Automation & Machine Retrofit Projects | AENA Technologies",
+
+    description:
+      "Industrial automation and machine retrofit case studies covering recycling lines, extrusion machinery, packaging machines, drive systems and electrical modernization.",
+
+    url: "https://www.aenatechnologies.com/projects",
+
+    siteName: "AENA Technologies",
+
+    type: "website",
+  },
+};
 
 export default function ProjectsPage() {
   const projects = [
