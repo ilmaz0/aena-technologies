@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-import Navbar from "@/components/layout/Navbar";
 import Hero from "@/components/Home/Hero";
 import Stats from "@/components/Home/Stats";
 import WhyChoose from "@/components/Home/WhyChoose";
@@ -13,21 +12,44 @@ import Problems from "@/components/Home/Problems";
 import CTA from "@/components/Home/CTA";
 
 export const metadata: Metadata = {
-  title: "Industrial Machine Retrofit & Automation Services",
+  title: "Industrial Machine Retrofit & Automation Services | AENA Technologies",
 
   description:
-    "AENA Technologies provides industrial machine retrofit, automation, PLC, HMI, electrical engineering, drive, servo and machine modernization services in Turkey and international markets.",
+    "AENA Technologies provides industrial machine retrofit, machine modernization, PLC programming, HMI, electrical engineering, drive systems, servo motion control, industrial automation and commissioning services in Turkey and international markets.",
+
+  keywords: [
+    "industrial machine retrofit",
+    "machine retrofit",
+    "industrial machine modernization",
+    "machine modernization",
+    "industrial automation",
+    "industrial automation services",
+    "PLC programming",
+    "PLC troubleshooting",
+    "PLC modernization",
+    "PLC replacement",
+    "HMI modernization",
+    "electrical engineering",
+    "electrical panel modernization",
+    "drive systems",
+    "industrial drive replacement",
+    "servo motion control",
+    "servo drive integration",
+    "industrial machine commissioning",
+    "machine retrofit Turkey",
+    "industrial machine retrofit Turkey",
+  ],
 
   alternates: {
-    canonical: "/",
+    canonical: "https://www.aenatechnologies.com/",
   },
 
   openGraph: {
     title:
-      "Industrial Machine Retrofit & Automation | AENA Technologies",
+      "Industrial Machine Retrofit & Automation Services | AENA Technologies",
 
     description:
-      "Industrial machine retrofit, automation, PLC, electrical engineering, drive systems and machine modernization services.",
+      "Industrial machine retrofit, machine modernization, PLC programming, electrical engineering, drive systems, servo motion control and automation services for industrial machinery.",
 
     url: "https://www.aenatechnologies.com/",
 
@@ -35,21 +57,36 @@ export const metadata: Metadata = {
 
     type: "website",
   },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function Home() {
   return (
-    <>
+    <main>
       <Hero />
+
       <Stats />
+
       <WhyChoose />
+
       <Services />
+
       <Projects />
+
       <Capabilities />
+
       <Industries />
+
       <Process />
+
       <Problems />
+
       <CTA />
-    </>
+    </main>
   );
 }
+
