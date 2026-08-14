@@ -3,7 +3,33 @@ import Link from "next/link";
 export const metadata = {
   title: "Industrial Electrical Engineering & Panel Systems",
   description:
-    "Industrial electrical engineering, power distribution panels, Form 1 to Form 4 panel systems, MCC panels, machine control cabinets, electrical retrofit, rewiring and commissioning by AENA Technologies.",
+    "Industrial electrical engineering, power distribution panels, Form 1 to Form 4 panel systems, MCC panels, machine control cabinets, electrical retrofit, component replacement, sensor and drive compatibility, rewiring and commissioning by AENA Technologies.",
+  keywords: [
+    "industrial electrical engineering",
+    "industrial electrical panel",
+    "electrical panel design",
+    "industrial control cabinet",
+    "machine control panel",
+    "power distribution panel",
+    "Form 1 electrical panel",
+    "Form 2 electrical panel",
+    "Form 3 electrical panel",
+    "Form 4 electrical panel",
+    "Form 4b electrical panel",
+    "MCC panel",
+    "motor control center",
+    "electrical retrofit",
+    "electrical component replacement",
+    "obsolete component replacement",
+    "sensor replacement",
+    "drive replacement",
+    "PLC I/O compatibility",
+    "industrial communication",
+    "communication mapping",
+    "gateway integration",
+    "machine rewiring",
+    "industrial electrical troubleshooting",
+  ],
 };
 
 export default function ElectricalEngineeringPage() {
@@ -360,11 +386,107 @@ export default function ElectricalEngineeringPage() {
 
           </div>
 
+
           <p className="mx-auto mt-8 max-w-4xl text-center text-sm leading-7 text-slate-500">
             Panel form and internal separation requirements should be
             selected according to the applicable project specifications,
             electrical standards and system design requirements.
           </p>
+
+        </div>
+
+      </section>
+
+
+      {/* COMPONENT COMPATIBILITY */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="grid gap-16 lg:grid-cols-2">
+
+            <div>
+
+              <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+                Component Compatibility
+              </p>
+
+              <h2 className="mt-4 text-4xl font-bold">
+                Electrical Component Replacement & Compatibility
+              </h2>
+
+            </div>
+
+            <div className="space-y-6 text-lg leading-8 text-slate-400">
+
+              <p>
+                Industrial machines often contain electrical components that
+                are obsolete, discontinued or no longer available from the
+                original manufacturer. In these situations, a suitable
+                equivalent component may need to be selected.
+              </p>
+
+              <p>
+                AENA Technologies evaluates replacement components according
+                to electrical ratings, control voltage, current capacity,
+                connection terminals, physical dimensions, protection
+                requirements and machine architecture.
+              </p>
+
+              <p>
+                A replacement component must not only have similar technical
+                specifications. Its electrical connections and interface with
+                the existing machine must also be compatible.
+              </p>
+
+              <p>
+                Where sensors, drives or other intelligent devices are
+                connected through industrial communication networks,
+                communication protocol, addressing, data mapping and system
+                compatibility can also be evaluated.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+            {[
+              "Obsolete component replacement",
+              "Equivalent product selection",
+              "Electrical rating compatibility",
+              "Control voltage compatibility",
+              "Terminal and connection compatibility",
+              "Physical and mechanical compatibility",
+              "Sensor replacement evaluation",
+              "Drive replacement evaluation",
+              "PLC I/O compatibility",
+              "Industrial communication compatibility",
+              "Communication mapping",
+              "Gateway-based integration",
+            ].map((item) => (
+
+              <div
+                key={item}
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-6 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
+              >
+
+                <span className="text-orange-400">
+                  ✓
+                </span>
+
+                <p className="mt-3 font-semibold">
+                  {item}
+                </p>
+
+              </div>
+
+            ))}
+
+          </div>
 
         </div>
 
@@ -419,7 +541,7 @@ export default function ElectricalEngineeringPage() {
       </section>
 
 
-      {/* RETROFIT */}
+      {/* ELECTRICAL RETROFIT */}
 
       <section className="py-24">
 
@@ -516,6 +638,95 @@ export default function ElectricalEngineeringPage() {
               </p>
 
             </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* ELECTRICAL + AUTOMATION INTEGRATION */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="grid gap-16 lg:grid-cols-2">
+
+            <div>
+
+              <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+                Retrofit Integration
+              </p>
+
+              <h2 className="mt-4 text-4xl font-bold">
+                Integrating New Components into Existing Machine Systems
+              </h2>
+
+            </div>
+
+            <div className="space-y-6 text-lg leading-8 text-slate-400">
+
+              <p>
+                Replacing an electrical or automation component on an
+                existing machine requires more than selecting a product with
+                similar specifications.
+              </p>
+
+              <p>
+                The new component may have different terminals, control
+                signals, voltage levels, I/O configuration or communication
+                protocols compared with the original equipment.
+              </p>
+
+              <p>
+                AENA Technologies evaluates these differences and determines
+                the appropriate integration method while preserving the
+                existing machine control architecture where practical.
+              </p>
+
+              <p>
+                For communication-based equipment, data mapping or a gateway
+                interface can be used where required to allow newer equipment
+                to communicate with an existing PLC or machine control
+                system.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+            {[
+              "Electrical signal conversion",
+              "I/O signal adaptation",
+              "Communication protocol integration",
+              "PLC data mapping",
+              "Drive communication mapping",
+              "Sensor signal compatibility",
+              "Gateway integration",
+              "Existing PLC compatibility",
+            ].map((item) => (
+
+              <div
+                key={item}
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-6"
+              >
+
+                <span className="text-orange-400">
+                  ✓
+                </span>
+
+                <p className="mt-3 font-semibold">
+                  {item}
+                </p>
+
+              </div>
+
+            ))}
 
           </div>
 
