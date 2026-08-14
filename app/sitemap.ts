@@ -1,70 +1,101 @@
 import type { MetadataRoute } from "next";
 
+const BASE_URL = "https://www.aenatechnologies.com";
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://www.aenatechnologies.com";
-
   return [
+    // Main Pages
     {
-      url: `${baseUrl}/`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/`,
       changeFrequency: "weekly",
-      priority: 1.0,
+      priority: 1,
     },
-
     {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/about`,
       changeFrequency: "monthly",
       priority: 0.8,
     },
-
     {
-      url: `${baseUrl}/services`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/services`,
       changeFrequency: "monthly",
       priority: 0.9,
     },
-
     {
-      url: `${baseUrl}/projects`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/projects`,
       changeFrequency: "weekly",
       priority: 0.9,
     },
-
     {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/contact`,
       changeFrequency: "monthly",
       priority: 0.7,
     },
 
-    // Project pages
-
+    // Service Pages
     {
-      url: `${baseUrl}/projects/stretch-transfer-machine`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/services/machine-retrofit`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/services/industrial-automation`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/services/plc-programming`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/services/electrical-engineering`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/services/scada-hmi`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/services/servo-motion-control`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/services/drive-systems`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/services/commissioning`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/services/industrial-troubleshooting`,
       changeFrequency: "monthly",
       priority: 0.8,
     },
 
+    // Project Pages
     {
-      url: `${baseUrl}/projects/flake-washing-line`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/projects/stretch-transfer-machine`,
       changeFrequency: "monthly",
       priority: 0.8,
     },
-
     {
-      url: `${baseUrl}/projects/stretch-film-extrusion-line`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/projects/flake-washing-line`,
       changeFrequency: "monthly",
       priority: 0.8,
     },
-
     {
-      url: `${baseUrl}/projects/hemigstone-bag-cutting-machine`,
-      lastModified: new Date(),
+      url: `${BASE_URL}/projects/stretch-film-extrusion-line`,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/projects/hemigstone-bag-cutting-machine`,
       changeFrequency: "monthly",
       priority: 0.8,
     },
