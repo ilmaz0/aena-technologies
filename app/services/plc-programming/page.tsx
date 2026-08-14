@@ -1,9 +1,54 @@
+
+import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata = {
-  title: "PLC Programming & Troubleshooting Services",
+export const metadata: Metadata = {
+  title: "PLC Programming & Troubleshooting Services | AENA Technologies",
+
   description:
-    "PLC programming, PLC troubleshooting, PLC replacement, PLC migration, industrial communication mapping, drive integration and machine automation services for Siemens, Mitsubishi and industrial control systems by AENA Technologies.",
+    "PLC programming, PLC troubleshooting, obsolete PLC replacement, PLC migration, industrial communication mapping, drive integration and machine automation services by AENA Technologies.",
+
+  keywords: [
+    "PLC programming",
+    "PLC programming services",
+    "PLC troubleshooting",
+    "PLC fault diagnosis",
+    "industrial PLC programming",
+    "PLC automation",
+    "PLC replacement",
+    "obsolete PLC replacement",
+    "PLC migration",
+    "PLC modernization",
+    "Siemens PLC programming",
+    "Mitsubishi PLC programming",
+    "machine retrofit PLC",
+    "PLC retrofit",
+    "HMI PLC integration",
+    "PLC drive communication",
+    "industrial communication mapping",
+    "industrial gateway integration",
+    "legacy PLC integration",
+    "machine automation",
+    "industrial automation Turkey",
+    "PLC programming Turkey",
+  ],
+
+  alternates: {
+    canonical: "https://www.aenatechnologies.com/services/plc-programming",
+  },
+
+  openGraph: {
+    title: "PLC Programming & Troubleshooting Services | AENA Technologies",
+
+    description:
+      "PLC programming, troubleshooting, modernization, migration and industrial automation integration for machines and production lines.",
+
+    url: "https://www.aenatechnologies.com/services/plc-programming",
+
+    siteName: "AENA Technologies",
+
+    type: "website",
+  },
 };
 
 export default function PLCProgrammingPage() {
@@ -20,6 +65,29 @@ export default function PLCProgrammingPage() {
     "Industrial communication mapping",
     "Legacy equipment integration",
     "Industrial commissioning",
+  ];
+
+  const communicationServices = [
+    {
+      title: "Data Mapping",
+      text:
+        "Mapping commands, status information, references, feedback values and alarms between different industrial device structures.",
+    },
+    {
+      title: "Protocol Conversion",
+      text:
+        "Evaluating communication protocol differences and implementing suitable conversion methods where required.",
+    },
+    {
+      title: "Industrial Gateway",
+      text:
+        "Using a gateway or communication interface to connect industrial equipment that cannot communicate directly.",
+    },
+    {
+      title: "Legacy Compatibility",
+      text:
+        "Adapting new equipment to an existing machine architecture while minimizing unnecessary PLC modifications.",
+    },
   ];
 
   return (
@@ -63,7 +131,6 @@ export default function PLCProgrammingPage() {
         <div className="mx-auto grid max-w-7xl gap-16 px-8 lg:grid-cols-2">
 
           <div>
-
             <p className="font-semibold uppercase tracking-[3px] text-orange-400">
               PLC Automation
             </p>
@@ -71,7 +138,6 @@ export default function PLCProgrammingPage() {
             <h2 className="mt-4 text-4xl font-bold">
               PLC Systems for Industrial Machinery
             </h2>
-
           </div>
 
           <div className="space-y-6 text-lg leading-8 text-slate-400">
@@ -96,7 +162,6 @@ export default function PLCProgrammingPage() {
             </p>
 
           </div>
-
         </div>
       </section>
 
@@ -104,7 +169,6 @@ export default function PLCProgrammingPage() {
       {/* SERVICES */}
 
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="text-center">
@@ -124,15 +188,13 @@ export default function PLCProgrammingPage() {
 
           </div>
 
-
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
             {services.map((item) => (
               <div
                 key={item}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-6"
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-6 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
               >
-
                 <span className="text-orange-400">
                   ✓
                 </span>
@@ -140,27 +202,22 @@ export default function PLCProgrammingPage() {
                 <p className="mt-3 font-semibold">
                   {item}
                 </p>
-
               </div>
             ))}
 
           </div>
-
         </div>
-
       </section>
 
 
       {/* PLC TROUBLESHOOTING */}
 
       <section className="py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="grid gap-16 lg:grid-cols-2">
 
             <div>
-
               <p className="font-semibold uppercase tracking-[3px] text-orange-400">
                 PLC Troubleshooting
               </p>
@@ -168,7 +225,6 @@ export default function PLCProgrammingPage() {
               <h2 className="mt-4 text-4xl font-bold">
                 PLC Fault Diagnosis & Machine Troubleshooting
               </h2>
-
             </div>
 
             <div className="space-y-6 text-lg leading-8 text-slate-400">
@@ -191,24 +247,19 @@ export default function PLCProgrammingPage() {
               </p>
 
             </div>
-
           </div>
-
         </div>
-
       </section>
 
 
       {/* OBSOLETE PLC */}
 
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="grid gap-16 lg:grid-cols-2">
 
             <div>
-
               <p className="font-semibold uppercase tracking-[3px] text-orange-400">
                 PLC Modernization
               </p>
@@ -216,7 +267,6 @@ export default function PLCProgrammingPage() {
               <h2 className="mt-4 text-4xl font-bold">
                 Obsolete PLC Replacement & Migration
               </h2>
-
             </div>
 
             <div className="space-y-6 text-lg leading-8 text-slate-400">
@@ -240,18 +290,14 @@ export default function PLCProgrammingPage() {
               </p>
 
             </div>
-
           </div>
-
         </div>
-
       </section>
 
 
       {/* SIEMENS / MITSUBISHI */}
 
       <section className="py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="grid gap-8 md:grid-cols-2">
@@ -275,13 +321,11 @@ export default function PLCProgrammingPage() {
               </p>
 
               <ul className="mt-6 space-y-3 text-slate-400">
-
                 <li>• PLC software development</li>
                 <li>• Machine troubleshooting</li>
                 <li>• HMI integration</li>
                 <li>• Drive communication</li>
                 <li>• Retrofit and modernization</li>
-
               </ul>
 
             </div>
@@ -306,34 +350,28 @@ export default function PLCProgrammingPage() {
               </p>
 
               <ul className="mt-6 space-y-3 text-slate-400">
-
                 <li>• PLC programming</li>
                 <li>• Machine control</li>
                 <li>• Drive integration</li>
                 <li>• Troubleshooting</li>
                 <li>• Machine retrofit</li>
-
               </ul>
 
             </div>
 
           </div>
-
         </div>
-
       </section>
 
 
       {/* PLC + DRIVE COMMUNICATION */}
 
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="grid gap-16 lg:grid-cols-2">
 
             <div>
-
               <p className="font-semibold uppercase tracking-[3px] text-orange-400">
                 Industrial Communication
               </p>
@@ -341,7 +379,6 @@ export default function PLCProgrammingPage() {
               <h2 className="mt-4 text-4xl font-bold">
                 PLC, Drive & Machine Communication
               </h2>
-
             </div>
 
             <div className="space-y-6 text-lg leading-8 text-slate-400">
@@ -364,18 +401,14 @@ export default function PLCProgrammingPage() {
               </p>
 
             </div>
-
           </div>
-
         </div>
-
       </section>
 
 
       {/* LEGACY COMMUNICATION */}
 
       <section className="py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="grid gap-16 lg:grid-cols-2">
@@ -421,18 +454,14 @@ export default function PLCProgrammingPage() {
               </p>
 
             </div>
-
           </div>
-
         </div>
-
       </section>
 
 
       {/* MAPPING & GATEWAY */}
 
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="text-center">
@@ -453,35 +482,12 @@ export default function PLCProgrammingPage() {
 
           </div>
 
-
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
 
-            {[
-              {
-                title: "Data Mapping",
-                text:
-                  "Mapping commands, status information, references, feedback values and alarms between different device structures.",
-              },
-              {
-                title: "Protocol Conversion",
-                text:
-                  "Evaluating communication protocol differences and implementing suitable conversion methods where required.",
-              },
-              {
-                title: "Industrial Gateway",
-                text:
-                  "Using a gateway or communication interface to connect equipment that cannot communicate directly.",
-              },
-              {
-                title: "Legacy Compatibility",
-                text:
-                  "Adapting new equipment to an existing machine architecture while minimizing unnecessary PLC modifications.",
-              },
-            ].map((item) => (
-
+            {communicationServices.map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-7"
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-7 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
               >
 
                 <div className="mb-5 h-1 w-12 rounded-full bg-orange-500" />
@@ -495,20 +501,16 @@ export default function PLCProgrammingPage() {
                 </p>
 
               </div>
-
             ))}
 
           </div>
-
         </div>
-
       </section>
 
 
       {/* DRIVE REPLACEMENT EXAMPLE */}
 
       <section className="py-24">
-
         <div className="mx-auto max-w-5xl px-8">
 
           <div className="rounded-3xl border border-orange-500/20 bg-slate-900 p-10">
@@ -553,18 +555,14 @@ export default function PLCProgrammingPage() {
               </p>
 
             </div>
-
           </div>
-
         </div>
-
       </section>
 
 
       {/* RETROFIT */}
 
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
         <div className="mx-auto max-w-5xl px-8 text-center">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
@@ -590,14 +588,12 @@ export default function PLCProgrammingPage() {
           </p>
 
         </div>
-
       </section>
 
 
       {/* COMMISSIONING */}
 
       <section className="py-24">
-
         <div className="mx-auto max-w-5xl px-8 text-center">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
@@ -616,14 +612,12 @@ export default function PLCProgrammingPage() {
           </p>
 
         </div>
-
       </section>
 
 
       {/* CTA */}
 
       <section className="bg-orange-500 py-20">
-
         <div className="mx-auto max-w-5xl px-8 text-center">
 
           <h2 className="text-4xl font-bold sm:text-5xl">
@@ -643,7 +637,6 @@ export default function PLCProgrammingPage() {
           </Link>
 
         </div>
-
       </section>
 
     </main>

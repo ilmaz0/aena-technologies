@@ -338,9 +338,9 @@ export default function DriveSystemsPage() {
           </p>
 
           <p className="mt-6 text-lg leading-8 text-slate-400">
-            If the existing PLC expects the original drive's communication
-            structure, simply installing the replacement device may not be
-            sufficient.
+            If the existing PLC expects the original drive&apos;s
+            communication structure, simply installing the replacement device
+            may not be sufficient.
           </p>
 
           <p className="mt-6 text-lg leading-8 text-slate-400">
@@ -631,7 +631,7 @@ export default function DriveSystemsPage() {
             </div>
 
 
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 bg-slate-900 p-8">
 
               <h3 className="text-2xl font-bold">
                 Production Support

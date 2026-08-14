@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Industrial Machine Retrofit & Modernization",
+  title: "Industrial Machine Retrofit & Modernization | AENA Technologies",
 
   description:
-    "Industrial machine retrofit and modernization services including obsolete PLC replacement, HMI upgrades, AC drives, servo systems, sensor replacement, communication mapping, gateway integration, electrical panels and machine commissioning.",
+    "Industrial machine retrofit and modernization services including PLC replacement, HMI upgrades, AC drives, servo systems, sensor integration, electrical panels, communication mapping and machine commissioning.",
 
   keywords: [
     "industrial machine retrofit",
@@ -33,7 +33,8 @@ export const metadata: Metadata = {
   ],
 
   alternates: {
-    canonical: "/services/machine-retrofit",
+    canonical:
+      "https://www.aenatechnologies.com/services/machine-retrofit",
   },
 
   openGraph: {
@@ -43,7 +44,8 @@ export const metadata: Metadata = {
     description:
       "Modernize existing industrial machinery with PLC, HMI, drive, servo, sensor, electrical and communication system upgrades while preserving usable machine infrastructure.",
 
-    url: "https://www.aenatechnologies.com/services/machine-retrofit",
+    url:
+      "https://www.aenatechnologies.com/services/machine-retrofit",
 
     siteName: "AENA Technologies",
 
@@ -52,6 +54,69 @@ export const metadata: Metadata = {
 };
 
 export default function MachineRetrofitPage() {
+  const retrofitScope = [
+    "Machine inspection and technical evaluation",
+    "Electrical system modernization",
+    "Electrical cabinet revision",
+    "PLC and HMI modernization",
+    "Drive and servo system replacement",
+    "Sensor replacement and integration",
+    "Industrial communication modernization",
+    "Communication protocol mapping",
+    "Gateway-based device integration",
+    "Hydraulic system improvements",
+    "Pneumatic system improvements",
+    "Mechanical system integration",
+    "Software development and modification",
+    "Component replacement and equivalent selection",
+    "Machine commissioning and production support",
+  ];
+
+  const communicationServices = [
+    {
+      title: "Protocol Mapping",
+      text:
+        "Adapt control words, status words, parameters and process data between different device structures.",
+    },
+    {
+      title: "Gateway Integration",
+      text:
+        "Use an industrial gateway as an intermediate communication layer between legacy and modern equipment.",
+    },
+    {
+      title: "Existing PLC Compatibility",
+      text:
+        "Design the integration around the existing control architecture when modification of the original PLC software is limited.",
+    },
+  ];
+
+  const processSteps = [
+    {
+      number: "01",
+      title: "Inspection",
+      text:
+        "Evaluate the existing machine, electrical system, automation architecture and obsolete components.",
+    },
+    {
+      number: "02",
+      title: "Engineering",
+      text:
+        "Define replacement components, electrical modifications, communication strategy and automation requirements.",
+    },
+    {
+      number: "03",
+      title: "Integration",
+      text:
+        "Install and configure new PLC, HMI, drives, sensors, communication devices and electrical equipment.",
+    },
+    {
+      number: "04",
+      title: "Commissioning",
+      text:
+        "Test the machine, optimize parameters and support production startup.",
+    },
+  ];
+
   return (
     <main className="bg-slate-950 text-white">
 
@@ -125,7 +190,7 @@ export default function MachineRetrofitPage() {
 
             <p>
               The objective is not simply to replace old components. The
-              replacement equipment must work correctly with the machine's
+              replacement equipment must work correctly with the machine&apos;s
               existing electrical connections, control signals, communication
               architecture and mechanical installation.
             </p>
@@ -151,26 +216,10 @@ export default function MachineRetrofitPage() {
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
-            {[
-              "Machine inspection and technical evaluation",
-              "Electrical system modernization",
-              "Electrical cabinet revision",
-              "PLC and HMI modernization",
-              "Drive and servo system replacement",
-              "Sensor replacement and integration",
-              "Industrial communication modernization",
-              "Communication protocol mapping",
-              "Gateway-based device integration",
-              "Hydraulic system improvements",
-              "Pneumatic system improvements",
-              "Mechanical system integration",
-              "Software development and modification",
-              "Component replacement and equivalent selection",
-              "Machine commissioning and production support",
-            ].map((item) => (
+            {retrofitScope.map((item) => (
               <div
                 key={item}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-6"
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-6 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
               >
                 <span className="text-orange-400">
                   ✓
@@ -342,26 +391,10 @@ export default function MachineRetrofitPage() {
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
 
-            {[
-              {
-                title: "Protocol Mapping",
-                text:
-                  "Adapt control words, status words, parameters and process data between different device structures.",
-              },
-              {
-                title: "Gateway Integration",
-                text:
-                  "Use an industrial gateway as an intermediate communication layer between legacy and modern equipment.",
-              },
-              {
-                title: "Existing PLC Compatibility",
-                text:
-                  "Design the integration around the existing control architecture when modification of the original PLC software is limited.",
-              },
-            ].map((item) => (
+            {communicationServices.map((item) => (
               <div
                 key={item.title}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-8"
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-8 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
               >
 
                 <h3 className="text-xl font-bold text-orange-400">
@@ -423,38 +456,12 @@ export default function MachineRetrofitPage() {
 
           </div>
 
-
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
 
-            {[
-              {
-                number: "01",
-                title: "Inspection",
-                text:
-                  "Evaluate the existing machine, electrical system, automation architecture and obsolete components.",
-              },
-              {
-                number: "02",
-                title: "Engineering",
-                text:
-                  "Define replacement components, electrical modifications, communication strategy and automation requirements.",
-              },
-              {
-                number: "03",
-                title: "Integration",
-                text:
-                  "Install and configure new PLC, HMI, drives, sensors, communication devices and electrical equipment.",
-              },
-              {
-                number: "04",
-                title: "Commissioning",
-                text:
-                  "Test the machine, optimize parameters and support production startup.",
-              },
-            ].map((step) => (
+            {processSteps.map((step) => (
               <div
                 key={step.number}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-8"
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-8 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
               >
 
                 <span className="text-3xl font-extrabold text-orange-500">
@@ -478,9 +485,122 @@ export default function MachineRetrofitPage() {
       </section>
 
 
+      {/* WHY RETROFIT */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+        <div className="mx-auto max-w-5xl px-8 text-center">
+
+          <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+            Why Retrofit?
+          </p>
+
+          <h2 className="mt-4 text-4xl font-bold">
+            Extend the Operating Life of Existing Machinery
+          </h2>
+
+          <div className="mt-10 grid gap-6 text-left md:grid-cols-3">
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-7">
+
+              <h3 className="text-xl font-bold">
+                Reduce Replacement Costs
+              </h3>
+
+              <p className="mt-4 leading-8 text-slate-400">
+                Modernizing the control system can be an alternative to
+                replacing an otherwise mechanically usable machine.
+              </p>
+
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-7">
+
+              <h3 className="text-xl font-bold">
+                Improve Maintainability
+              </h3>
+
+              <p className="mt-4 leading-8 text-slate-400">
+                Replacing obsolete components can make future maintenance,
+                troubleshooting and spare-parts sourcing easier.
+              </p>
+
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-7">
+
+              <h3 className="text-xl font-bold">
+                Modernize Machine Control
+              </h3>
+
+              <p className="mt-4 leading-8 text-slate-400">
+                New automation, HMI, drive and communication technologies can
+                improve machine functionality and monitoring.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* COMMISSIONING */}
+
+      <section className="py-24">
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
+
+              <h3 className="text-2xl font-bold">
+                Electrical & Automation
+              </h3>
+
+              <p className="mt-4 leading-8 text-slate-400">
+                Electrical cabinet revision, PLC, HMI, drives, sensors and
+                machine control integration.
+              </p>
+
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
+
+              <h3 className="text-2xl font-bold">
+                Communication Testing
+              </h3>
+
+              <p className="mt-4 leading-8 text-slate-400">
+                Verification of communication between PLCs, drives, HMIs,
+                gateways and other industrial devices.
+              </p>
+
+            </div>
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
+
+              <h3 className="text-2xl font-bold">
+                Production Commissioning
+              </h3>
+
+              <p className="mt-4 leading-8 text-slate-400">
+                Machine testing, parameter optimization, troubleshooting and
+                production startup support.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
       {/* CTA */}
 
       <section className="bg-orange-500 py-20">
+
         <div className="mx-auto max-w-5xl px-8 text-center">
 
           <h2 className="text-4xl font-bold sm:text-5xl">
@@ -500,6 +620,7 @@ export default function MachineRetrofitPage() {
           </Link>
 
         </div>
+
       </section>
 
     </main>
