@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Industrial Machine Retrofit & Modernization | AENA Technologies",
+  title:
+    "Industrial Machine Retrofit & Modernization Services | AENA Technologies",
 
   description:
-    "Industrial machine retrofit and modernization services including PLC replacement, HMI upgrades, AC drives, servo systems, sensor integration, electrical panels, communication mapping and machine commissioning.",
+    "Industrial machine retrofit and modernization services by AENA Technologies. PLC, HMI, drive, servo, sensor, electrical panel and industrial communication upgrades for existing machinery.",
 
   keywords: [
     "industrial machine retrofit",
@@ -15,21 +16,27 @@ export const metadata: Metadata = {
     "machine retrofit Turkey",
     "industrial machine retrofit Turkey",
     "electrical machine retrofit",
+    "PLC retrofit",
     "PLC replacement",
     "obsolete PLC replacement",
     "HMI modernization",
+    "HMI replacement",
     "drive replacement",
     "servo drive replacement",
+    "industrial drive retrofit",
     "sensor replacement",
     "industrial sensor integration",
     "industrial communication retrofit",
     "communication protocol mapping",
     "industrial gateway integration",
-    "PLC retrofit",
+    "machine control modernization",
     "electrical panel modernization",
     "production line modernization",
     "obsolete machine modernization",
     "machine commissioning",
+    "industrial automation Turkey",
+    "industrial automation retrofit",
+    "factory machine modernization",
   ],
 
   alternates: {
@@ -37,18 +44,34 @@ export const metadata: Metadata = {
       "https://www.aenatechnologies.com/services/machine-retrofit",
   },
 
+  robots: {
+    index: true,
+    follow: true,
+  },
+
   openGraph: {
     title:
-      "Industrial Machine Retrofit & Modernization | AENA Technologies",
+      "Industrial Machine Retrofit & Modernization Services | AENA Technologies",
 
     description:
       "Modernize existing industrial machinery with PLC, HMI, drive, servo, sensor, electrical and communication system upgrades while preserving usable machine infrastructure.",
 
-    url: "https://www.aenatechnologies.com/services/machine-retrofit",
+    url:
+      "https://www.aenatechnologies.com/services/machine-retrofit",
 
     siteName: "AENA Technologies",
 
     type: "website",
+
+    locale: "en_US",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "Industrial Machine Retrofit & Modernization | AENA Technologies",
+    description:
+      "Industrial machine retrofit services including PLC, HMI, drives, sensors, electrical panels and communication systems.",
   },
 };
 
@@ -120,9 +143,8 @@ export default function MachineRetrofitPage() {
     <main className="bg-slate-950 text-white">
 
       {/* HERO */}
-
       <section className="border-b border-slate-800 py-24">
-        <div className="mx-auto max-w-7xl px-8">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
           <p className="font-semibold uppercase tracking-[4px] text-orange-400">
             Industrial Machine Retrofit
@@ -131,15 +153,16 @@ export default function MachineRetrofitPage() {
           <h1 className="mt-4 max-w-5xl text-5xl font-extrabold leading-tight sm:text-6xl">
             Industrial Machine Retrofit &
             <span className="block text-orange-500">
-              Modernization
+              Modernization Services
             </span>
           </h1>
 
           <p className="mt-8 max-w-4xl text-xl leading-8 text-slate-400">
-            AENA Technologies provides complete industrial machine retrofit
-            and modernization services, from machine inspection and electrical
-            systems to automation, drives, sensors, communication systems,
-            software and commissioning.
+            AENA Technologies provides industrial machine retrofit and
+            modernization services for existing production machinery.
+            Our engineering scope includes electrical systems, PLC,
+            HMI, drives, servo systems, sensors, industrial communication,
+            software and machine commissioning.
           </p>
 
           <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-500">
@@ -148,14 +171,29 @@ export default function MachineRetrofitPage() {
             electrical infrastructure whenever practical.
           </p>
 
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link
+              href="/projects"
+              className="rounded-xl bg-orange-500 px-7 py-3.5 text-sm font-bold text-white transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20"
+            >
+              View Retrofit Projects
+            </Link>
+
+            <Link
+              href="/contact"
+              className="rounded-xl border border-slate-700 bg-slate-900 px-7 py-3.5 text-sm font-bold text-slate-200 transition hover:border-orange-500 hover:text-orange-400"
+            >
+              Request a Retrofit Evaluation
+            </Link>
+          </div>
+
         </div>
       </section>
 
 
       {/* MODERNIZATION */}
-
       <section className="py-24">
-        <div className="mx-auto max-w-7xl px-8">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
             Retrofit Engineering
@@ -170,15 +208,16 @@ export default function MachineRetrofitPage() {
             <p>
               Existing industrial machinery can often be modernized without
               replacing the complete machine. AENA Technologies evaluates the
-              existing equipment and develops a retrofit strategy according to
-              the production requirements, machine architecture and available
+              existing equipment and develops a retrofit strategy according
+              to production requirements, machine architecture and available
               components.
             </p>
 
             <p>
-              The retrofit process can include electrical, automation,
-              hydraulic, pneumatic, mechanical, motion control, communication
-              and software systems.
+              The retrofit process can include electrical engineering,
+              industrial automation, PLC programming, HMI modernization,
+              drive and servo systems, sensors, industrial communication,
+              hydraulics, pneumatics, mechanical integration and software.
             </p>
 
             <p>
@@ -201,17 +240,21 @@ export default function MachineRetrofitPage() {
 
 
       {/* RETROFIT SCOPE */}
-
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-        <div className="mx-auto max-w-7xl px-8">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
             Retrofit Scope
           </p>
 
           <h2 className="mt-4 text-4xl font-bold">
-            From Inspection to Commissioning
+            From Machine Inspection to Commissioning
           </h2>
+
+          <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-400">
+            Our machine retrofit projects can cover the complete control
+            architecture or selected parts of an existing industrial machine.
+          </p>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 
@@ -237,9 +280,8 @@ export default function MachineRetrofitPage() {
 
 
       {/* COMPONENT COMPATIBILITY */}
-
       <section className="py-24">
-        <div className="mx-auto max-w-7xl px-8">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
           <div className="grid gap-16 lg:grid-cols-2">
 
@@ -252,6 +294,11 @@ export default function MachineRetrofitPage() {
               <h2 className="mt-4 text-4xl font-bold">
                 Obsolete or Unavailable Components
               </h2>
+
+              <p className="mt-6 text-lg leading-8 text-slate-400">
+                Industrial machines often remain mechanically usable even
+                when their original automation components are obsolete.
+              </p>
 
             </div>
 
@@ -291,9 +338,8 @@ export default function MachineRetrofitPage() {
 
 
       {/* SENSOR REPLACEMENT */}
-
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-        <div className="mx-auto max-w-7xl px-8">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
           <div className="grid gap-16 lg:grid-cols-2">
 
@@ -346,9 +392,8 @@ export default function MachineRetrofitPage() {
 
 
       {/* DRIVE AND COMMUNICATION RETROFIT */}
-
       <section className="py-24">
-        <div className="mx-auto max-w-7xl px-8">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
             Drive & Communication Retrofit
@@ -368,15 +413,15 @@ export default function MachineRetrofitPage() {
 
             <p>
               In these situations, the replacement drive may use a different
-              communication protocol, register structure, parameter mapping or
-              data format than the original device.
+              communication protocol, register structure, parameter mapping
+              or data format than the original device.
             </p>
 
             <p>
               AENA Technologies can evaluate the existing communication
-              architecture and develop a suitable mapping strategy so that the
-              new drive can exchange the required control commands, status
-              information and process values with the existing system.
+              architecture and develop a suitable mapping strategy so that
+              the new drive can exchange the required control commands,
+              status information and process values with the existing system.
             </p>
 
             <p>
@@ -413,9 +458,8 @@ export default function MachineRetrofitPage() {
 
 
       {/* ENGINEERING APPROACH */}
-
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-        <div className="mx-auto max-w-5xl px-8 text-center">
+        <div className="mx-auto max-w-5xl px-6 text-center sm:px-8">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
             Engineering Approach
@@ -438,9 +482,8 @@ export default function MachineRetrofitPage() {
 
 
       {/* PROCESS */}
-
       <section className="py-24">
-        <div className="mx-auto max-w-7xl px-8">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
           <div className="text-center">
 
@@ -484,9 +527,8 @@ export default function MachineRetrofitPage() {
 
 
       {/* WHY RETROFIT */}
-
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-        <div className="mx-auto max-w-5xl px-8 text-center">
+        <div className="mx-auto max-w-5xl px-6 sm:px-8 text-center">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
             Why Retrofit?
@@ -544,9 +586,8 @@ export default function MachineRetrofitPage() {
 
 
       {/* COMMISSIONING */}
-
       <section className="py-24">
-        <div className="mx-auto max-w-7xl px-8">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
 
@@ -595,13 +636,109 @@ export default function MachineRetrofitPage() {
       </section>
 
 
-      {/* CTA */}
+      {/* RELATED PROJECTS */}
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+        <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
+          <div className="text-center">
+
+            <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+              Engineering Case Studies
+            </p>
+
+            <h2 className="mt-4 text-4xl font-bold">
+              Machine Retrofit Projects
+            </h2>
+
+            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-400">
+              Explore selected machine retrofit, automation modernization
+              and industrial engineering projects completed by AENA
+              Technologies.
+            </p>
+
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+            <Link
+              href="/projects/stretch-transfer-machine"
+              className="rounded-2xl border border-slate-800 bg-slate-900 p-7 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[2px] text-orange-400">
+                Machine Retrofit
+              </p>
+
+              <h3 className="mt-3 text-xl font-bold">
+                Stretch Transfer Machine Retrofit
+              </h3>
+
+              <p className="mt-4 text-sm leading-7 text-slate-400">
+                Electrical redesign, PLC redevelopment and machine
+                modernization.
+              </p>
+            </Link>
+
+            <Link
+              href="/projects/hemigstone-bag-cutting-machine"
+              className="rounded-2xl border border-slate-800 bg-slate-900 p-7 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[2px] text-orange-400">
+                Machine Modernization
+              </p>
+
+              <h3 className="mt-3 text-xl font-bold">
+                Plastic Bag Cutting Machine Retrofit
+              </h3>
+
+              <p className="mt-4 text-sm leading-7 text-slate-400">
+                Electrical, drive, servo and sensor modernization of an
+                existing production machine.
+              </p>
+            </Link>
+
+            <Link
+              href="/projects/cable-pay-off-drive"
+              className="rounded-2xl border border-slate-800 bg-slate-900 p-7 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[2px] text-orange-400">
+                Drive Optimization
+              </p>
+
+              <h3 className="mt-3 text-xl font-bold">
+                Cable Pay-Off Drive Optimization
+              </h3>
+
+              <p className="mt-4 text-sm leading-7 text-slate-400">
+                Siemens drive parameter optimization and motion-control
+                improvements.
+              </p>
+            </Link>
+
+          </div>
+
+          <div className="mt-10 text-center">
+            <Link
+              href="/projects"
+              className="inline-flex rounded-xl border border-slate-700 bg-slate-950 px-7 py-3.5 text-sm font-bold text-slate-200 transition hover:border-orange-500 hover:text-orange-400"
+            >
+              View All Engineering Projects
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* CTA */}
       <section className="bg-orange-500 py-20">
 
-        <div className="mx-auto max-w-5xl px-8 text-center">
+        <div className="mx-auto max-w-5xl px-6 text-center sm:px-8">
 
-          <h2 className="text-4xl font-bold sm:text-5xl">
+          <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-100">
+            Industrial Machine Retrofit
+          </p>
+
+          <h2 className="mt-4 text-4xl font-bold sm:text-5xl">
             Need to Retrofit an Existing Machine?
           </h2>
 
