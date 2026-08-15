@@ -86,29 +86,29 @@ export default function CablePayOffDrivePage() {
 
 
       {/* PROJECT IMAGE */}
-      <section className="py-16 sm:py-20">
-        <div className="mx-auto max-w-7xl px-6 sm:px-8">
+      {/* PROJECT IMAGE */}
+<section className="pt-24 pb-16 sm:pt-32 sm:pb-20">
+  <div className="mx-auto max-w-6xl px-6 sm:px-8">
 
-          <div className="overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl">
+    <div className="mx-auto max-w-5xl overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-2xl">
 
-            <div className="relative aspect-video w-full">
+      <div className="relative aspect-[16/8] w-full">
 
-              <Image
-                src="/projects/cable-pay-off-drive/cable1.jpeg"
-                alt="Cable pay-off machine drive optimization project"
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 1200px"
-              />
+        <Image
+          src="/projects/cable-pay-off-drive/cable1.jpeg"
+          alt="Cable pay-off machine drive optimization project"
+          fill
+          priority
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 1000px"
+        />
 
-            </div>
+      </div>
 
-          </div>
+    </div>
 
-        </div>
-      </section>
-
+  </div>
+</section>
 
       {/* PROJECT OVERVIEW */}
       <section className="border-y border-slate-800 bg-slate-900/40 py-20 sm:py-24">
