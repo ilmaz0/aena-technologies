@@ -106,7 +106,7 @@ export default function GranuleShiftMonitoringPage() {
     </div>
 
     {/* VIDEO */}
-    <div className="mx-auto mt-16 max-w-3xl overflow-hidden rounded-2xl border border-slate-800 bg-black shadow-2xl">
+    <div className="mx-auto mt-16 max-w-xl overflow-hidden rounded-2xl border border-slate-800 bg-black shadow-2xl">
 
       <video
         className="block h-auto w-full"
