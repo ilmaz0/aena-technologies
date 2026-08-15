@@ -84,47 +84,48 @@ export default function GranuleShiftMonitoringPage() {
 
 
       {/* PROJECT VIDEO */}
-      <section className="border-b border-slate-800 bg-slate-900/40 py-20">
-        <div className="mx-auto max-w-5xl px-8">
+      {/* PROJECT VIDEO */}
+<section className="border-b border-slate-800 bg-slate-900/40 py-28">
+  <div className="mx-auto max-w-4xl px-8">
 
-          <div className="text-center">
+    <div className="text-center">
 
-            <p className="font-semibold uppercase tracking-[3px] text-orange-400">
-              System Demonstration
-            </p>
+      <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+        System Demonstration
+      </p>
 
-            <h2 className="mt-4 text-4xl font-bold">
-              Granule Production Monitoring
-            </h2>
+      <h2 className="mt-4 text-4xl font-bold">
+        Granule Production Monitoring
+      </h2>
 
-            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-400">
-              Demonstration of the production monitoring and weighing system
-              used for granule recycling operations.
-            </p>
+      <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-400">
+        Demonstration of the production monitoring and weighing system
+        used for granule recycling operations.
+      </p>
 
-          </div>
+    </div>
 
-          <div className="mt-12 overflow-hidden rounded-3xl border border-slate-800 bg-black shadow-2xl">
+    {/* VIDEO */}
+    <div className="mx-auto mt-16 max-w-3xl overflow-hidden rounded-2xl border border-slate-800 bg-black shadow-2xl">
 
-            <video
-              className="h-auto w-full"
-              controls
-              playsInline
-              preload="metadata"
-            >
-              <source
-                src="/projects/granule-shift-monitoring/granule.mp4"
-                type="video/mp4"
-              />
+      <video
+        className="block h-auto w-full"
+        controls
+        playsInline
+        preload="metadata"
+      >
+        <source
+          src="/projects/granule-shift-monitoring/granule.mp4"
+          type="video/mp4"
+        />
 
-              Your browser does not support the video tag.
-            </video>
+        Your browser does not support the video tag.
+      </video>
 
-          </div>
+    </div>
 
-        </div>
-      </section>
-
+  </div>
+</section>
 
       {/* PROJECT OVERVIEW */}
       <section className="py-24">
