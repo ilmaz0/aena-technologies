@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Industrial Automation & Machine Retrofit Projects",
 
   description:
-    "Explore AENA Technologies industrial automation, machine retrofit, electrical engineering and machine modernization projects including recycling, extrusion, packaging and production machinery.",
+    "Explore AENA Technologies industrial automation, machine retrofit, electrical engineering and machine modernization projects including recycling, extrusion, packaging, production monitoring and industrial machinery.",
 
   alternates: {
     canonical: "/projects",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
       "Industrial Automation & Machine Retrofit Projects | AENA Technologies",
 
     description:
-      "Industrial automation and machine retrofit case studies covering recycling lines, extrusion machinery, packaging machines, drive systems and electrical modernization.",
+      "Industrial automation and machine retrofit case studies covering recycling lines, extrusion machinery, packaging machines, drive systems, production monitoring and electrical modernization.",
 
     url: "https://www.aenatechnologies.com/projects",
 
@@ -56,6 +56,21 @@ export default function ProjectsPage() {
         "Successfully commissioned with stable automatic operation.",
 
       href: "/projects/flake-washing-line",
+    },
+
+    {
+      title: "Granule Recycling Shift Monitoring System",
+
+      challenge:
+        "Production quantities needed to be monitored by shift and recorded in a structured format for daily, monthly and yearly production analysis.",
+
+      solution:
+        "Developed a production monitoring system using Siemens Siwarex load-cell technology and Siemens automation infrastructure to collect weighing data and organize production quantities according to production shifts and dates.",
+
+      result:
+        "Production quantities can be monitored by shift and analyzed through structured production data and Excel-based reporting.",
+
+      href: "/projects/granule-shift-monitoring",
     },
 
     {
@@ -137,8 +152,9 @@ export default function ProjectsPage() {
           </h1>
 
           <p className="mt-8 max-w-3xl text-xl leading-8 text-slate-400">
-            Real industrial automation, machine retrofit and electrical
-            engineering projects completed by AENA Technologies.
+            Real industrial automation, machine retrofit, production
+            monitoring and electrical engineering projects completed by
+            AENA Technologies.
           </p>
 
         </div>
@@ -215,45 +231,41 @@ export default function ProjectsPage() {
 
               {/* VIEW PROJECT */}
 
-              {project.href && (
+              <div className="mt-10 border-t border-slate-800 pt-8">
 
-                <div className="mt-10 border-t border-slate-800 pt-8">
+                <Link
+                  href={project.href}
+                  className="
+                    inline-flex
+                    items-center
+                    rounded-xl
+                    border
+                    border-orange-500/70
+                    bg-orange-500
+                    px-6
+                    py-3
+                    text-sm
+                    font-bold
+                    uppercase
+                    tracking-[1.5px]
+                    text-white
+                    transition
+                    duration-300
+                    hover:bg-orange-600
+                    hover:shadow-lg
+                    hover:shadow-orange-500/20
+                  "
+                >
 
-                  <Link
-                    href={project.href}
-                    className="
-                      inline-flex
-                      items-center
-                      rounded-xl
-                      border
-                      border-orange-500/70
-                      bg-orange-500
-                      px-6
-                      py-3
-                      text-sm
-                      font-bold
-                      uppercase
-                      tracking-[1.5px]
-                      text-white
-                      transition
-                      duration-300
-                      hover:bg-orange-600
-                      hover:shadow-lg
-                      hover:shadow-orange-500/20
-                    "
-                  >
+                  View Project
 
-                    View Project
+                  <span className="ml-3 text-lg">
+                    →
+                  </span>
 
-                    <span className="ml-3 text-lg">
-                      →
-                    </span>
+                </Link>
 
-                  </Link>
-
-                </div>
-
-              )}
+              </div>
 
             </div>
 
