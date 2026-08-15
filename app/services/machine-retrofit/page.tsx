@@ -44,8 +44,7 @@ export const metadata: Metadata = {
     description:
       "Modernize existing industrial machinery with PLC, HMI, drive, servo, sensor, electrical and communication system upgrades while preserving usable machine infrastructure.",
 
-    url:
-      "https://www.aenatechnologies.com/services/machine-retrofit",
+    url: "https://www.aenatechnologies.com/services/machine-retrofit",
 
     siteName: "AENA Technologies",
 
@@ -387,7 +386,6 @@ export default function MachineRetrofitPage() {
             </p>
 
           </div>
-
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
 
