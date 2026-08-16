@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "AENA Technologies provides industrial machine retrofit, machine modernization, industrial automation, PLC and HMI programming, electrical engineering, drive systems, servo motion control and commissioning services for industrial machinery in Turkey, Europe, the Middle East and Central Asia.",
+    "AENA Technologies provides industrial machine retrofit, machine modernization and industrial automation engineering services in Adana and across Turkey, with engineering support for manufacturing companies in the Middle East, Central Asia and selected European industrial markets.",
 
   authors: [
     {
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     title:
       "Industrial Machine Retrofit & Automation | AENA Technologies",
     description:
-      "Industrial machine retrofit, automation, PLC programming, electrical engineering, drive systems and machine modernization services.",
+      "Industrial machine retrofit, machine modernization, PLC, HMI, drive, servo, industrial communication and automation engineering services based in Adana, Turkey.",
     siteName: "AENA Technologies",
     locale: "en_US",
   },
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     title:
       "Industrial Machine Retrofit & Automation | AENA Technologies",
     description:
-      "Industrial machine retrofit, industrial automation, PLC, electrical engineering, drive systems and machine modernization services.",
+      "Industrial machine retrofit, automation, PLC, HMI, drives, servo systems, industrial communication and machine modernization services.",
   },
 };
 
@@ -71,48 +71,171 @@ export default function RootLayout({
   /*
    * Structured Data
    *
-   * This connects the website identity with:
-   * - AENA Technologies
-   * - Industrial automation services
-   * - Machine retrofit / modernization
-   * - Service area
-   * - Website
+   * Geographic SEO strategy:
+   *
+   * 1. Primary location:
+   *    Adana / Sarıçam / Hacı Sabancı Organized Industrial Zone
+   *
+   * 2. National industrial markets:
+   *    Mersin, Gaziantep, Osmaniye, Konya, Kayseri,
+   *    Bursa, Kocaeli, Istanbul, Izmir, Ankara,
+   *    Manisa, Sakarya, Tekirdag, Denizli,
+   *    Hatay, Kahramanmaras
+   *
+   * 3. International markets:
+   *    Middle East
+   *    Central Asia
+   *    Selected European industrial markets
    *
    * IMPORTANT:
-   * Do not add an address here until the exact Google Business
-   * Profile business address is confirmed.
+   * Exact street address is intentionally not included here
+   * until the Google Business Profile address and website
+   * business information are fully synchronized.
    */
 
   const structuredData = {
     "@context": "https://schema.org",
+
     "@graph": [
+      /*
+       * ORGANIZATION
+       */
       {
         "@type": "Organization",
-        "@id": "https://www.aenatechnologies.com/#organization",
+
+        "@id":
+          "https://www.aenatechnologies.com/#organization",
 
         name: "AENA Technologies",
 
         url: "https://www.aenatechnologies.com",
 
         description:
-          "Industrial machine retrofit, modernization and industrial automation engineering services including PLC, HMI, drives, servo systems, sensors, industrial communication and machine commissioning.",
+          "AENA Technologies provides industrial machine retrofit, machine modernization and industrial automation engineering services for manufacturing machinery and production equipment.",
 
         areaServed: [
+          /*
+           * PRIMARY MARKET
+           */
+          {
+            "@type": "City",
+            name: "Adana",
+          },
+
+          {
+            "@type": "Place",
+            name: "Sarıçam, Adana",
+          },
+
+          {
+            "@type": "Place",
+            name: "Hacı Sabancı Organized Industrial Zone, Adana",
+          },
+
+          /*
+           * TURKEY - INDUSTRIAL MARKETS
+           */
+          {
+            "@type": "City",
+            name: "Mersin",
+          },
+
+          {
+            "@type": "City",
+            name: "Gaziantep",
+          },
+
+          {
+            "@type": "City",
+            name: "Osmaniye",
+          },
+
+          {
+            "@type": "City",
+            name: "Konya",
+          },
+
+          {
+            "@type": "City",
+            name: "Kayseri",
+          },
+
+          {
+            "@type": "City",
+            name: "Bursa",
+          },
+
+          {
+            "@type": "City",
+            name: "Kocaeli",
+          },
+
+          {
+            "@type": "City",
+            name: "Istanbul",
+          },
+
+          {
+            "@type": "City",
+            name: "Izmir",
+          },
+
+          {
+            "@type": "City",
+            name: "Ankara",
+          },
+
+          {
+            "@type": "City",
+            name: "Manisa",
+          },
+
+          {
+            "@type": "City",
+            name: "Sakarya",
+          },
+
+          {
+            "@type": "City",
+            name: "Tekirdag",
+          },
+
+          {
+            "@type": "City",
+            name: "Denizli",
+          },
+
+          {
+            "@type": "City",
+            name: "Hatay",
+          },
+
+          {
+            "@type": "City",
+            name: "Kahramanmaras",
+          },
+
           {
             "@type": "Country",
             name: "Türkiye",
           },
-          {
-            "@type": "Continent",
-            name: "Europe",
-          },
+
+          /*
+           * INTERNATIONAL
+           */
           {
             "@type": "Place",
             name: "Middle East",
           },
+
           {
             "@type": "Place",
             name: "Central Asia",
+          },
+
+          {
+            "@type": "Place",
+            name: "Europe",
           },
         ],
 
@@ -121,21 +244,34 @@ export default function RootLayout({
           "Machine Modernization",
           "Industrial Automation",
           "PLC Programming",
+          "PLC Modernization",
           "HMI Programming",
-          "Drive Systems",
+          "HMI Modernization",
+          "Industrial Drive Systems",
+          "Drive Replacement",
           "Servo Motion Control",
+          "Sensor Integration",
           "Industrial Communication",
-          "Gateway Integration",
+          "Communication Protocol Mapping",
+          "Industrial Gateway Integration",
+          "Legacy Automation Systems",
           "Electrical Engineering",
           "Electrical Panel Modernization",
-          "Sensor Integration",
+          "Machine Control Systems",
+          "Production Line Automation",
           "Machine Commissioning",
+          "Industrial Automation Troubleshooting",
         ],
       },
 
+      /*
+       * WEBSITE
+       */
       {
         "@type": "WebSite",
-        "@id": "https://www.aenatechnologies.com/#website",
+
+        "@id":
+          "https://www.aenatechnologies.com/#website",
 
         url: "https://www.aenatechnologies.com",
 
@@ -149,8 +285,12 @@ export default function RootLayout({
         inLanguage: "en",
       },
 
+      /*
+       * PROFESSIONAL SERVICE
+       */
       {
         "@type": "ProfessionalService",
+
         "@id":
           "https://www.aenatechnologies.com/#business",
 
@@ -159,7 +299,7 @@ export default function RootLayout({
         url: "https://www.aenatechnologies.com",
 
         description:
-          "Industrial machine retrofit, machine modernization and industrial automation engineering services.",
+          "Industrial machine retrofit, machine modernization and industrial automation engineering services based in Adana, Turkey.",
 
         provider: {
           "@id":
@@ -172,29 +312,138 @@ export default function RootLayout({
           "Industrial Automation",
           "PLC Programming",
           "HMI Programming",
+          "PLC Modernization",
           "Drive Integration",
+          "Drive Replacement",
           "Servo Motion Control",
           "Industrial Communication",
+          "Communication Protocol Mapping",
+          "Industrial Gateway Integration",
           "Electrical Engineering",
+          "Electrical Panel Modernization",
+          "Sensor Integration",
           "Machine Commissioning",
+          "Industrial Automation Troubleshooting",
         ],
 
         areaServed: [
+          /*
+           * PRIMARY
+           */
+          {
+            "@type": "City",
+            name: "Adana",
+          },
+
+          {
+            "@type": "Place",
+            name: "Sarıçam, Adana",
+          },
+
+          /*
+           * TURKEY
+           */
           {
             "@type": "Country",
             name: "Türkiye",
           },
+
           {
-            "@type": "Continent",
-            name: "Europe",
+            "@type": "City",
+            name: "Mersin",
           },
+
+          {
+            "@type": "City",
+            name: "Gaziantep",
+          },
+
+          {
+            "@type": "City",
+            name: "Osmaniye",
+          },
+
+          {
+            "@type": "City",
+            name: "Konya",
+          },
+
+          {
+            "@type": "City",
+            name: "Kayseri",
+          },
+
+          {
+            "@type": "City",
+            name: "Bursa",
+          },
+
+          {
+            "@type": "City",
+            name: "Kocaeli",
+          },
+
+          {
+            "@type": "City",
+            name: "Istanbul",
+          },
+
+          {
+            "@type": "City",
+            name: "Izmir",
+          },
+
+          {
+            "@type": "City",
+            name: "Ankara",
+          },
+
+          {
+            "@type": "City",
+            name: "Manisa",
+          },
+
+          {
+            "@type": "City",
+            name: "Sakarya",
+          },
+
+          {
+            "@type": "City",
+            name: "Tekirdag",
+          },
+
+          {
+            "@type": "City",
+            name: "Denizli",
+          },
+
+          {
+            "@type": "City",
+            name: "Hatay",
+          },
+
+          {
+            "@type": "City",
+            name: "Kahramanmaras",
+          },
+
+          /*
+           * INTERNATIONAL
+           */
           {
             "@type": "Place",
             name: "Middle East",
           },
+
           {
             "@type": "Place",
             name: "Central Asia",
+          },
+
+          {
+            "@type": "Place",
+            name: "Europe",
           },
         ],
       },
@@ -205,7 +454,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[#020617] text-white antialiased">
 
-        {/* Structured Data / SEO */}
+        {/* =========================================
+            STRUCTURED DATA / SEO
+        ========================================= */}
 
         <Script
           id="aena-structured-data"
@@ -215,7 +466,10 @@ export default function RootLayout({
           {JSON.stringify(structuredData)}
         </Script>
 
-        {/* LinkedIn Insight Tag */}
+
+        {/* =========================================
+            LINKEDIN INSIGHT TAG
+        ========================================= */}
 
         <Script
           id="linkedin-insight-tag"
@@ -257,6 +511,9 @@ export default function RootLayout({
           `}
         </Script>
 
+
+        {/* LinkedIn fallback for users without JavaScript */}
+
         <noscript>
           <img
             height="1"
@@ -267,9 +524,26 @@ export default function RootLayout({
           />
         </noscript>
 
+
+        {/* =========================================
+            SITE NAVIGATION
+        ========================================= */}
+
         <Navbar />
 
-        <main>{children}</main>
+
+        {/* =========================================
+            PAGE CONTENT
+        ========================================= */}
+
+        <main>
+          {children}
+        </main>
+
+
+        {/* =========================================
+            FOOTER
+        ========================================= */}
 
         <Footer />
 
