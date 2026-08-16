@@ -3,12 +3,13 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title:
-    "Industrial Machine Retrofit & Modernization Services | AENA Technologies",
+    "Industrial Machine Retrofit & Machine Modernization | AENA Technologies",
 
   description:
-    "Industrial machine retrofit and modernization services by AENA Technologies. PLC, HMI, drive, servo, sensor, electrical panel and industrial communication upgrades for existing machinery.",
+    "Industrial machine retrofit, machine modernization and automation services. AENA Technologies provides PLC, HMI, drive, servo, sensor, electrical panel and industrial communication upgrades for existing machinery in Turkey, including Adana.",
 
   keywords: [
+    // English
     "industrial machine retrofit",
     "machine retrofit",
     "industrial machine modernization",
@@ -37,6 +38,43 @@ export const metadata: Metadata = {
     "industrial automation Turkey",
     "industrial automation retrofit",
     "factory machine modernization",
+
+    // Turkish
+    "makine revizyonu",
+    "makine modernizasyonu",
+    "endüstriyel makine revizyonu",
+    "endüstriyel makine modernizasyonu",
+    "makine otomasyon revizyonu",
+    "makine yenileme",
+    "eski makine modernizasyonu",
+    "endüstriyel otomasyon revizyonu",
+    "PLC revizyonu",
+    "PLC değişimi",
+    "PLC yenileme",
+    "HMI değişimi",
+    "HMI yenileme",
+    "sürücü değişimi",
+    "servo sürücü değişimi",
+    "endüstriyel sürücü revizyonu",
+    "sensör değişimi",
+    "elektrik pano revizyonu",
+    "elektrik pano yenileme",
+    "makine elektrik revizyonu",
+    "endüstriyel haberleşme",
+    "PLC haberleşme",
+    "sürücü haberleşme",
+    "endüstriyel gateway",
+    "makine otomasyonu",
+    "makine otomasyon sistemleri",
+    "makine devreye alma",
+
+    // Local
+    "Adana makine revizyonu",
+    "Adana makine modernizasyonu",
+    "Adana endüstriyel otomasyon",
+    "Adana makine otomasyonu",
+    "Adana PLC programlama",
+    "Adana otomasyon firması",
   ],
 
   alternates: {
@@ -51,10 +89,10 @@ export const metadata: Metadata = {
 
   openGraph: {
     title:
-      "Industrial Machine Retrofit & Modernization Services | AENA Technologies",
+      "Industrial Machine Retrofit & Machine Modernization | AENA Technologies",
 
     description:
-      "Modernize existing industrial machinery with PLC, HMI, drive, servo, sensor, electrical and communication system upgrades while preserving usable machine infrastructure.",
+      "Industrial machine retrofit and modernization services including PLC, HMI, drives, servo systems, sensors, electrical panels and industrial communication.",
 
     url:
       "https://www.aenatechnologies.com/services/machine-retrofit",
@@ -68,10 +106,12 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
+
     title:
-      "Industrial Machine Retrofit & Modernization | AENA Technologies",
+      "Industrial Machine Retrofit & Machine Modernization | AENA Technologies",
+
     description:
-      "Industrial machine retrofit services including PLC, HMI, drives, sensors, electrical panels and communication systems.",
+      "Industrial machine retrofit services including PLC, HMI, drives, sensors, electrical panels and industrial communication.",
   },
 };
 
@@ -143,6 +183,7 @@ export default function MachineRetrofitPage() {
     <main className="bg-slate-950 text-white">
 
       {/* HERO */}
+
       <section className="border-b border-slate-800 py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
@@ -156,6 +197,12 @@ export default function MachineRetrofitPage() {
               Modernization Services
             </span>
           </h1>
+
+          {/* Turkish semantic signal */}
+
+          <p className="mt-6 max-w-4xl text-xl font-semibold leading-8 text-slate-300">
+            Endüstriyel Makine Revizyonu ve Modernizasyonu
+          </p>
 
           <p className="mt-8 max-w-4xl text-xl leading-8 text-slate-400">
             AENA Technologies provides industrial machine retrofit and
@@ -171,7 +218,16 @@ export default function MachineRetrofitPage() {
             electrical infrastructure whenever practical.
           </p>
 
+          <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-400">
+            Türkiye&apos;de makine revizyonu, makine modernizasyonu ve
+            endüstriyel otomasyon sistemlerinin yenilenmesi kapsamında;
+            PLC, HMI, sürücü, servo, sensör, elektrik panosu ve
+            endüstriyel haberleşme sistemleri üzerinde mühendislik
+            hizmetleri sağlıyoruz.
+          </p>
+
           <div className="mt-10 flex flex-wrap gap-4">
+
             <Link
               href="/projects"
               className="rounded-xl bg-orange-500 px-7 py-3.5 text-sm font-bold text-white transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20"
@@ -185,6 +241,7 @@ export default function MachineRetrofitPage() {
             >
               Request a Retrofit Evaluation
             </Link>
+
           </div>
 
         </div>
@@ -192,6 +249,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* MODERNIZATION */}
+
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
@@ -202,6 +260,10 @@ export default function MachineRetrofitPage() {
           <h2 className="mt-4 text-4xl font-bold">
             Modernize Your Existing Machine
           </h2>
+
+          <h3 className="mt-4 text-2xl font-semibold text-slate-300">
+            Makine Revizyonu ve Endüstriyel Makine Modernizasyonu
+          </h3>
 
           <div className="mt-8 max-w-4xl space-y-6 text-lg leading-8 text-slate-400">
 
@@ -214,10 +276,22 @@ export default function MachineRetrofitPage() {
             </p>
 
             <p>
+              Makine revizyonu sırasında mevcut makinenin kullanılabilir
+              mekanik ve elektrik altyapısı korunarak yalnızca ihtiyaç duyulan
+              otomasyon ve kontrol bileşenleri yenilenebilir.
+            </p>
+
+            <p>
               The retrofit process can include electrical engineering,
               industrial automation, PLC programming, HMI modernization,
               drive and servo systems, sensors, industrial communication,
               hydraulics, pneumatics, mechanical integration and software.
+            </p>
+
+            <p>
+              Endüstriyel makine modernizasyonu kapsamında PLC, HMI,
+              sürücüler, servo sistemleri, sensörler, elektrik panosu ve
+              haberleşme sistemleri birlikte veya ayrı ayrı revize edilebilir.
             </p>
 
             <p>
@@ -240,6 +314,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* RETROFIT SCOPE */}
+
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
@@ -251,9 +326,16 @@ export default function MachineRetrofitPage() {
             From Machine Inspection to Commissioning
           </h2>
 
+          <h3 className="mt-4 text-2xl font-semibold text-slate-300">
+            Makine Revizyonu Kapsamı
+          </h3>
+
           <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-400">
             Our machine retrofit projects can cover the complete control
             architecture or selected parts of an existing industrial machine.
+            Makine revizyonu projelerinde elektrik, otomasyon, kontrol ve
+            haberleşme sistemleri mevcut makinenin ihtiyaçlarına göre
+            yenilenebilir.
           </p>
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -280,6 +362,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* COMPONENT COMPATIBILITY */}
+
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
@@ -294,6 +377,10 @@ export default function MachineRetrofitPage() {
               <h2 className="mt-4 text-4xl font-bold">
                 Obsolete or Unavailable Components
               </h2>
+
+              <h3 className="mt-4 text-2xl font-semibold text-slate-300">
+                Eski ve Üretimi Sona Ermiş Otomasyon Bileşenleri
+              </h3>
 
               <p className="mt-6 text-lg leading-8 text-slate-400">
                 Industrial machines often remain mechanically usable even
@@ -311,16 +398,22 @@ export default function MachineRetrofitPage() {
               </p>
 
               <p>
+                Orijinal sürücü, PLC modülü, sensör veya başka bir otomasyon
+                ekipmanı artık bulunamıyorsa uygun eşdeğer ürün ve
+                değişim yöntemleri değerlendirilebilir.
+              </p>
+
+              <p>
                 Compatibility is evaluated according to electrical
                 characteristics, communication protocols, control architecture,
                 mechanical dimensions, signal types and machine requirements.
               </p>
 
               <p>
-                A replacement component that looks technically similar is not
-                necessarily a suitable replacement. Voltage, current, output
-                type, connector structure, communication protocol, addressing
-                and mechanical mounting can all affect compatibility.
+                Bir komponentin yalnızca fiziksel olarak benzer olması yeterli
+                değildir. Gerilim, akım, sinyal tipi, haberleşme protokolü,
+                adresleme, bağlantı yapısı ve mekanik montaj gibi özellikler
+                birlikte değerlendirilmelidir.
               </p>
 
               <p>
@@ -338,6 +431,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* SENSOR REPLACEMENT */}
+
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
@@ -353,15 +447,23 @@ export default function MachineRetrofitPage() {
                 Equivalent Sensor Selection & Integration
               </h2>
 
+              <h3 className="mt-4 text-2xl font-semibold text-slate-300">
+                Sensör Değişimi ve Eşdeğer Sensör Entegrasyonu
+              </h3>
+
             </div>
 
             <div className="space-y-6 text-lg leading-8 text-slate-400">
 
               <p>
                 Industrial sensors can become difficult to source when a
-                machine has been operating for many years. A suitable
-                replacement must match the machine requirements rather than
-                only the physical appearance of the original sensor.
+                machine has been operating for many years.
+              </p>
+
+              <p>
+                Endüstriyel sensör değişiminde yeni sensörün yalnızca fiziksel
+                olarak değil, elektriksel ve sinyal özellikleri açısından da
+                mevcut makineyle uyumlu olması gerekir.
               </p>
 
               <p>
@@ -392,6 +494,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* DRIVE AND COMMUNICATION RETROFIT */}
+
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
@@ -403,6 +506,10 @@ export default function MachineRetrofitPage() {
             Integrating New Drives into Existing Communication Systems
           </h2>
 
+          <h3 className="mt-4 max-w-4xl text-2xl font-semibold text-slate-300">
+            Eski Sürücü Değişimi ve PLC Haberleşme Uyumluluğu
+          </h3>
+
           <div className="mt-10 max-w-4xl space-y-6 text-lg leading-8 text-slate-400">
 
             <p>
@@ -412,9 +519,20 @@ export default function MachineRetrofitPage() {
             </p>
 
             <p>
+              Eski bir sürücünün yeni bir sürücüyle değiştirilmesi sırasında
+              mevcut PLC programının ve makine haberleşme yapısının korunması
+              gerekebilir.
+            </p>
+
+            <p>
               In these situations, the replacement drive may use a different
               communication protocol, register structure, parameter mapping
               or data format than the original device.
+            </p>
+
+            <p>
+              Yeni sürücü ile mevcut PLC arasındaki komut, durum bilgisi,
+              register yapısı ve proses verilerinin eşleştirilmesi gerekebilir.
             </p>
 
             <p>
@@ -428,6 +546,12 @@ export default function MachineRetrofitPage() {
               Where direct communication is not practical, an industrial
               gateway can be used as an intermediate communication layer
               between the existing PLC network and the new drive or device.
+            </p>
+
+            <p>
+              Doğrudan haberleşmenin mümkün olmadığı durumlarda PLC ile yeni
+              sürücü arasında gateway veya protokol dönüştürücü tabanlı bir
+              iletişim katmanı kullanılabilir.
             </p>
 
           </div>
@@ -458,6 +582,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* ENGINEERING APPROACH */}
+
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
         <div className="mx-auto max-w-5xl px-6 text-center sm:px-8">
 
@@ -468,6 +593,10 @@ export default function MachineRetrofitPage() {
           <h2 className="mt-4 text-4xl font-bold">
             One Retrofit Process, Multiple Engineering Disciplines
           </h2>
+
+          <h3 className="mt-4 text-2xl font-semibold text-slate-300">
+            Elektrik, Otomasyon, Mekanik ve Yazılım Entegrasyonu
+          </h3>
 
           <p className="mt-8 text-lg leading-8 text-slate-400">
             A machine retrofit is not limited to replacing electrical
@@ -482,6 +611,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* PROCESS */}
+
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
@@ -494,6 +624,10 @@ export default function MachineRetrofitPage() {
             <h2 className="mt-4 text-4xl font-bold">
               A Structured Machine Modernization Process
             </h2>
+
+            <h3 className="mt-4 text-2xl font-semibold text-slate-300">
+              Makine Revizyonu Süreci
+            </h3>
 
           </div>
 
@@ -527,6 +661,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* WHY RETROFIT */}
+
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
         <div className="mx-auto max-w-5xl px-6 sm:px-8 text-center">
 
@@ -537,6 +672,10 @@ export default function MachineRetrofitPage() {
           <h2 className="mt-4 text-4xl font-bold">
             Extend the Operating Life of Existing Machinery
           </h2>
+
+          <h3 className="mt-4 text-2xl font-semibold text-slate-300">
+            Mevcut Makinelerin Kullanım Ömrünü Uzatın
+          </h3>
 
           <div className="mt-10 grid gap-6 text-left md:grid-cols-3">
 
@@ -586,6 +725,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* COMMISSIONING */}
+
       <section className="py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
@@ -637,6 +777,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* RELATED PROJECTS */}
+
       <section className="border-y border-slate-800 bg-slate-900/40 py-24">
         <div className="mx-auto max-w-7xl px-6 sm:px-8">
 
@@ -717,12 +858,14 @@ export default function MachineRetrofitPage() {
           </div>
 
           <div className="mt-10 text-center">
+
             <Link
               href="/projects"
               className="inline-flex rounded-xl border border-slate-700 bg-slate-950 px-7 py-3.5 text-sm font-bold text-slate-200 transition hover:border-orange-500 hover:text-orange-400"
             >
               View All Engineering Projects
             </Link>
+
           </div>
 
         </div>
@@ -730,6 +873,7 @@ export default function MachineRetrofitPage() {
 
 
       {/* CTA */}
+
       <section className="bg-orange-500 py-20">
 
         <div className="mx-auto max-w-5xl px-6 text-center sm:px-8">
@@ -742,9 +886,18 @@ export default function MachineRetrofitPage() {
             Need to Retrofit an Existing Machine?
           </h2>
 
+          <h3 className="mt-4 text-2xl font-semibold text-orange-100">
+            Makineniz için revizyon veya modernizasyon mu gerekiyor?
+          </h3>
+
           <p className="mt-6 text-xl text-orange-100">
             Send us the machine model, current control system or your
             modernization requirement.
+          </p>
+
+          <p className="mt-4 text-lg text-orange-100">
+            Makine modelini, mevcut PLC ve otomasyon sistemini veya
+            ihtiyacınızı bize iletin.
           </p>
 
           <Link
@@ -761,3 +914,4 @@ export default function MachineRetrofitPage() {
     </main>
   );
 }
+
