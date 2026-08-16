@@ -45,19 +45,26 @@ export const metadata: Metadata = {
 
   openGraph: {
     type: "website",
+
     url: "https://www.aenatechnologies.com",
+
     title:
       "Industrial Machine Retrofit & Automation | AENA Technologies",
+
     description:
       "Industrial machine retrofit, machine modernization, PLC, HMI, drive, servo, industrial communication and automation engineering services based in Adana, Turkey.",
+
     siteName: "AENA Technologies",
+
     locale: "en_US",
   },
 
   twitter: {
     card: "summary_large_image",
+
     title:
       "Industrial Machine Retrofit & Automation | AENA Technologies",
+
     description:
       "Industrial machine retrofit, automation, PLC, HMI, drives, servo systems, industrial communication and machine modernization services.",
   },
@@ -69,28 +76,43 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   /*
-   * Structured Data
+   * ============================================================
+   * STRUCTURED DATA / SEO
+   * ============================================================
    *
    * Geographic SEO strategy:
    *
-   * 1. Primary location:
-   *    Adana / Sarıçam / Hacı Sabancı Organized Industrial Zone
+   * PRIMARY:
+   * - Adana
+   * - Sarıçam
+   * - Hacı Sabancı Organized Industrial Zone
    *
-   * 2. National industrial markets:
-   *    Mersin, Gaziantep, Osmaniye, Konya, Kayseri,
-   *    Bursa, Kocaeli, Istanbul, Izmir, Ankara,
-   *    Manisa, Sakarya, Tekirdag, Denizli,
-   *    Hatay, Kahramanmaras
+   * TURKEY:
+   * - Mersin
+   * - Gaziantep
+   * - Osmaniye
+   * - Konya
+   * - Kayseri
+   * - Bursa
+   * - Kocaeli
+   * - Istanbul
+   * - Izmir
+   * - Ankara
+   * - Manisa
+   * - Sakarya
+   * - Tekirdag
+   * - Denizli
+   * - Hatay
+   * - Kahramanmaras
    *
-   * 3. International markets:
-   *    Middle East
-   *    Central Asia
-   *    Selected European industrial markets
+   * INTERNATIONAL:
+   * - Middle East
+   * - Central Asia
+   * - Europe
    *
    * IMPORTANT:
-   * Exact street address is intentionally not included here
-   * until the Google Business Profile address and website
-   * business information are fully synchronized.
+   * Exact street address is intentionally not included yet.
+   * Google Business Profile verification is still in progress.
    */
 
   const structuredData = {
@@ -98,7 +120,9 @@ export default function RootLayout({
 
     "@graph": [
       /*
+       * ========================================================
        * ORGANIZATION
+       * ========================================================
        */
       {
         "@type": "Organization",
@@ -115,7 +139,7 @@ export default function RootLayout({
 
         areaServed: [
           /*
-           * PRIMARY MARKET
+           * PRIMARY LOCATION
            */
           {
             "@type": "City",
@@ -133,8 +157,13 @@ export default function RootLayout({
           },
 
           /*
-           * TURKEY - INDUSTRIAL MARKETS
+           * TURKEY
            */
+          {
+            "@type": "Country",
+            name: "Türkiye",
+          },
+
           {
             "@type": "City",
             name: "Mersin",
@@ -215,11 +244,6 @@ export default function RootLayout({
             name: "Kahramanmaras",
           },
 
-          {
-            "@type": "Country",
-            name: "Türkiye",
-          },
-
           /*
            * INTERNATIONAL
            */
@@ -240,6 +264,9 @@ export default function RootLayout({
         ],
 
         knowsAbout: [
+          /*
+           * ENGLISH SEARCH TOPICS
+           */
           "Industrial Machine Retrofit",
           "Machine Modernization",
           "Industrial Automation",
@@ -261,11 +288,34 @@ export default function RootLayout({
           "Production Line Automation",
           "Machine Commissioning",
           "Industrial Automation Troubleshooting",
+
+          /*
+           * TURKISH TOPICS
+           */
+          "Makine Revizyonu",
+          "Makine Modernizasyonu",
+          "Endüstriyel Otomasyon",
+          "PLC Programlama",
+          "PLC Yenileme",
+          "HMI Programlama",
+          "HMI Yenileme",
+          "Sürücü Değişimi",
+          "Servo Sistemleri",
+          "Sensör Entegrasyonu",
+          "Endüstriyel Haberleşme",
+          "Endüstriyel Gateway",
+          "Elektrik Pano Revizyonu",
+          "Elektrik Mühendisliği",
+          "Üretim Hattı Otomasyonu",
+          "Makine Devreye Alma",
+          "Endüstriyel Otomasyon Arıza Giderme",
         ],
       },
 
       /*
+       * ========================================================
        * WEBSITE
+       * ========================================================
        */
       {
         "@type": "WebSite",
@@ -286,7 +336,9 @@ export default function RootLayout({
       },
 
       /*
+       * ========================================================
        * PROFESSIONAL SERVICE
+       * ========================================================
        */
       {
         "@type": "ProfessionalService",
@@ -324,6 +376,21 @@ export default function RootLayout({
           "Sensor Integration",
           "Machine Commissioning",
           "Industrial Automation Troubleshooting",
+
+          /*
+           * Turkish service concepts
+           */
+          "Makine Revizyonu",
+          "Makine Modernizasyonu",
+          "Endüstriyel Otomasyon",
+          "PLC Programlama",
+          "HMI Programlama",
+          "Sürücü Değişimi",
+          "Servo Sistemleri",
+          "Sensör Entegrasyonu",
+          "Endüstriyel Haberleşme",
+          "Elektrik Pano Revizyonu",
+          "Makine Devreye Alma",
         ],
 
         areaServed: [
@@ -338,6 +405,11 @@ export default function RootLayout({
           {
             "@type": "Place",
             name: "Sarıçam, Adana",
+          },
+
+          {
+            "@type": "Place",
+            name: "Hacı Sabancı Organized Industrial Zone, Adana",
           },
 
           /*
@@ -454,9 +526,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[#020617] text-white antialiased">
 
-        {/* =========================================
+        {/* =====================================================
             STRUCTURED DATA / SEO
-        ========================================= */}
+        ====================================================== */}
 
         <Script
           id="aena-structured-data"
@@ -466,10 +538,9 @@ export default function RootLayout({
           {JSON.stringify(structuredData)}
         </Script>
 
-
-        {/* =========================================
+        {/* =====================================================
             LINKEDIN INSIGHT TAG
-        ========================================= */}
+        ====================================================== */}
 
         <Script
           id="linkedin-insight-tag"
@@ -511,7 +582,6 @@ export default function RootLayout({
           `}
         </Script>
 
-
         {/* LinkedIn fallback for users without JavaScript */}
 
         <noscript>
@@ -524,26 +594,23 @@ export default function RootLayout({
           />
         </noscript>
 
-
-        {/* =========================================
+        {/* =====================================================
             SITE NAVIGATION
-        ========================================= */}
+        ====================================================== */}
 
         <Navbar />
 
-
-        {/* =========================================
+        {/* =====================================================
             PAGE CONTENT
-        ========================================= */}
+        ====================================================== */}
 
         <main>
           {children}
         </main>
 
-
-        {/* =========================================
+        {/* =====================================================
             FOOTER
-        ========================================= */}
+        ====================================================== */}
 
         <Footer />
 
