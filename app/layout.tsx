@@ -68,19 +68,165 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  /*
+   * Structured Data
+   *
+   * This connects the website identity with:
+   * - AENA Technologies
+   * - Industrial automation services
+   * - Machine retrofit / modernization
+   * - Service area
+   * - Website
+   *
+   * IMPORTANT:
+   * Do not add an address here until the exact Google Business
+   * Profile business address is confirmed.
+   */
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://www.aenatechnologies.com/#organization",
+
+        name: "AENA Technologies",
+
+        url: "https://www.aenatechnologies.com",
+
+        description:
+          "Industrial machine retrofit, modernization and industrial automation engineering services including PLC, HMI, drives, servo systems, sensors, industrial communication and machine commissioning.",
+
+        areaServed: [
+          {
+            "@type": "Country",
+            name: "Türkiye",
+          },
+          {
+            "@type": "Continent",
+            name: "Europe",
+          },
+          {
+            "@type": "Place",
+            name: "Middle East",
+          },
+          {
+            "@type": "Place",
+            name: "Central Asia",
+          },
+        ],
+
+        knowsAbout: [
+          "Industrial Machine Retrofit",
+          "Machine Modernization",
+          "Industrial Automation",
+          "PLC Programming",
+          "HMI Programming",
+          "Drive Systems",
+          "Servo Motion Control",
+          "Industrial Communication",
+          "Gateway Integration",
+          "Electrical Engineering",
+          "Electrical Panel Modernization",
+          "Sensor Integration",
+          "Machine Commissioning",
+        ],
+      },
+
+      {
+        "@type": "WebSite",
+        "@id": "https://www.aenatechnologies.com/#website",
+
+        url: "https://www.aenatechnologies.com",
+
+        name: "AENA Technologies",
+
+        publisher: {
+          "@id":
+            "https://www.aenatechnologies.com/#organization",
+        },
+
+        inLanguage: "en",
+      },
+
+      {
+        "@type": "ProfessionalService",
+        "@id":
+          "https://www.aenatechnologies.com/#business",
+
+        name: "AENA Technologies",
+
+        url: "https://www.aenatechnologies.com",
+
+        description:
+          "Industrial machine retrofit, machine modernization and industrial automation engineering services.",
+
+        provider: {
+          "@id":
+            "https://www.aenatechnologies.com/#organization",
+        },
+
+        serviceType: [
+          "Industrial Machine Retrofit",
+          "Machine Modernization",
+          "Industrial Automation",
+          "PLC Programming",
+          "HMI Programming",
+          "Drive Integration",
+          "Servo Motion Control",
+          "Industrial Communication",
+          "Electrical Engineering",
+          "Machine Commissioning",
+        ],
+
+        areaServed: [
+          {
+            "@type": "Country",
+            name: "Türkiye",
+          },
+          {
+            "@type": "Continent",
+            name: "Europe",
+          },
+          {
+            "@type": "Place",
+            name: "Middle East",
+          },
+          {
+            "@type": "Place",
+            name: "Central Asia",
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <html lang="en">
       <body className="bg-[#020617] text-white antialiased">
 
+        {/* Structured Data / SEO */}
+
+        <Script
+          id="aena-structured-data"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+        >
+          {JSON.stringify(structuredData)}
+        </Script>
+
         {/* LinkedIn Insight Tag */}
+
         <Script
           id="linkedin-insight-tag"
           strategy="afterInteractive"
         >
           {`
             _linkedin_partner_id = "10671521";
+
             window._linkedin_data_partner_ids =
               window._linkedin_data_partner_ids || [];
+
             window._linkedin_data_partner_ids.push(
               _linkedin_partner_id
             );
