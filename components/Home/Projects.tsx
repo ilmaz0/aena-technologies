@@ -9,6 +9,7 @@ export default function Projects() {
         "Complete electrical redesign, PLC software redevelopment and mechanical optimization to restore production speed and improve machine reliability.",
       technologies:
         "Siemens PLC • Electrical Design • Machine Retrofit • Commissioning",
+      href: "/projects/stretch-transfer-machine",
     },
     {
       title: "Plastic Bag Machine Modernization",
@@ -17,6 +18,7 @@ export default function Projects() {
         "Electrical, electronic and mechanical refurbishment including Yaskawa drives, UTC electronics, sensor replacement and machine commissioning.",
       technologies:
         "Yaskawa • UTC Electronics • Servo • Sensors • Commissioning",
+      href: "/projects/hemigstone-bag-cutting-machine",
     },
     {
       title: "PET Flake Washing System Automation",
@@ -25,6 +27,7 @@ export default function Projects() {
         "Complete automation project featuring automatic chemical dosing, level control and custom slip-ring engineering for a PET recycling process.",
       technologies:
         "PLC • Process Automation • Chemical Dosing • Level Control • Slip Ring",
+      href: "/projects/flake-washing-line",
     },
     {
       title: "Stretch Film Production Line Upgrade",
@@ -33,6 +36,7 @@ export default function Projects() {
         "Electrical cabinet renovation, pressure sensor integration, cooling system improvements and production reliability upgrades.",
       technologies:
         "Siemens • Pressure Sensors • Electrical Panel • Cooling Systems",
+      href: "/projects/stretch-film-extrusion-line",
     },
     {
       title: "Colines Gauge Control System",
@@ -41,6 +45,7 @@ export default function Projects() {
         "Restored a non-functional thickness measurement system and prepared the production line for automatic heater-zone control.",
       technologies:
         "Calibration • Electronics • PLC • Gauge Control",
+      href: "/projects/colines-thickness-gauge",
     },
     {
       title: "Cable Pay-Off Drive Optimization",
@@ -49,6 +54,7 @@ export default function Projects() {
         "Optimized Siemens drive parameters and restored stable cable unwinding performance for improved production operation.",
       technologies:
         "Siemens Drive • Drive Parameters • Motion Control",
+      href: "/projects/cable-pay-off-drive",
     },
   ];
 
@@ -141,15 +147,19 @@ export default function Projects() {
 
               </div>
 
-              {/* FUTURE CASE STUDY AREA */}
+              {/* PROJECT DETAILS */}
               <div className="mt-7">
 
-                <span className="inline-flex items-center text-sm font-semibold text-slate-300 transition group-hover:text-orange-400">
+                <Link
+                  href={project.href}
+                  className="inline-flex items-center text-sm font-semibold text-slate-300 transition group-hover:text-orange-400"
+                >
                   Project Details
+
                   <span className="ml-2 transition-transform duration-300 group-hover:translate-x-1">
                     →
                   </span>
-                </span>
+                </Link>
 
               </div>
 
