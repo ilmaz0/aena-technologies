@@ -162,7 +162,6 @@ export default function Hero() {
 
           </div>
 
-
           {/* RIGHT SIDE */}
           <div className="relative min-w-0">
 
@@ -213,7 +212,6 @@ export default function Hero() {
 
                 </div>
 
-
                 {/* CENTRAL MACHINE */}
                 <div className="mt-7 rounded-2xl border border-slate-700 bg-slate-950/80 p-5">
 
@@ -249,7 +247,6 @@ export default function Hero() {
 
                   </div>
 
-
                   {/* PROCESS FLOW */}
                   <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
 
@@ -282,6 +279,119 @@ export default function Hero() {
 
                 </div>
 
+                {/* AENA RETROFIT AI */}
+                <div
+                  className="
+                    mt-5
+                    rounded-2xl
+                    border
+                    border-orange-500/40
+                    bg-gradient-to-r
+                    from-orange-500/10
+                    via-orange-500/5
+                    to-transparent
+                    p-5
+                    shadow-lg
+                    shadow-orange-500/5
+                  "
+                >
+
+                  <div className="flex items-start gap-4">
+
+                    {/* AI ICON */}
+                    <div
+                      className="
+                        flex
+                        h-14
+                        w-14
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-xl
+                        border
+                        border-orange-500/40
+                        bg-orange-500/10
+                        text-2xl
+                      "
+                    >
+                      AI
+                    </div>
+
+                    {/* AI CONTENT */}
+                    <div className="min-w-0">
+
+                      <div className="flex flex-wrap items-center gap-2">
+
+                        <p className="text-base font-bold text-white">
+                          AENA Retrofit AI
+                        </p>
+
+                        <span
+                          className="
+                            rounded-full
+                            border
+                            border-orange-500/30
+                            bg-orange-500/10
+                            px-2
+                            py-0.5
+                            text-[10px]
+                            font-semibold
+                            uppercase
+                            tracking-wider
+                            text-orange-400
+                          "
+                        >
+                          Next Generation
+                        </span>
+
+                      </div>
+
+                      <p className="mt-2 text-sm leading-6 text-slate-300">
+                        AI-assisted field diagnostics and troubleshooting
+                        designed to help technicians analyze machine faults
+                        using visual, voice and command-based interaction.
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                  {/* AI CAPABILITIES */}
+                  <div className="mt-4 grid grid-cols-3 gap-2">
+
+                    <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-center">
+                      <p className="text-[10px] uppercase tracking-wider text-slate-500">
+                        INPUT
+                      </p>
+
+                      <p className="mt-1 text-xs font-semibold text-slate-200">
+                        Voice / Image
+                      </p>
+                    </div>
+
+                    <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-center">
+                      <p className="text-[10px] uppercase tracking-wider text-slate-500">
+                        ANALYSIS
+                      </p>
+
+                      <p className="mt-1 text-xs font-semibold text-slate-200">
+                        AI Diagnostics
+                      </p>
+                    </div>
+
+                    <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-center">
+                      <p className="text-[10px] uppercase tracking-wider text-slate-500">
+                        OUTPUT
+                      </p>
+
+                      <p className="mt-1 text-xs font-semibold text-slate-200">
+                        Guided Solution
+                      </p>
+                    </div>
+
+                  </div>
+
+                </div>
 
                 {/* BENEFITS */}
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -296,7 +406,6 @@ export default function Hero() {
                     </p>
                   </div>
 
-
                   <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
                     <p className="text-xs uppercase tracking-wider text-slate-500">
                       Goal
@@ -306,7 +415,6 @@ export default function Hero() {
                       Reduce Downtime
                     </p>
                   </div>
-
 
                   <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
                     <p className="text-xs uppercase tracking-wider text-slate-500">
@@ -319,7 +427,6 @@ export default function Hero() {
                   </div>
 
                 </div>
-
 
                 {/* MESSAGE */}
                 <div className="mt-5 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
@@ -339,11 +446,11 @@ export default function Hero() {
 
         </div>
 
-
         {/* TECHNOLOGIES */}
         <div className="mt-14 border-t border-slate-800 pt-9 sm:mt-16 sm:pt-10">
 
           <div>
+
             <p className="text-xs uppercase tracking-[3px] text-slate-500">
               Technologies We Work With
             </p>
@@ -358,8 +465,8 @@ export default function Hero() {
               Omron, Yaskawa, Festo, SMC, IFM, Lenze, Leuze, Delta and Rittal
               industrial automation technologies.
             </p>
-          </div>
 
+          </div>
 
           {/* BRAND GRID */}
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
@@ -384,6 +491,7 @@ export default function Hero() {
                   hover:bg-slate-800
                 "
               >
+
                 <Image
                   src={`/logos/${brand}.png`}
                   alt={`${brand} industrial automation`}
@@ -395,6 +503,7 @@ export default function Hero() {
                     object-contain
                   "
                 />
+
               </div>
             ))}
 
