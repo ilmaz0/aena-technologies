@@ -3,58 +3,69 @@
 import { useState } from "react";
 
 export default function RetrofitAIPage() {
-  const [problem, setProblem] = useState("");
-  const [imageName, setImageName] = useState("");
-  const [analyzing, setAnalyzing] = useState(false);
-  const [analyzed, setAnalyzed] = useState(false);
+  const [symptom, setSymptom] = useState("");
 
-  const handleAnalyze = () => {
-    if (!problem.trim() && !imageName) return;
+  const [machine, setMachine] = useState({
+    machineName: "",
+    machineBrand: "",
+    machineModel: "",
+    plcBrand: "",
+    driveBrand: "",
+    driveModel: "",
+  });
 
-    setAnalyzing(true);
-    setAnalyzed(false);
+  const [system, setSystem] = useState("drive");
 
-    setTimeout(() => {
-      setAnalyzing(false);
-      setAnalyzed(true);
-    }, 1200);
-  };
+  const systems = [
+    "PLC",
+    "HMI",
+    "Drive",
+    "Servo",
+    "Sensor",
+    "Motor",
+    "Electrical Panel",
+    "Communication",
+    "Mechanical",
+    "Pneumatic",
+    "Hydraulic",
+    "Process",
+  ];
 
   return (
     <main className="min-h-screen bg-[#020617] text-white">
 
-      {/* HERO */}
+      {/* HEADER */}
 
       <section className="border-b border-slate-800">
 
-        <div className="mx-auto max-w-7xl px-6 py-20 sm:px-8 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6 py-10">
 
-          <div className="max-w-4xl">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
-            <div className="flex items-center gap-3">
+            <div>
 
-              <span className="h-px w-10 bg-orange-500" />
-
-              <p className="text-xs font-semibold uppercase tracking-[4px] text-orange-400 sm:text-sm">
+              <p className="text-xs font-semibold uppercase tracking-[4px] text-orange-400">
                 AENA Technologies
+              </p>
+
+              <h1 className="mt-3 text-3xl font-bold sm:text-4xl">
+                AENA Retrofit AI
+              </h1>
+
+              <p className="mt-3 max-w-2xl text-slate-400">
+                Industrial machine troubleshooting and retrofit engineering
+                intelligence.
               </p>
 
             </div>
 
-            <h1 className="mt-6 text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
-              AENA
-              <span className="text-orange-500"> Retrofit AI</span>
-            </h1>
+            <div className="flex items-center gap-2 text-sm text-emerald-400">
 
-            <h2 className="mt-6 text-2xl font-bold text-slate-200 sm:text-3xl">
-              Industrial Machine Troubleshooting Assistant
-            </h2>
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
 
-            <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-400 sm:text-xl">
-              Describe a machine problem, upload an image or use voice input.
-              AENA Retrofit AI is designed to help technicians analyze
-              industrial machine faults and identify the next diagnostic step.
-            </p>
+              ENGINEERING AI
+
+            </div>
 
           </div>
 
@@ -63,427 +74,472 @@ export default function RetrofitAIPage() {
       </section>
 
 
-      {/* AI WORKSPACE */}
+      {/* MAIN */}
 
-      <section className="py-16 sm:py-20">
+      <section className="mx-auto max-w-7xl px-6 py-12">
 
-        <div className="mx-auto max-w-7xl px-6 sm:px-8">
-
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
 
 
-            {/* INPUT PANEL */}
+          {/* LEFT */}
 
-            <div className="rounded-3xl border border-slate-800 bg-slate-950 p-7 sm:p-9">
+          <div className="space-y-8">
 
-              <div className="flex items-center justify-between">
 
-                <div>
+            {/* MACHINE INFORMATION */}
 
-                  <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-                    Step 01
-                  </p>
+            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
 
-                  <h2 className="mt-2 text-2xl font-bold">
-                    Describe the Problem
-                  </h2>
+              <div className="mb-6">
 
-                </div>
+                <p className="text-xs uppercase tracking-[3px] text-orange-400">
+                  Step 01
+                </p>
 
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-orange-500/30 bg-orange-500/10 text-lg">
-                  AI
-                </div>
+                <h2 className="mt-2 text-xl font-bold">
+                  Machine Information
+                </h2>
+
+                <p className="mt-2 text-sm text-slate-500">
+                  Identify the machine and automation infrastructure.
+                </p>
 
               </div>
 
 
-              <p className="mt-4 text-sm leading-7 text-slate-400">
-                Tell AENA Retrofit AI what is happening with the machine.
-                Include the machine type, component, alarm or symptom when
-                possible.
-              </p>
+              <div className="grid gap-4 md:grid-cols-2">
+
+                <Input
+                  label="Machine"
+                  value={machine.machineName}
+                  onChange={(value) =>
+                    setMachine({
+                      ...machine,
+                      machineName: value,
+                    })
+                  }
+                />
+
+                <Input
+                  label="Machine Brand"
+                  value={machine.machineBrand}
+                  onChange={(value) =>
+                    setMachine({
+                      ...machine,
+                      machineBrand: value,
+                    })
+                  }
+                />
+
+                <Input
+                  label="Machine Model"
+                  value={machine.machineModel}
+                  onChange={(value) =>
+                    setMachine({
+                      ...machine,
+                      machineModel: value,
+                    })
+                  }
+                />
+
+                <Input
+                  label="PLC Brand"
+                  value={machine.plcBrand}
+                  onChange={(value) =>
+                    setMachine({
+                      ...machine,
+                      plcBrand: value,
+                    })
+                  }
+                />
+
+                <Input
+                  label="Drive Brand"
+                  value={machine.driveBrand}
+                  onChange={(value) =>
+                    setMachine({
+                      ...machine,
+                      driveBrand: value,
+                    })
+                  }
+                />
+
+                <Input
+                  label="Drive Model"
+                  value={machine.driveModel}
+                  onChange={(value) =>
+                    setMachine({
+                      ...machine,
+                      driveModel: value,
+                    })
+                  }
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* FAULT */}
+
+            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+
+              <div className="mb-6">
+
+                <p className="text-xs uppercase tracking-[3px] text-orange-400">
+                  Step 02
+                </p>
+
+                <h2 className="mt-2 text-xl font-bold">
+                  Describe the Problem
+                </h2>
+
+                <p className="mt-2 text-sm text-slate-500">
+                  Describe what the machine is doing, what changed and what
+                  happened before the failure.
+                </p>
+
+              </div>
 
 
               <textarea
-                value={problem}
-                onChange={(event) => setProblem(event.target.value)}
-                placeholder="Example: The drive is powered but the motor does not start. The PLC shows the machine in RUN state..."
+                value={symptom}
+                onChange={(e) => setSymptom(e.target.value)}
+                placeholder="Example: The machine was running normally. After replacing the drive, the motor starts but production speed cannot be reached..."
                 className="
-                  mt-7
-                  min-h-[190px]
+                  min-h-[180px]
                   w-full
                   resize-none
-                  rounded-2xl
+                  rounded-xl
                   border
                   border-slate-700
                   bg-slate-900
-                  p-5
+                  p-4
                   text-sm
                   leading-7
                   text-white
                   outline-none
                   placeholder:text-slate-600
                   focus:border-orange-500
-                  focus:ring-1
-                  focus:ring-orange-500
                 "
               />
-
-
-              {/* INPUT ACTIONS */}
-
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-
-                <label
-                  className="
-                    flex
-                    cursor-pointer
-                    items-center
-                    justify-center
-                    rounded-xl
-                    border
-                    border-slate-700
-                    bg-slate-900
-                    px-5
-                    py-4
-                    text-sm
-                    font-semibold
-                    text-slate-300
-                    transition
-                    hover:border-orange-500
-                    hover:text-white
-                  "
-                >
-
-                  <span className="mr-2 text-lg">
-                    📷
-                  </span>
-
-                  {imageName || "Upload Machine Image"}
-
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(event) => {
-                      const file = event.target.files?.[0];
-
-                      if (file) {
-                        setImageName(file.name);
-                      }
-                    }}
-                  />
-
-                </label>
-
-
-                <button
-                  type="button"
-                  className="
-                    flex
-                    items-center
-                    justify-center
-                    rounded-xl
-                    border
-                    border-slate-700
-                    bg-slate-900
-                    px-5
-                    py-4
-                    text-sm
-                    font-semibold
-                    text-slate-300
-                    transition
-                    hover:border-orange-500
-                    hover:text-white
-                  "
-                >
-
-                  <span className="mr-2 text-lg">
-                    🎤
-                  </span>
-
-                  Voice Input
-
-                </button>
-
-              </div>
-
-
-              {/* ANALYZE BUTTON */}
-
-              <button
-                type="button"
-                onClick={handleAnalyze}
-                disabled={
-                  analyzing ||
-                  (!problem.trim() && !imageName)
-                }
-                className="
-                  mt-5
-                  w-full
-                  rounded-xl
-                  bg-orange-500
-                  px-6
-                  py-4
-                  text-sm
-                  font-bold
-                  text-white
-                  transition
-                  duration-300
-                  hover:bg-orange-600
-                  hover:shadow-lg
-                  hover:shadow-orange-500/20
-                  disabled:cursor-not-allowed
-                  disabled:opacity-40
-                "
-              >
-
-                {analyzing
-                  ? "Analyzing Machine Problem..."
-                  : "Analyze Problem →"}
-
-              </button>
 
             </div>
 
 
-            {/* ANALYSIS PANEL */}
+            {/* SYSTEM */}
 
-            <div className="rounded-3xl border border-slate-800 bg-slate-950 p-7 sm:p-9">
+            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
 
-              <div>
+              <div className="mb-6">
 
-                <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-                  Step 02
+                <p className="text-xs uppercase tracking-[3px] text-orange-400">
+                  Step 03
                 </p>
 
-                <h2 className="mt-2 text-2xl font-bold">
-                  AI Diagnostic Analysis
+                <h2 className="mt-2 text-xl font-bold">
+                  Affected System
                 </h2>
 
               </div>
 
 
-              {!analyzed ? (
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
 
-                <div className="mt-8 rounded-2xl border border-dashed border-slate-700 bg-slate-900/50 p-8">
+                {systems.map((item) => {
 
-                  <div className="text-4xl">
-                    ⚙️
-                  </div>
+                  const value = item.toLowerCase().replace(" ", "-");
 
-                  <h3 className="mt-5 text-xl font-bold">
-                    Waiting for Machine Information
-                  </h3>
+                  const active = system === value;
 
-                  <p className="mt-3 text-sm leading-7 text-slate-500">
-                    Describe the machine problem or upload an image to begin
-                    the diagnostic process.
-                  </p>
+                  return (
+                    <button
+                      key={item}
+                      onClick={() => setSystem(value)}
+                      className={`
+                        rounded-xl
+                        border
+                        px-4
+                        py-4
+                        text-sm
+                        font-semibold
+                        transition
+                        ${
+                          active
+                            ? "border-orange-500 bg-orange-500/10 text-orange-400"
+                            : "border-slate-800 bg-slate-900 text-slate-400 hover:border-slate-600 hover:text-white"
+                        }
+                      `}
+                    >
+                      {item}
+                    </button>
+                  );
 
-                </div>
+                })}
 
-              ) : (
-
-                <div className="mt-8 space-y-4">
-
-                  {/* MACHINE */}
-
-                  <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-
-                    <p className="text-xs uppercase tracking-[2px] text-slate-500">
-                      Machine
-                    </p>
-
-                    <p className="mt-2 font-semibold text-white">
-                      Industrial Machine
-                    </p>
-
-                  </div>
-
-
-                  {/* COMPONENT */}
-
-                  <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-
-                    <p className="text-xs uppercase tracking-[2px] text-slate-500">
-                      Component
-                    </p>
-
-                    <p className="mt-2 font-semibold text-white">
-                      Automation / Drive System
-                    </p>
-
-                  </div>
-
-
-                  {/* POSSIBLE CAUSES */}
-
-                  <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
-
-                    <p className="text-xs uppercase tracking-[2px] text-slate-500">
-                      Possible Causes
-                    </p>
-
-                    <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-400">
-
-                      <li>
-                        • Control or enable signal
-                      </li>
-
-                      <li>
-                        • Communication status
-                      </li>
-
-                      <li>
-                        • Drive or motor fault
-                      </li>
-
-                    </ul>
-
-                  </div>
-
-
-                  {/* NEXT STEP */}
-
-                  <div className="rounded-2xl border border-orange-500/20 bg-orange-500/5 p-5">
-
-                    <p className="text-xs uppercase tracking-[2px] text-orange-400">
-                      Recommended Next Step
-                    </p>
-
-                    <p className="mt-3 text-sm leading-7 text-slate-300">
-                      Check the machine control signal and the drive status
-                      before replacing any component.
-                    </p>
-
-                  </div>
-
-                </div>
-
-              )}
+              </div>
 
             </div>
 
-          </div>
 
-        </div>
+            {/* FIELD EVIDENCE */}
 
-      </section>
+            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
 
+              <div className="mb-6">
 
-      {/* HOW IT WILL WORK */}
+                <p className="text-xs uppercase tracking-[3px] text-orange-400">
+                  Step 04
+                </p>
 
-      <section className="border-y border-slate-800 bg-slate-900/30 py-20">
+                <h2 className="mt-2 text-xl font-bold">
+                  Field Evidence
+                </h2>
 
-        <div className="mx-auto max-w-7xl px-6 sm:px-8">
-
-          <div className="text-center">
-
-            <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-              AENA Retrofit AI
-            </p>
-
-            <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
-              From Machine Symptom to Diagnostic Action
-            </h2>
-
-            <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-slate-400">
-              The system will combine technician input, machine images,
-              engineering knowledge and machine data to support
-              troubleshooting.
-            </p>
-
-          </div>
-
-
-          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-
-            {[
-              {
-                number: "01",
-                title: "Describe",
-                text: "Technician describes the machine problem.",
-              },
-              {
-                number: "02",
-                title: "Identify",
-                text: "AI identifies the machine and possible component.",
-              },
-              {
-                number: "03",
-                title: "Diagnose",
-                text: "Engineering knowledge is used to analyze the problem.",
-              },
-              {
-                number: "04",
-                title: "Guide",
-                text: "Technician receives structured diagnostic steps.",
-              },
-            ].map((item) => (
-
-              <div
-                key={item.number}
-                className="
-                  rounded-2xl
-                  border
-                  border-slate-800
-                  bg-slate-950
-                  p-7
-                  transition
-                  duration-300
-                  hover:-translate-y-1
-                  hover:border-orange-500/60
-                "
-              >
-
-                <span className="text-3xl font-extrabold text-orange-500">
-                  {item.number}
-                </span>
-
-                <h3 className="mt-5 text-xl font-bold">
-                  {item.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-7 text-slate-400">
-                  {item.text}
+                <p className="mt-2 text-sm text-slate-500">
+                  Add information collected directly from the machine.
                 </p>
 
               </div>
 
-            ))}
+
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+
+                <EvidenceButton
+                  icon="📷"
+                  title="Machine Image"
+                />
+
+                <EvidenceButton
+                  icon="🎙️"
+                  title="Voice Recording"
+                />
+
+                <EvidenceButton
+                  icon="🎥"
+                  title="Machine Video"
+                />
+
+                <EvidenceButton
+                  icon="📄"
+                  title="Fault Report"
+                />
+
+              </div>
+
+            </div>
+
+
+            {/* ANALYZE */}
+
+            <button
+              className="
+                w-full
+                rounded-xl
+                bg-orange-500
+                px-6
+                py-4
+                text-sm
+                font-bold
+                text-white
+                transition
+                hover:bg-orange-600
+                hover:shadow-lg
+                hover:shadow-orange-500/20
+              "
+              onClick={() => {
+                console.log({
+                  machine,
+                  symptom,
+                  system,
+                });
+              }}
+            >
+              Analyze Machine Problem →
+            </button>
 
           </div>
 
-        </div>
 
-      </section>
+          {/* RIGHT */}
+
+          <aside className="h-fit rounded-2xl border border-slate-800 bg-slate-950 p-6 lg:sticky lg:top-8">
+
+            <p className="text-xs uppercase tracking-[3px] text-orange-400">
+              AENA Retrofit Intelligence
+            </p>
+
+            <h2 className="mt-3 text-xl font-bold">
+              Engineering Diagnosis
+            </h2>
+
+            <p className="mt-4 text-sm leading-7 text-slate-500">
+              The system will combine machine information, operator
+              description, field evidence and engineering knowledge to
+              identify possible causes and recommend diagnostic actions.
+            </p>
 
 
-      {/* FOOTER MESSAGE */}
+            <div className="mt-8 space-y-4">
 
-      <section className="py-20">
+              <Status
+                number="01"
+                title="Machine Context"
+              />
 
-        <div className="mx-auto max-w-4xl px-6 text-center sm:px-8">
+              <Status
+                number="02"
+                title="Fault Analysis"
+              />
 
-          <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-400">
-            AENA Engineering Intelligence
-          </p>
+              <Status
+                number="03"
+                title="Evidence Analysis"
+              />
 
-          <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
-            Turning Field Experience Into Engineering Intelligence
-          </h2>
+              <Status
+                number="04"
+                title="Engineering Diagnosis"
+              />
 
-          <p className="mt-6 text-lg leading-8 text-slate-400">
-            AENA Retrofit AI is being developed to combine industrial
-            automation knowledge, machine retrofit experience and field
-            troubleshooting into a practical engineering assistant.
-          </p>
+              <Status
+                number="05"
+                title="Recommended Action"
+              />
+
+            </div>
+
+
+            <div className="mt-8 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
+
+              <p className="text-xs uppercase tracking-[2px] text-orange-400">
+                AENA AI
+              </p>
+
+              <p className="mt-2 text-sm leading-6 text-slate-400">
+                Built for industrial machine troubleshooting, retrofit and
+                modernization.
+              </p>
+
+            </div>
+
+          </aside>
 
         </div>
 
       </section>
 
     </main>
+  );
+}
+
+
+/* INPUT */
+
+function Input({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+
+  return (
+    <div>
+
+      <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">
+        {label}
+      </label>
+
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="
+          w-full
+          rounded-xl
+          border
+          border-slate-700
+          bg-slate-900
+          px-4
+          py-3
+          text-sm
+          text-white
+          outline-none
+          placeholder:text-slate-600
+          focus:border-orange-500
+        "
+      />
+
+    </div>
+  );
+}
+
+
+/* EVIDENCE BUTTON */
+
+function EvidenceButton({
+  icon,
+  title,
+}: {
+  icon: string;
+  title: string;
+}) {
+
+  return (
+    <button
+      className="
+        rounded-xl
+        border
+        border-slate-800
+        bg-slate-900
+        p-5
+        text-left
+        transition
+        hover:border-orange-500/50
+        hover:bg-slate-800
+      "
+    >
+
+      <div className="text-2xl">
+        {icon}
+      </div>
+
+      <p className="mt-3 text-sm font-semibold text-slate-200">
+        {title}
+      </p>
+
+      <p className="mt-1 text-xs text-slate-500">
+        Add field evidence
+      </p>
+
+    </button>
+  );
+}
+
+
+/* STATUS */
+
+function Status({
+  number,
+  title,
+}: {
+  number: string;
+  title: string;
+}) {
+
+  return (
+    <div className="flex items-center gap-3">
+
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 text-xs font-bold text-orange-400">
+        {number}
+      </div>
+
+      <p className="text-sm text-slate-300">
+        {title}
+      </p>
+
+    </div>
   );
 }

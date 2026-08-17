@@ -1,68 +1,152 @@
-export type MachineProfile = {
+export type EvidenceType =
+  | "text"
+  | "image"
+  | "audio"
+  | "video"
+  | "sensor"
+  | "plc"
+  | "drive"
+  | "hmi";
+
+export type FaultSeverity =
+  | "low"
+  | "medium"
+  | "high"
+  | "critical";
+
+export type MachineSystem =
+  | "plc"
+  | "hmi"
+  | "drive"
+  | "servo"
+  | "sensor"
+  | "motor"
+  | "electrical-panel"
+  | "communication"
+  | "mechanical"
+  | "pneumatic"
+  | "hydraulic"
+  | "process";
+
+export interface MachineContext {
+  machineName?: string;
+  machineBrand?: string;
+  machineModel?: string;
+
+  plcBrand?: string;
+  plcModel?: string;
+
+  hmiBrand?: string;
+  hmiModel?: string;
+
+  driveBrand?: string;
+  driveModel?: string;
+
+  servoBrand?: string;
+  servoModel?: string;
+
+  machineAge?: number;
+  productionProcess?: string;
+}
+
+export interface FaultEvidence {
   id: string;
-  machineName: string;
-  machineType: string;
 
-  manufacturer?: string;
-  model?: string;
-  year?: number;
+  type: EvidenceType;
 
-  plc?: {
-    brand: string;
-    model?: string;
-  };
+  title: string;
 
-  hmi?: {
-    brand: string;
-    model?: string;
-  };
+  description?: string;
 
-  drives?: {
-    brand: string;
-    model?: string;
-    quantity?: number;
-  }[];
+  fileUrl?: string;
 
-  servoSystems?: {
-    brand: string;
-    model?: string;
-    quantity?: number;
-  }[];
+  system?: MachineSystem;
 
-  sensors?: {
-    type: string;
-    brand?: string;
-    model?: string;
-    quantity?: number;
-  }[];
+  timestamp?: string;
 
-  communication?: string[];
+  metadata?: Record<string, string | number | boolean>;
+}
 
-  notes?: string;
-};
-
-export type DiagnosticSession = {
+export interface FaultReport {
   id: string;
-
-  machineId: string;
 
   createdAt: string;
 
-  problem: string;
+  machine: MachineContext;
 
-  symptoms: string[];
+  symptom: string;
 
-  errorCodes: string[];
+  severity?: FaultSeverity;
 
-  observations: string[];
+  affectedSystem?: MachineSystem;
 
-  testsPerformed: string[];
+  evidence: FaultEvidence[];
+}
 
-  testResults: string[];
+export interface Diagnosis {
+  id: string;
+
+  system: MachineSystem;
+
+  fault: string;
+
+  probability: number;
+
+  explanation: string;
+
+  evidenceUsed: string[];
 
   possibleCauses: string[];
 
+  recommendedChecks: string[];
+
   recommendedActions: string[];
 
-  status: "open" | "diagnosing" | "resolved";
-};
+  requiredTools?: string[];
+
+  safetyWarnings?: string[];
+}
+
+export interface RetrofitKnowledge {
+  id: string;
+
+  title: string;
+
+  machineType: string;
+
+  system: MachineSystem;
+
+  symptoms: string[];
+
+  causes: string[];
+
+  diagnosis: string[];
+
+  solution: string[];
+
+  components?: string[];
+
+  plc?: string;
+
+  drive?: string;
+
+  sensors?: string[];
+
+  notes?: string;
+}
+
+export interface RetrofitAIResponse {
+  summary: string;
+
+  severity: FaultSeverity;
+
+  diagnoses: Diagnosis[];
+
+  immediateActions: string[];
+
+  furtherQuestions: string[];
+
+  safetyWarnings: string[];
+
+  confidence: number;
+}
