@@ -28,7 +28,7 @@ export default function Hero() {
     "Commissioning",
   ];
 
-  const processItems = ["PLC", "HMI", "DRIVES", "SERVO"];
+  const processItems = ["PLC", "HMI", "DRIVES", "SENSORS"];
 
   return (
     <section className="border-b border-slate-800 bg-[#020617]">
