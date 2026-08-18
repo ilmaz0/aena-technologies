@@ -1,10 +1,46 @@
 import { NextResponse } from "next/server";
-import type {
-  Diagnosis,
-  RetrofitAIResponse,
-  MachineSystem,
-  FaultSeverity,
-} from "@/app/retrofit-ai/type";
+
+// --- TİP TANIMLARI (Import Hatasını Önlemek İçin Doğrudan Buraya Eklendi) ---
+export type FaultSeverity = "low" | "medium" | "high" | "critical";
+
+export type MachineSystem =
+  | "plc"
+  | "hmi"
+  | "drive"
+  | "servo"
+  | "sensor"
+  | "motor"
+  | "electrical-panel"
+  | "communication"
+  | "mechanical"
+  | "pneumatic"
+  | "hydraulic"
+  | "process";
+
+export interface Diagnosis {
+  id: string;
+  system: MachineSystem;
+  fault: string;
+  probability: number;
+  explanation: string;
+  evidenceUsed: string[];
+  possibleCauses: string[];
+  recommendedChecks: string[];
+  recommendedActions: string[];
+  requiredTools?: string[];
+  safetyWarnings?: string[];
+}
+
+export interface RetrofitAIResponse {
+  summary: string;
+  severity: FaultSeverity;
+  diagnoses: Diagnosis[];
+  immediateActions: string[];
+  furtherQuestions: string[];
+  safetyWarnings: string[];
+  confidence: number;
+}
+// -----------------------------------------------------------------------------
 
 export const dynamic = "force-dynamic";
 

@@ -4,7 +4,7 @@ import type {
   RetrofitAIResponse,
   MachineSystem,
   FaultSeverity,
-} from "@/app/retrofit-ai/type";
+} from "../../retrofit-ai/type"; // Göreli yol kullanımı
 
 export async function POST(request: Request) {
   try {
