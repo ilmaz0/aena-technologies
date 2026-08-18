@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type {
-  Diagnosis as AIDiagnosis,
+  Diagnosis,
   RetrofitAIResponse,
   MachineSystem,
   FaultSeverity,
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       : "drive";
 
     const normalizedSymptom = symptom.toLowerCase();
-    const diagnoses: AIDiagnosis[] = [];
+    const diagnoses: Diagnosis[] = [];
 
     /*
      * DRIVE DIAGNOSIS
