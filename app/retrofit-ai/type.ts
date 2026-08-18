@@ -1,202 +1,148 @@
-import { NextResponse } from "next/server";
-import type {
-  Diagnosis,
-  RetrofitAIResponse,
-  MachineSystem,
-  FaultSeverity,
-} from "../../retrofit-ai/type"; // Göreli yol kullanımı
+export type EvidenceType =
+  | "text"
+  | "image"
+  | "audio"
+  | "video"
+  | "sensor"
+  | "plc"
+  | "drive"
+  | "hmi";
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
+export type FaultSeverity = "low" | "medium" | "high" | "critical";
 
-    const symptom: string = body.symptom || "";
-    const rawSystem: string = body.affectedSystem || "drive";
+export type MachineSystem =
+  | "plc"
+  | "hmi"
+  | "drive"
+  | "servo"
+  | "sensor"
+  | "motor"
+  | "electrical-panel"
+  | "communication"
+  | "mechanical"
+  | "pneumatic"
+  | "hydraulic"
+  | "process";
 
-    if (!symptom || symptom.trim().length < 5) {
-      return NextResponse.json(
-        { error: "Please provide a detailed machine fault description." },
-        { status: 400 }
-      );
-    }
+export interface MachineContext {
+  machineName?: string;
+  machineBrand?: string;
+  machineModel?: string;
 
-    // MachineSystem tipine uygun validasyon
-    const validSystems: MachineSystem[] = [
-      "plc",
-      "hmi",
-      "drive",
-      "servo",
-      "sensor",
-      "motor",
-      "electrical-panel",
-      "communication",
-      "mechanical",
-      "pneumatic",
-      "hydraulic",
-      "process",
-    ];
+  plcBrand?: string;
+  plcModel?: string;
 
-    const affectedSystem: MachineSystem = validSystems.includes(
-      rawSystem as MachineSystem
-    )
-      ? (rawSystem as MachineSystem)
-      : "drive";
+  hmiBrand?: string;
+  hmiModel?: string;
 
-    const normalizedSymptom = symptom.toLowerCase();
-    const diagnoses: Diagnosis[] = [];
+  driveBrand?: string;
+  driveModel?: string;
 
-    /*
-     * DRIVE DIAGNOSIS
-     */
-    if (affectedSystem === "drive" || affectedSystem === "servo") {
-      let probability = 40;
-      const possibleCauses: string[] = [];
-      const recommendedChecks: string[] = [];
-      const recommendedActions: string[] = [];
-      const evidenceUsed: string[] = [];
+  servoBrand?: string;
+  servoModel?: string;
 
-      if (
-        normalizedSymptom.includes("speed") ||
-        normalizedSymptom.includes("hız") ||
-        normalizedSymptom.includes("frequency") ||
-        normalizedSymptom.includes("frekans")
-      ) {
-        probability = 75;
-        possibleCauses.push(
-          "Speed reference limitation or incorrect speed reference.",
-          "Drive maximum frequency limit reached.",
-          "PLC communication reference mismatch."
-        );
-        recommendedChecks.push(
-          "Check the commanded speed or frequency reference.",
-          "Compare PLC speed command with actual drive reference."
-        );
-        recommendedActions.push(
-          "Verify PLC-to-drive communication analog or bus reference."
-        );
-        evidenceUsed.push("Symptom indicates speed/frequency control issue");
-      } else {
-        possibleCauses.push(
-          "Drive parameter mismatch.",
-          "Control reference problem."
-        );
-        recommendedChecks.push(
-          "Read active drive alarms.",
-          "Check power terminals and command signals."
-        );
-        recommendedActions.push("Record parameter backup before resetting.");
-      }
+  machineAge?: number;
+  productionProcess?: string;
+}
 
-      diagnoses.push({
-        id: crypto.randomUUID(),
-        system: affectedSystem,
-        fault: `${affectedSystem.toUpperCase()} abnormal operation`,
-        probability,
-        explanation:
-          "Symptoms indicate an issue within the drive/servo power or control reference stage.",
-        evidenceUsed,
-        possibleCauses,
-        recommendedChecks,
-        recommendedActions,
-        requiredTools: ["Multimeter", "Drive Software / Keypad"],
-        safetyWarnings: [
-          "Isolate high-voltage power before opening drive enclosure.",
-        ],
-      });
-    }
+export interface FaultEvidence {
+  id: string;
 
-    /*
-     * PLC / HMI / COMMUNICATION DIAGNOSIS
-     */
-    if (
-      affectedSystem === "plc" ||
-      affectedSystem === "hmi" ||
-      affectedSystem === "communication"
-    ) {
-      diagnoses.push({
-        id: crypto.randomUUID(),
-        system: affectedSystem,
-        fault: `${affectedSystem.toUpperCase()} logic or communication interlock`,
-        probability: 65,
-        explanation:
-          "The fault points toward control logic state, missing sensor input, or fieldbus interruption.",
-        evidenceUsed: ["Operator description"],
-        possibleCauses: [
-          "Fieldbus communication loss.",
-          "Missing safety interlock input signal.",
-        ],
-        recommendedChecks: [
-          "Check PLC diagnostic buffer.",
-          "Verify communication bus status and termination.",
-        ],
-        recommendedActions: [
-          "Check the exact step in the machine automatic sequence.",
-        ],
-        requiredTools: ["PLC/HMI Programming Tool", "Electrical Schematics"],
-        safetyWarnings: [
-          "Do not force outputs while machine is under automatic mode.",
-        ],
-      });
-    }
+  type: EvidenceType;
 
-    /*
-     * FALLBACK / GENERAL DIAGNOSIS
-     */
-    if (diagnoses.length === 0) {
-      diagnoses.push({
-        id: crypto.randomUUID(),
-        system: affectedSystem,
-        fault: `System fault in ${affectedSystem}`,
-        probability: 50,
-        explanation:
-          "Preliminary analysis suggests checking input signals, power distribution, and mechanical interlocks.",
-        evidenceUsed: ["Operator symptom input"],
-        possibleCauses: [
-          "Electrical component failure.",
-          "Interlock condition not satisfied.",
-        ],
-        recommendedChecks: [
-          "Verify system power supplies.",
-          "Check active safety relays and circuit breakers.",
-        ],
-        recommendedActions: [
-          "Inspect local electrical cabinet for tripped breakers.",
-        ],
-        requiredTools: ["Multimeter", "Electrical Drawings"],
-        safetyWarnings: ["Follow site Lockout/Tagout (LOTO) protocols."],
-      });
-    }
+  title: string;
 
-    const confidence = Math.round(
-      diagnoses.reduce((acc, curr) => acc + curr.probability, 0) /
-        diagnoses.length
-    );
+  description?: string;
 
-    const severity: FaultSeverity =
-      confidence >= 75 ? "high" : confidence >= 50 ? "medium" : "low";
+  fileUrl?: string;
 
-    const responseData: RetrofitAIResponse = {
-      summary:
-        "Engineering analysis performed based on reported symptoms and equipment setup.",
-      severity,
-      diagnoses,
-      immediateActions: diagnoses[0]?.recommendedChecks || [],
-      furtherQuestions: [
-        "What was the machine sequence state when the fault occurred?",
-        "Are there any active fault codes displayed on the HMI or drive display?",
-      ],
-      safetyWarnings: [
-        "Ensure power isolation before touching physical electrical terminals.",
-      ],
-      confidence,
-    };
+  system?: MachineSystem;
 
-    return NextResponse.json(responseData);
-  } catch (err) {
-    console.error("API Route Error:", err);
-    return NextResponse.json(
-      { error: "Internal server error during analysis." },
-      { status: 500 }
-    );
-  }
+  timestamp?: string;
+
+  metadata?: Record<string, string | number | boolean>;
+}
+
+export interface FaultReport {
+  id: string;
+
+  createdAt: string;
+
+  machine: MachineContext;
+
+  symptom: string;
+
+  severity?: FaultSeverity;
+
+  affectedSystem?: MachineSystem;
+
+  evidence: FaultEvidence[];
+}
+
+export interface Diagnosis {
+  id: string;
+
+  system: MachineSystem;
+
+  fault: string;
+
+  probability: number;
+
+  explanation: string;
+
+  evidenceUsed: string[];
+
+  possibleCauses: string[];
+
+  recommendedChecks: string[];
+
+  recommendedActions: string[];
+
+  requiredTools?: string[];
+
+  safetyWarnings?: string[];
+}
+
+export interface RetrofitKnowledge {
+  id: string;
+
+  title: string;
+
+  machineType: string;
+
+  system: MachineSystem;
+
+  symptoms: string[];
+
+  causes: string[];
+
+  diagnosis: string[];
+
+  solution: string[];
+
+  components?: string[];
+
+  plc?: string;
+
+  drive?: string;
+
+  sensors?: string[];
+
+  notes?: string;
+}
+
+export interface RetrofitAIResponse {
+  summary: string;
+
+  severity: FaultSeverity;
+
+  diagnoses: Diagnosis[];
+
+  immediateActions: string[];
+
+  furtherQuestions: string[];
+
+  safetyWarnings: string[];
+
+  confidence: number;
 }
