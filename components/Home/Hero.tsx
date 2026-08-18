@@ -184,7 +184,7 @@ export default function Hero() {
               "
             >
 
-              {/* Decorative Grid */}
+              {/* DECORATIVE GRID */}
               <div
                 className="
                   pointer-events-none
@@ -265,6 +265,7 @@ export default function Hero() {
                           hover:border-orange-500/50
                         "
                       >
+
                         <div className="text-xs font-bold text-orange-400">
                           0{index + 1}
                         </div>
@@ -272,6 +273,7 @@ export default function Hero() {
                         <div className="mt-1 text-sm font-semibold text-slate-200">
                           {item}
                         </div>
+
                       </div>
                     ))}
 
@@ -312,6 +314,8 @@ export default function Hero() {
                         border-orange-500/40
                         bg-orange-500/10
                         text-2xl
+                        font-bold
+                        text-orange-400
                       "
                     >
                       AI
@@ -360,6 +364,7 @@ export default function Hero() {
                   <div className="mt-4 grid grid-cols-3 gap-2">
 
                     <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-center">
+
                       <p className="text-[10px] uppercase tracking-wider text-slate-500">
                         INPUT
                       </p>
@@ -367,9 +372,11 @@ export default function Hero() {
                       <p className="mt-1 text-xs font-semibold text-slate-200">
                         Voice / Image
                       </p>
+
                     </div>
 
                     <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-center">
+
                       <p className="text-[10px] uppercase tracking-wider text-slate-500">
                         ANALYSIS
                       </p>
@@ -377,9 +384,11 @@ export default function Hero() {
                       <p className="mt-1 text-xs font-semibold text-slate-200">
                         AI Diagnostics
                       </p>
+
                     </div>
 
                     <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-center">
+
                       <p className="text-[10px] uppercase tracking-wider text-slate-500">
                         OUTPUT
                       </p>
@@ -387,6 +396,7 @@ export default function Hero() {
                       <p className="mt-1 text-xs font-semibold text-slate-200">
                         Guided Solution
                       </p>
+
                     </div>
 
                   </div>
@@ -397,6 +407,7 @@ export default function Hero() {
                 <div className="mt-5 grid gap-3 sm:grid-cols-3">
 
                   <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+
                     <p className="text-xs uppercase tracking-wider text-slate-500">
                       Focus
                     </p>
@@ -404,9 +415,11 @@ export default function Hero() {
                     <p className="mt-2 text-sm font-bold text-white">
                       Machine Retrofit
                     </p>
+
                   </div>
 
                   <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+
                     <p className="text-xs uppercase tracking-wider text-slate-500">
                       Goal
                     </p>
@@ -414,9 +427,11 @@ export default function Hero() {
                     <p className="mt-2 text-sm font-bold text-white">
                       Reduce Downtime
                     </p>
+
                   </div>
 
                   <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
+
                     <p className="text-xs uppercase tracking-wider text-slate-500">
                       Result
                     </p>
@@ -424,6 +439,7 @@ export default function Hero() {
                     <p className="mt-2 text-sm font-bold text-white">
                       Extend Machine Life
                     </p>
+
                   </div>
 
                 </div>
@@ -440,6 +456,7 @@ export default function Hero() {
                 </div>
 
               </div>
+
             </div>
 
           </div>
@@ -472,6 +489,7 @@ export default function Hero() {
           <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
 
             {brands.map((brand) => (
+
               <div
                 key={brand}
                 className="
@@ -505,6 +523,7 @@ export default function Hero() {
                 />
 
               </div>
+
             ))}
 
           </div>
