@@ -1,39 +1,33 @@
 import { NextResponse } from "next/server";
 
-import type {
-  FaultReport,
-  Diagnosis,
-  RetrofitAIResponse,
-  MachineSystem,
-} from "@/app/retrofit-ai/type";
-
 export async function POST(request: Request) {
   try {
-    const report: FaultReport = await request.json();
+    const body = await request.json();
 
-    if (!report.symptom || report.symptom.trim().length < 5) {
+    // Frontend'den gelen body yapısını doğrula
+    const symptom = body.symptom;
+    const affectedSystem = body.affectedSystem || "drive";
+
+    if (!symptom || typeof symptom !== "string" || symptom.trim().length < 5) {
       return NextResponse.json(
         {
-          error: "Please provide a detailed machine fault description.",
+          error: "Please provide a detailed machine fault description (at least 5 characters).",
         },
         { status: 400 }
       );
     }
 
-    const system: MachineSystem =
-      report.affectedSystem || "drive";
+    const normalizedSymptom = symptom.toLowerCase();
+    const system = affectedSystem.toLowerCase();
 
-    const symptom = report.symptom.toLowerCase();
-
-    const diagnoses: Diagnosis[] = [];
+    const diagnoses: any[] = [];
 
     /*
      * ============================================================
      * DRIVE DIAGNOSIS
      * ============================================================
      */
-
-    if (system === "drive") {
+    if (system === "drive" || system === "servo") {
       let probability = 35;
 
       const possibleCauses: string[] = [];
@@ -42,46 +36,28 @@ export async function POST(request: Request) {
       const evidenceUsed: string[] = [];
 
       if (
-        symptom.includes("speed") ||
-        symptom.includes("hız") ||
-        symptom.includes("frequency") ||
-        symptom.includes("frekans")
+        normalizedSymptom.includes("speed") ||
+        normalizedSymptom.includes("hız") ||
+        normalizedSymptom.includes("frequency") ||
+        normalizedSymptom.includes("frekans")
       ) {
         probability = 75;
 
         possibleCauses.push(
-          "Speed reference limitation or incorrect speed reference."
-        );
-
-        possibleCauses.push(
-          "Drive maximum frequency or speed parameter limitation."
-        );
-
-        possibleCauses.push(
+          "Speed reference limitation or incorrect speed reference.",
+          "Drive maximum frequency or speed parameter limitation.",
           "PLC or communication command not reaching the drive correctly."
         );
 
         recommendedChecks.push(
-          "Check the commanded speed or frequency reference."
-        );
-
-        recommendedChecks.push(
-          "Compare PLC speed command with actual drive reference."
-        );
-
-        recommendedChecks.push(
-          "Check drive maximum frequency and speed limitation parameters."
-        );
-
-        recommendedChecks.push(
+          "Check the commanded speed or frequency reference.",
+          "Compare PLC speed command with actual drive reference.",
+          "Check drive maximum frequency and speed limitation parameters.",
           "Check whether the drive is receiving the correct command source."
         );
 
         recommendedActions.push(
-          "Compare commanded frequency and actual motor frequency."
-        );
-
-        recommendedActions.push(
+          "Compare commanded frequency and actual motor frequency.",
           "Verify PLC-to-drive communication or analog reference."
         );
 
@@ -89,26 +65,18 @@ export async function POST(request: Request) {
       }
 
       if (
-        symptom.includes("alarm") ||
-        symptom.includes("fault") ||
-        symptom.includes("hata") ||
-        symptom.includes("error")
+        normalizedSymptom.includes("alarm") ||
+        normalizedSymptom.includes("fault") ||
+        normalizedSymptom.includes("hata") ||
+        normalizedSymptom.includes("error")
       ) {
         probability = Math.max(probability, 80);
 
-        possibleCauses.push(
-          "Drive protection or alarm condition."
-        );
+        possibleCauses.push("Drive protection or alarm condition.");
 
         recommendedChecks.push(
-          "Record the exact drive alarm or fault code."
-        );
-
-        recommendedChecks.push(
-          "Check the drive fault history."
-        );
-
-        recommendedChecks.push(
+          "Record the exact drive alarm or fault code.",
+          "Check the drive fault history.",
           "Check motor current and operating conditions."
         );
 
@@ -120,23 +88,17 @@ export async function POST(request: Request) {
       }
 
       if (
-        symptom.includes("motor") ||
-        symptom.includes("motor çalış") ||
-        symptom.includes("motor dön")
+        normalizedSymptom.includes("motor") ||
+        normalizedSymptom.includes("motor çalış") ||
+        normalizedSymptom.includes("motor dön")
       ) {
         possibleCauses.push(
           "Motor connection, motor parameters or drive output problem."
         );
 
         recommendedChecks.push(
-          "Check motor cable and terminal connections."
-        );
-
-        recommendedChecks.push(
-          "Check motor nominal current and voltage parameters."
-        );
-
-        recommendedChecks.push(
+          "Check motor cable and terminal connections.",
+          "Check motor nominal current and voltage parameters.",
           "Check drive output and motor current."
         );
 
@@ -145,26 +107,14 @@ export async function POST(request: Request) {
 
       if (possibleCauses.length === 0) {
         possibleCauses.push(
-          "Drive parameter mismatch."
-        );
-
-        possibleCauses.push(
-          "Control reference problem."
-        );
-
-        possibleCauses.push(
+          "Drive parameter mismatch.",
+          "Control reference problem.",
           "Motor or mechanical load problem."
         );
 
         recommendedChecks.push(
-          "Read the exact drive alarm status."
-        );
-
-        recommendedChecks.push(
-          "Check command and reference signals."
-        );
-
-        recommendedChecks.push(
+          "Read the exact drive alarm status.",
+          "Check command and reference signals.",
           "Check motor current and mechanical load."
         );
 
@@ -174,12 +124,12 @@ export async function POST(request: Request) {
       }
 
       diagnoses.push({
-        id: crypto.randomUUID(),
-        system: "drive",
-        fault: "Drive system abnormal operation",
+        id: `diag-${Date.now()}-1`,
+        system: system,
+        fault: `${system.toUpperCase()} system abnormal operation`,
         probability,
         explanation:
-          "The reported symptoms indicate that the drive control, reference signal, parameters, motor or mechanical load should be investigated systematically.",
+          "The reported symptoms indicate that the drive/servo control, reference signal, parameters, motor or mechanical load should be investigated systematically.",
         evidenceUsed,
         possibleCauses,
         recommendedChecks,
@@ -198,43 +148,38 @@ export async function POST(request: Request) {
 
     /*
      * ============================================================
-     * PLC DIAGNOSIS
+     * PLC / HMI DIAGNOSIS
      * ============================================================
      */
-
-    if (system === "plc") {
+    if (system === "plc" || system === "hmi" || system === "communication") {
       diagnoses.push({
-        id: crypto.randomUUID(),
-        system: "plc",
-        fault: "PLC control logic or I/O related fault",
-        probability: 55,
+        id: `diag-${Date.now()}-2`,
+        system,
+        fault: `${system.toUpperCase()} logic, interface or communication fault`,
+        probability: 60,
         explanation:
-          "The symptom may originate from PLC logic, input/output signals, communication or machine sequence conditions.",
-        evidenceUsed: [
-          "Operator fault description",
-        ],
+          "The symptom may originate from control logic, input/output signals, HMI communication or sequence interlocks.",
+        evidenceUsed: ["Operator fault description"],
         possibleCauses: [
-          "PLC input signal missing.",
-          "PLC output command not being generated.",
-          "Sequence condition not satisfied.",
-          "Communication problem with a field device.",
+          "PLC/HMI communication loss or bus error.",
+          "Missing digital/analog input signal.",
+          "Output command interlocked by unfulfilled safety sequence.",
         ],
         recommendedChecks: [
-          "Check PLC diagnostic buffer.",
-          "Monitor relevant input signals.",
-          "Monitor relevant output commands.",
-          "Check PLC communication diagnostics.",
+          "Check PLC diagnostic buffer and HMI alarm history.",
+          "Verify fieldbus communication cables and termination resistors.",
+          "Monitor relevant digital/analog inputs and outputs in software.",
         ],
         recommendedActions: [
-          "Identify the first abnormal signal in the machine sequence.",
+          "Identify the exact sequence step where operation halts.",
         ],
         requiredTools: [
-          "PLC programming software",
+          "PLC/HMI programming software",
           "Electrical drawings",
           "Multimeter",
         ],
         safetyWarnings: [
-          "Do not force PLC outputs on a running machine without understanding the machine sequence.",
+          "Do not force outputs on a production machine without verifying mechanical safety.",
         ],
       });
     }
@@ -244,158 +189,85 @@ export async function POST(request: Request) {
      * SENSOR DIAGNOSIS
      * ============================================================
      */
-
     if (system === "sensor") {
       diagnoses.push({
-        id: crypto.randomUUID(),
+        id: `diag-${Date.now()}-3`,
         system: "sensor",
         fault: "Sensor signal or sensor installation problem",
-        probability: 60,
+        probability: 65,
         explanation:
-          "The fault may be caused by sensor failure, wiring, power supply, alignment or incorrect PLC signal interpretation.",
-        evidenceUsed: [
-          "Operator fault description",
-        ],
+          "The fault may be caused by sensor failure, wiring, power supply, alignment or incorrect signal reading.",
+        evidenceUsed: ["Operator fault description"],
         possibleCauses: [
-          "Sensor failure.",
-          "Sensor wiring problem.",
-          "Missing 24 VDC supply.",
-          "Incorrect sensor alignment.",
-          "PLC input interpretation problem.",
+          "Sensor hardware failure or damaged lens/head.",
+          "Sensor wiring loose or broken.",
+          "Missing 24 VDC power supply.",
+          "Mechanical misalignment.",
         ],
         recommendedChecks: [
-          "Check sensor supply voltage.",
-          "Check sensor output signal.",
-          "Check sensor wiring.",
-          "Check sensor alignment and mechanical position.",
-          "Monitor the corresponding PLC input.",
+          "Check sensor 24 VDC supply voltage.",
+          "Verify signal LED state on the sensor and PLC input card.",
+          "Check mechanical alignment and target distance.",
         ],
         recommendedActions: [
-          "Compare physical sensor state with the PLC input state.",
+          "Compare physical sensor activation with the PLC input bit status.",
         ],
-        requiredTools: [
-          "Multimeter",
-          "Electrical drawings",
-        ],
+        requiredTools: ["Multimeter", "Electrical drawings"],
         safetyWarnings: [
-          "Follow machine safety procedures before accessing moving equipment.",
+          "Follow lockout/tagout procedures before reaching near moving mechanical parts.",
         ],
       });
     }
 
     /*
      * ============================================================
-     * MOTOR DIAGNOSIS
+     * GENERAL / FALLBACK DIAGNOSIS
      * ============================================================
      */
-
-    if (system === "motor") {
-      diagnoses.push({
-        id: crypto.randomUUID(),
-        system: "motor",
-        fault: "Motor, connection or load related problem",
-        probability: 50,
-        explanation:
-          "Motor problems can originate from electrical supply, motor winding condition, connection, drive output or mechanical loading.",
-        evidenceUsed: [
-          "Operator fault description",
-        ],
-        possibleCauses: [
-          "Motor cable problem.",
-          "Motor winding problem.",
-          "Incorrect motor parameters.",
-          "Mechanical overload.",
-          "Drive output problem.",
-        ],
-        recommendedChecks: [
-          "Measure motor phase voltages.",
-          "Check motor current.",
-          "Check motor cable connections.",
-          "Check mechanical load.",
-          "Compare motor parameters with the motor nameplate.",
-        ],
-        recommendedActions: [
-          "Separate electrical and mechanical causes before replacing components.",
-        ],
-        requiredTools: [
-          "Multimeter",
-          "Clamp meter",
-          "Motor documentation",
-        ],
-        safetyWarnings: [
-          "Isolate electrical power before testing motor terminals.",
-        ],
-      });
-    }
-
-    /*
-     * ============================================================
-     * GENERAL DIAGNOSIS
-     * ============================================================
-     */
-
     if (diagnoses.length === 0) {
       diagnoses.push({
-        id: crypto.randomUUID(),
+        id: `diag-${Date.now()}-4`,
         system,
-        fault: "General machine system fault",
-        probability: 35,
+        fault: `Abnormal operation in ${system} subsystem`,
+        probability: 45,
         explanation:
-          "There is not enough evidence to determine a specific root cause. The system requires additional machine and field information.",
-        evidenceUsed: [
-          "Operator fault description",
-        ],
+          "A general anomaly has been detected in the selected system. System checks are required to narrow down the root cause.",
+        evidenceUsed: ["Operator fault description"],
         possibleCauses: [
-          "Electrical fault.",
-          "Control system fault.",
-          "Component failure.",
-          "Communication problem.",
-          "Mechanical problem.",
+          "Electrical component failure.",
+          "Control signal or interlock fault.",
+          "Mechanical obstruction or wear.",
         ],
         recommendedChecks: [
-          "Identify when the problem first appeared.",
-          "Determine what changed immediately before the failure.",
-          "Check machine alarms and diagnostic history.",
-          "Identify the first abnormal signal or component.",
+          "Determine when the issue started and what changed recently.",
+          "Inspect local electrical terminals and mechanical assemblies.",
+          "Check system power supplies and control fuses.",
         ],
         recommendedActions: [
-          "Collect additional machine evidence before replacing components.",
+          "Inspect relevant electrical schematics and field devices.",
         ],
-        requiredTools: [
-          "Electrical drawings",
-          "Multimeter",
-        ],
+        requiredTools: ["Electrical drawings", "Multimeter"],
         safetyWarnings: [
-          "Follow machine safety procedures before troubleshooting.",
+          "Ensure energy isolation before opening enclosures or mechanical guards.",
         ],
       });
     }
 
     const confidence = Math.round(
-      diagnoses.reduce(
-        (total, diagnosis) => total + diagnosis.probability,
-        0
-      ) / diagnoses.length
+      diagnoses.reduce((total, diag) => total + diag.probability, 0) /
+        diagnoses.length
     );
 
-    const response: RetrofitAIResponse = {
+    return NextResponse.json({
       summary:
         "A preliminary engineering diagnosis has been generated from the available machine information and reported symptoms.",
-      severity:
-        report.severity ||
-        (confidence >= 75
-          ? "high"
-          : confidence >= 50
-          ? "medium"
-          : "low"),
+      severity: confidence >= 75 ? "high" : confidence >= 50 ? "medium" : "low",
       diagnoses,
-      immediateActions:
-        diagnoses[0]?.recommendedChecks || [],
+      immediateActions: diagnoses[0]?.recommendedChecks || [],
       furtherQuestions: [
         "What was the machine doing immediately before the fault?",
         "Was any component replaced or modified before the problem appeared?",
-        "Is there an active PLC, HMI or drive alarm?",
-        "What is the exact alarm or fault code?",
+        "Is there an active PLC, HMI or drive alarm code?",
         "Can the machine be operated safely for diagnostic measurements?",
       ],
       safetyWarnings: [
@@ -403,15 +275,13 @@ export async function POST(request: Request) {
         "Electrical and mechanical isolation procedures must be followed before physical intervention.",
       ],
       confidence,
-    };
-
-    return NextResponse.json(response);
+    });
   } catch (error) {
-    console.error("Retrofit AI error:", error);
+    console.error("Retrofit AI API Error:", error);
 
     return NextResponse.json(
       {
-        error: "Retrofit AI could not process the fault report.",
+        error: "Retrofit AI could not process the fault report. Server error.",
       },
       { status: 500 }
     );
