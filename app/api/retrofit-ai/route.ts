@@ -1,414 +1,145 @@
 import { NextResponse } from "next/server";
+import OpenAI from "openai";
 
 export const dynamic = "force-dynamic";
 
-type MachineData = {
-  machineName?: string;
-  machineBrand?: string;
-  machineModel?: string;
-  plcBrand?: string;
-  plcModel?: string;
-  hmiBrand?: string;
-  hmiModel?: string;
-  driveBrand?: string;
-  driveModel?: string;
-  servoBrand?: string;
-  servoModel?: string;
-  productionProcess?: string;
-  machineAge?: number;
-};
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-function includesAny(text: string, keywords: string[]) {
-  return keywords.some((keyword) =>
-    text.toLowerCase().includes(keyword.toLowerCase())
-  );
-}
+const AENA_ENGINEERING_PROMPT = `
+You are AENA Retrofit AI, an industrial automation and machine retrofit
+engineering assistant developed by AENA Technologies.
 
-function analyzeDrive(symptom: string, machine: MachineData) {
-  const text = symptom.toLowerCase();
+Your role is NOT to give generic chatbot answers.
 
-  if (
-    includesAny(text, [
-      "20 hz",
-      "frequency",
-      "speed",
-      "hız",
-      "rpm",
-      "devir",
-      "hızlan",
-    ])
-  ) {
-    return {
-      fault: "Drive speed reference or frequency limitation",
-      probability: 86,
+You must reason like an experienced field service engineer working on
+industrial machinery.
 
-      explanation:
-        "The reported speed limitation suggests that the drive may be receiving a restricted speed reference, a maximum-frequency limitation, or an external control command that prevents the motor from reaching the required operating speed.",
+AENA specializes in:
 
-      possibleCauses: [
-        "Maximum frequency parameter is limiting the output.",
-        "PLC or analog speed reference is lower than the required command.",
-        "Drive is operating under an external speed limitation.",
-        "Motor or drive control mode is incorrectly configured.",
-        "Communication reference value may be incorrect.",
-      ],
+- Industrial automation
+- PLC systems
+- HMI systems
+- Variable frequency drives
+- Servo drives
+- Motors
+- Sensors
+- Electrical panels
+- Industrial communication
+- Machine retrofit
+- Machine modernization
+- Commissioning
+- Electrical troubleshooting
+- Mechanical troubleshooting
+- Pneumatic systems
+- Hydraulic systems
+- Plastic processing machinery
+- Stretch film machines
+- Extrusion machines
+- PET recycling machines
+- Flexographic printing machines
 
-      recommendedChecks: [
-        "Check the actual frequency command received by the drive.",
-        "Compare PLC speed reference with the drive monitor value.",
-        "Check maximum frequency and frequency limit parameters.",
-        "Check whether the drive is controlled by analog input, communication or digital reference.",
-        "Compare commanded frequency with actual output frequency.",
-      ],
+ENGINEERING METHOD
 
-      recommendedActions: [
-        "Record the current drive parameters before changing anything.",
-        "Monitor the PLC speed reference while the machine is running.",
-        "Compare the PLC command with the drive frequency monitor.",
-        "Verify the drive control mode and reference source.",
-      ],
-    };
-  }
+For every machine problem:
 
-  if (
-    includesAny(text, [
-      "overcurrent",
-      "over current",
-      "oc",
-      "akım",
-      "current",
-      "aşırı akım",
-    ])
-  ) {
-    return {
-      fault: "Drive overcurrent condition",
+1. Understand the machine and production process.
+2. Identify the affected subsystem.
+3. Analyze the operator symptom.
+4. Separate observed facts from assumptions.
+5. Identify the most likely failure paths.
+6. Rank possible causes by probability.
+7. Explain WHY each cause is possible.
+8. Provide practical diagnostic checks.
+9. Explain what result should be expected from each check.
+10. Explain what the engineer should investigate next depending on the result.
+11. Never immediately declare a component defective without evidence.
+12. Ask targeted questions when information is insufficient.
 
-      probability: 90,
+IMPORTANT:
 
-      explanation:
-        "The reported symptom is consistent with an excessive motor current condition. The cause may originate from mechanical load, acceleration settings, motor parameters, wiring or the motor itself.",
+Do not give generic answers such as:
 
-      possibleCauses: [
-        "Excessive mechanical load.",
-        "Acceleration time is too short.",
-        "Incorrect motor parameters.",
-        "Motor cable or motor insulation problem.",
-        "Mechanical blockage or excessive friction.",
-        "Drive output stage problem.",
-      ],
+"Check the parameters."
+"Check the wiring."
+"Check the PLC."
+"Check the motor."
 
-      recommendedChecks: [
-        "Check the drive current during acceleration.",
-        "Inspect the motor and mechanical transmission.",
-        "Check motor nameplate parameters entered into the drive.",
-        "Measure motor insulation and phase resistance when safely isolated.",
-        "Check acceleration and torque-related parameters.",
-      ],
+Instead explain WHICH parameter, WHICH signal, WHICH relationship,
+and WHY it should be checked whenever the available information allows it.
 
-      recommendedActions: [
-        "Do not repeatedly reset the drive without identifying the cause.",
-        "Record the alarm code and operating conditions.",
-        "Check whether the fault occurs during acceleration, constant speed or stopping.",
-      ],
-    };
-  }
+For example:
 
-  if (
-    includesAny(text, [
-      "communication",
-      "modbus",
-      "ethernet",
-      "profinet",
-      "profibus",
-      "haberleşme",
-      "network",
-    ])
-  ) {
-    return {
-      fault: "Drive communication or command reference problem",
+Bad:
+"Check the drive parameters."
 
-      probability: 84,
+Better:
+"If the PLC shows a 50 Hz speed command but the drive monitor remains
+at approximately 20 Hz, first determine whether the limitation occurs
+in the PLC reference, communication command, drive frequency limit,
+current limitation, or motor/load side."
 
-      explanation:
-        "The symptom indicates that the drive may not be receiving or interpreting the expected command through the industrial communication network.",
+ENGINEERING REASONING
 
-      possibleCauses: [
-        "Incorrect communication parameters.",
-        "Incorrect drive node or IP configuration.",
-        "PLC communication fault.",
-        "Incorrect control word or command mapping.",
-        "Communication timeout or network interruption.",
-      ],
+Always distinguish between:
 
-      recommendedChecks: [
-        "Check PLC communication diagnostics.",
-        "Verify the drive IP address or node configuration.",
-        "Check communication status and error counters.",
-        "Compare the PLC command word with the drive control word.",
-        "Check network cables and connectors.",
-      ],
+- Symptom
+- Evidence
+- Hypothesis
+- Probability
+- Diagnostic test
+- Expected result
+- Next decision
 
-      recommendedActions: [
-        "Record the communication configuration before making changes.",
-        "Verify the PLC-to-drive communication status.",
-        "Check whether the drive can be operated locally.",
-      ],
-    };
-  }
+If the available information is insufficient, do not pretend to know
+the exact fault.
 
-  return {
-    fault: "Drive control or configuration abnormality",
+Instead explain what information is missing and ask the smallest number
+of highly useful questions needed to narrow the fault.
 
-    probability: 72,
+AENA STYLE
 
-    explanation:
-      "The reported symptom indicates a possible drive control, parameter, reference or electrical condition. Additional field data is required before identifying the exact failure.",
+Write naturally like an experienced industrial engineer explaining the
+problem to another engineer or technician.
 
-    possibleCauses: [
-      "Incorrect drive parameter configuration.",
-      "Incorrect control reference.",
-      "PLC command or interlock problem.",
-      "Motor or electrical connection problem.",
-      "Drive hardware failure.",
-    ],
+Do not sound like a generic AI.
 
-    recommendedChecks: [
-      "Check active drive alarms.",
-      "Check drive operating mode.",
-      "Check command and reference sources.",
-      "Verify motor and power connections.",
-      "Compare actual and commanded values.",
-    ],
+Do not repeat the user's sentence unnecessarily.
 
-    recommendedActions: [
-      "Record the current drive parameters.",
-      "Check alarms and diagnostic information.",
-      "Verify PLC commands before replacing the drive.",
-    ],
-  };
-}
+Use practical field terminology.
 
-function analyzeHMI(symptom: string) {
-  const text = symptom.toLowerCase();
+Be technically detailed but understandable.
 
-  if (
-    includesAny(text, [
-      "touch",
-      "touchscreen",
-      "dokunmatik",
-      "press",
-      "button",
-      "buton",
-    ])
-  ) {
-    return {
-      fault: "HMI touchscreen or operator interface problem",
-      probability: 88,
+Do not unnecessarily overcomplicate simple faults.
 
-      explanation:
-        "The symptom suggests that the HMI runtime is operating but one or more touch inputs or screen objects are not responding correctly.",
+SAFETY
 
-      possibleCauses: [
-        "Touchscreen hardware degradation.",
-        "HMI runtime or application issue.",
-        "Incorrect screen object configuration.",
-        "Communication problem between HMI and PLC.",
-        "Touch calibration problem.",
-      ],
+Electrical measurements, live measurements, high voltage systems,
+rotating machinery and stored mechanical/pneumatic/hydraulic energy
+must be treated as hazardous.
 
-      recommendedChecks: [
-        "Check whether all touch areas are affected or only specific buttons.",
-        "Check HMI diagnostic information.",
-        "Verify PLC communication status.",
-        "Test whether physical touch input is detected by the HMI.",
-        "Check the HMI application/runtime status.",
-      ],
+Recommend appropriate isolation and qualified personnel where necessary.
 
-      recommendedActions: [
-        "Determine whether the problem affects the complete screen or individual objects.",
-        "Check communication diagnostics before modifying the HMI project.",
-        "Back up the current HMI application.",
-      ],
-    };
-  }
+COMMERCIAL PURPOSE
 
-  if (
-    includesAny(text, [
-      "communication",
-      "haberleşme",
-      "plc",
-      "connection",
-      "bağlantı",
-    ])
-  ) {
-    return {
-      fault: "HMI-PLC communication problem",
-      probability: 87,
+The preliminary analysis should provide real value to the customer.
 
-      explanation:
-        "The symptom indicates that the HMI may be unable to exchange data correctly with the PLC or another controller.",
+However, when the diagnosis requires physical inspection, measurements,
+machine access, PLC/drive software, electrical drawings or additional
+evidence, clearly explain that an AENA engineer can continue the diagnosis.
 
-      possibleCauses: [
-        "Network communication interruption.",
-        "Incorrect PLC address.",
-        "Incorrect communication driver configuration.",
-        "PLC CPU fault or stopped state.",
-        "Network cable or switch problem.",
-      ],
+The objective is to move the customer naturally toward contacting
+AENA Technologies for professional engineering support.
 
-      recommendedChecks: [
-        "Check HMI communication diagnostics.",
-        "Check PLC CPU status.",
-        "Verify PLC IP address and communication settings.",
-        "Check network connection.",
-        "Determine whether all tags or only specific tags are affected.",
-      ],
+DO NOT claim that AENA has physically inspected the machine.
 
-      recommendedActions: [
-        "Check PLC and HMI diagnostics before restarting the system.",
-        "Verify the configured communication path.",
-        "Back up the HMI project before making configuration changes.",
-      ],
-    };
-  }
-
-  return {
-    fault: "HMI interface or communication abnormality",
-    probability: 70,
-
-    explanation:
-      "The reported HMI symptom may originate from the operator interface, runtime software or communication between the HMI and PLC.",
-
-    possibleCauses: [
-      "HMI application problem.",
-      "PLC communication problem.",
-      "Incorrect tag configuration.",
-      "HMI hardware issue.",
-      "Network communication fault.",
-    ],
-
-    recommendedChecks: [
-      "Check HMI diagnostics.",
-      "Check PLC communication status.",
-      "Determine whether the issue affects all screens or specific objects.",
-      "Check network connection.",
-    ],
-
-    recommendedActions: [
-      "Back up the HMI application.",
-      "Record diagnostic messages before restarting the system.",
-    ],
-  };
-}
-
-function analyzePLC(symptom: string) {
-  const text = symptom.toLowerCase();
-
-  if (
-    includesAny(text, [
-      "stop",
-      "stopped",
-      "cpu",
-      "run",
-      "plc",
-      "program",
-      "cycle",
-      "fault",
-    ])
-  ) {
-    return {
-      fault: "PLC execution or control logic problem",
-      probability: 82,
-
-      explanation:
-        "The reported symptom suggests that the PLC may not be executing the expected control sequence or that an interlock, diagnostic condition or input state is preventing the machine sequence.",
-
-      possibleCauses: [
-        "PLC CPU diagnostic fault.",
-        "Interlock condition.",
-        "Incorrect input state.",
-        "Program logic condition preventing operation.",
-        "Communication-related control dependency.",
-      ],
-
-      recommendedChecks: [
-        "Check PLC CPU operating state.",
-        "Review diagnostic buffer.",
-        "Monitor relevant machine inputs and outputs.",
-        "Check active interlocks.",
-        "Monitor the sequence logic during the fault.",
-      ],
-
-      recommendedActions: [
-        "Record PLC diagnostic information.",
-        "Do not modify the PLC program before creating a backup.",
-        "Compare expected and actual I/O states.",
-      ],
-    };
-  }
-
-  return {
-    fault: "PLC control logic or I/O abnormality",
-    probability: 74,
-
-    explanation:
-      "The symptom may be related to PLC logic, I/O state, interlocks or communication with another automation component.",
-
-    possibleCauses: [
-      "Incorrect I/O state.",
-      "Interlock condition.",
-      "PLC logic condition.",
-      "Communication fault.",
-      "Input or output hardware failure.",
-    ],
-
-    recommendedChecks: [
-      "Check CPU status.",
-      "Review PLC diagnostics.",
-      "Monitor relevant inputs and outputs.",
-      "Check interlock conditions.",
-    ],
-
-    recommendedActions: [
-      "Back up the PLC project.",
-      "Record the diagnostic state before changing the program.",
-    ],
-  };
-}
-
-function analyzeGeneric(system: string, symptom: string) {
-  return {
-    fault: `${system.toUpperCase()} abnormal operating condition`,
-    probability: 68,
-
-    explanation:
-      "The reported symptom indicates an abnormal condition within the selected machine subsystem. The available information is not sufficient to identify a single root cause, so the diagnosis should proceed by eliminating the most likely failure modes.",
-
-    possibleCauses: [
-      "Component configuration problem.",
-      "Electrical or control signal problem.",
-      "Mechanical or process-related condition.",
-      "Communication or interlock problem.",
-    ],
-
-    recommendedChecks: [
-      "Check active alarms and diagnostic information.",
-      "Compare commanded and actual values.",
-      "Inspect relevant electrical connections.",
-      "Check machine interlocks and operating conditions.",
-    ],
-
-    recommendedActions: [
-      "Record the machine condition before making changes.",
-      "Identify when the symptom first appeared.",
-      "Avoid replacing components before confirming the failure.",
-    ],
-  };
-}
+DO NOT claim certainty without sufficient evidence.
+`;
 
 export async function POST(request: Request) {
   console.log("=================================");
-  console.log("AENA RETROFIT AI ENGINE");
+  console.log("AENA RETROFIT AI");
   console.log("=================================");
 
   try {
@@ -416,127 +147,274 @@ export async function POST(request: Request) {
 
     console.log("RECEIVED BODY:", body);
 
-    const symptom = String(body.symptom || "").trim();
-    const affectedSystem = String(
-      body.affectedSystem || "drive"
-    ).toLowerCase();
+    if (!process.env.OPENAI_API_KEY) {
+      console.error("OPENAI_API_KEY is missing.");
 
-    const machine: MachineData = body.machine || {};
+      return NextResponse.json(
+        {
+          error: "OPENAI_API_KEY is not configured.",
+        },
+        {
+          status: 500,
+        }
+      );
+    }
 
-    if (symptom.length < 5) {
+    const symptom = body.symptom?.trim();
+
+    if (!symptom || symptom.length < 5) {
       return NextResponse.json(
         {
           error:
             "Please provide a detailed description of the machine problem.",
         },
-        { status: 400 }
-      );
-    }
-
-    let diagnosis;
-
-    if (affectedSystem === "drive") {
-      diagnosis = analyzeDrive(symptom, machine);
-    } else if (affectedSystem === "hmi") {
-      diagnosis = analyzeHMI(symptom);
-    } else if (affectedSystem === "plc") {
-      diagnosis = analyzePLC(symptom);
-    } else {
-      diagnosis = analyzeGeneric(
-        affectedSystem,
-        symptom
-      );
-    }
-
-    const machineDescription = [
-      machine.machineName,
-      machine.machineBrand,
-      machine.machineModel,
-      machine.productionProcess,
-    ]
-      .filter(Boolean)
-      .join(" ");
-
-    return NextResponse.json({
-      summary: `AENA Engineering Engine identified a probable ${diagnosis.fault.toLowerCase()} based on the reported symptom${machineDescription
-        ? ` on ${machineDescription}`
-        : ""
-      }. This is a preliminary engineering assessment and should be verified with field measurements and machine diagnostics.`,
-
-      severity:
-        diagnosis.probability >= 85
-          ? "high"
-          : diagnosis.probability >= 70
-          ? "medium"
-          : "low",
-
-      diagnoses: [
         {
-          id: `aena-${Date.now()}`,
-          system: affectedSystem,
-          fault: diagnosis.fault,
-          probability: diagnosis.probability,
+          status: 400,
+        }
+      );
+    }
 
-          explanation: diagnosis.explanation,
+    const machine = body.machine || {};
+    const affectedSystem = body.affectedSystem || "unknown";
 
-          evidenceUsed: [
-            "Operator symptom description",
-            `Affected system: ${affectedSystem}`,
-            machine.machineBrand
-              ? `Machine brand: ${machine.machineBrand}`
-              : "Machine brand not provided",
-            machine.driveBrand
-              ? `Drive: ${machine.driveBrand} ${machine.driveModel || ""}`
-              : "",
-          ].filter(Boolean),
+    const engineeringInput = `
+MACHINE INFORMATION
 
-          possibleCauses: diagnosis.possibleCauses,
+Machine name:
+${machine.machineName || "Not provided"}
 
-          recommendedChecks:
-            diagnosis.recommendedChecks,
+Machine brand:
+${machine.machineBrand || "Not provided"}
 
-          recommendedActions:
-            diagnosis.recommendedActions,
+Machine model:
+${machine.machineModel || "Not provided"}
 
-          requiredTools: [
-            "Digital Multimeter",
-            "Electrical Schematics",
-            "Manufacturer Diagnostic Software",
-          ],
+Machine age:
+${machine.machineAge || "Not provided"}
 
-          safetyWarnings: [
-            "Electrical measurements must only be performed by qualified personnel.",
-            "Isolate dangerous energy sources before physical inspection.",
-          ],
+PLC:
+${machine.plcBrand || "Not provided"} ${machine.plcModel || ""}
+
+HMI:
+${machine.hmiBrand || "Not provided"} ${machine.hmiModel || ""}
+
+Drive:
+${machine.driveBrand || "Not provided"} ${machine.driveModel || ""}
+
+Servo:
+${machine.servoBrand || "Not provided"} ${machine.servoModel || ""}
+
+Production process:
+${machine.productionProcess || "Not provided"}
+
+AFFECTED SYSTEM
+
+${affectedSystem}
+
+OPERATOR / ENGINEER SYMPTOM
+
+${symptom}
+
+Analyze this machine problem as an industrial field engineer.
+
+Do not assume that the selected affected system is definitely the cause.
+It is only the user's initial assumption.
+
+Return a detailed preliminary engineering diagnosis.
+`;
+
+    const response = await openai.responses.create({
+      model: "gpt-5.6-luna",
+
+      input: [
+        {
+          role: "system",
+          content: AENA_ENGINEERING_PROMPT,
+        },
+        {
+          role: "user",
+          content: engineeringInput,
         },
       ],
 
-      immediateActions:
-        diagnosis.recommendedChecks.slice(0, 3),
+      text: {
+        format: {
+          type: "json_schema",
+          name: "retrofit_ai_diagnosis",
+          strict: true,
+          schema: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              summary: {
+                type: "string",
+              },
 
-      furtherQuestions: [
-        "What exact alarm or fault code is displayed?",
-        "When did the problem first occur?",
-        "Was any component or parameter changed before the fault?",
-        "Does the machine behave differently in manual and automatic mode?",
-      ],
+              severity: {
+                type: "string",
+                enum: [
+                  "low",
+                  "medium",
+                  "high",
+                  "critical",
+                ],
+              },
 
-      safetyWarnings: [
-        "This is a preliminary engineering assessment, not a guarantee of root cause.",
-        "Follow site Lockout/Tagout procedures before physical inspection.",
-      ],
+              diagnoses: {
+                type: "array",
+                items: {
+                  type: "object",
+                  additionalProperties: false,
+                  properties: {
+                    id: {
+                      type: "string",
+                    },
 
-      confidence: diagnosis.probability,
+                    system: {
+                      type: "string",
+                    },
+
+                    fault: {
+                      type: "string",
+                    },
+
+                    probability: {
+                      type: "number",
+                    },
+
+                    explanation: {
+                      type: "string",
+                    },
+
+                    evidenceUsed: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+
+                    possibleCauses: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+
+                    recommendedChecks: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+
+                    recommendedActions: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+
+                    requiredTools: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+
+                    safetyWarnings: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+                  },
+
+                  required: [
+                    "id",
+                    "system",
+                    "fault",
+                    "probability",
+                    "explanation",
+                    "evidenceUsed",
+                    "possibleCauses",
+                    "recommendedChecks",
+                    "recommendedActions",
+                    "requiredTools",
+                    "safetyWarnings",
+                  ],
+                },
+              },
+
+              immediateActions: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+
+              furtherQuestions: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+
+              safetyWarnings: {
+                type: "array",
+                items: {
+                  type: "string",
+                },
+              },
+
+              confidence: {
+                type: "number",
+              },
+            },
+
+            required: [
+              "summary",
+              "severity",
+              "diagnoses",
+              "immediateActions",
+              "furtherQuestions",
+              "safetyWarnings",
+              "confidence",
+            ],
+          },
+        },
+      },
     });
+
+    console.log("OPENAI RESPONSE RECEIVED");
+
+    const output = response.output_text;
+
+    console.log("AI OUTPUT:");
+    console.log(output);
+
+    if (!output) {
+      throw new Error("AI returned an empty response.");
+    }
+
+    const diagnosis = JSON.parse(output);
+
+    return NextResponse.json(diagnosis);
   } catch (error) {
-    console.error("AENA RETROFIT AI ENGINE ERROR:", error);
+    console.error("=================================");
+    console.error("AENA RETROFIT AI ERROR");
+    console.error(error);
+    console.error("=================================");
 
     return NextResponse.json(
       {
         error:
-          "Internal server error during Retrofit AI analysis.",
+          error instanceof Error
+            ? error.message
+            : "Retrofit AI analysis failed.",
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }
