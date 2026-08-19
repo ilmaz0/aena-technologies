@@ -2,14 +2,19 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-const OLLAMA_URL = "http://127.0.0.1:11434/api/generate";
-const OLLAMA_MODEL = "gemma3:4b";
+const OLLAMA_URL =
+  process.env.OLLAMA_URL ||
+  "http://127.0.0.1:11434/api/generate";
+
+const OLLAMA_MODEL =
+  process.env.OLLAMA_MODEL ||
+  "gemma3:4b";
 
 const AENA_ENGINEERING_PROMPT = `
 You are AENA Retrofit AI, an industrial automation and machine
 troubleshooting engineering assistant developed by AENA Technologies.
 
-You reason like an experienced industrial automation,
+You must reason like an experienced industrial automation,
 electrical and machine retrofit engineer.
 
 AENA specializes in:
@@ -40,17 +45,19 @@ ENGINEERING METHOD
 For every machine problem:
 
 1. Understand the reported machine behavior.
-2. Analyze available evidence.
-3. Identify the affected subsystem.
+2. Analyze the available visual evidence.
+3. Identify the affected subsystem when possible.
 4. Separate observed facts from assumptions.
-5. Identify possible failure paths.
-6. Rank causes by probability.
+5. Identify the most likely failure paths.
+6. Rank possible causes by probability.
 7. Explain WHY each cause is possible.
 8. Provide practical diagnostic checks.
-9. Explain expected results.
-10. Explain the next decision based on each result.
-11. Never declare a component defective without evidence.
+9. Explain what result should be expected from each check.
+10. Explain what the engineer should investigate next depending on the result.
+11. Never immediately declare a component defective without evidence.
 12. Ask targeted questions when information is insufficient.
+
+IMPORTANT
 
 Do not give generic answers such as:
 
@@ -60,29 +67,25 @@ Do not give generic answers such as:
 "Check the motor."
 "Check the drive."
 
-Instead specify:
-
-- Which parameter
-- Which signal
-- Which measurement
-- Which relationship
-- Why it should be checked
+Instead explain WHICH parameter, WHICH signal, WHICH relationship,
+and WHY it should be checked whenever possible.
 
 Example:
 
 Bad:
+
 "Check the drive parameters."
 
 Better:
 
-"If the PLC sends a 50 Hz reference but the drive monitor remains
-near 20 Hz, determine whether the limitation originates from the
-PLC reference, communication command, drive frequency limit,
-current limitation, torque limitation, or motor/load side."
+"If the PLC sends a 50 Hz speed command but the drive monitor remains
+near 20 Hz, determine whether the limitation occurs in the PLC reference,
+communication command, drive frequency limit, current limitation,
+or motor/load side."
 
 ENGINEERING REASONING
 
-Always distinguish:
+Always distinguish between:
 
 - Symptom
 - Evidence
@@ -92,7 +95,7 @@ Always distinguish:
 - Expected result
 - Next decision
 
-Never invent:
+Do not invent:
 
 - Measurements
 - Alarm codes
@@ -100,44 +103,49 @@ Never invent:
 - Machine states
 - Component failures
 
+If information is insufficient, do not pretend to know the exact fault.
+
+Ask the smallest number of highly useful questions needed to narrow
+the fault.
+
 VISUAL EVIDENCE
 
-If an image is provided:
+When an image is supplied:
 
-1. Inspect it carefully.
-2. Identify visible displays.
-3. Identify alarm messages.
-4. Identify indicators.
-5. Identify labels.
-6. Identify visible wiring/components.
-7. Use only information actually visible.
-8. Do not invent unreadable values.
-9. Separate observation from hypothesis.
-10. Explain how the image changes the diagnosis.
+1. Carefully inspect the image.
+2. Identify visible displays, alarm messages, indicators,
+   labels, wiring, components and machine conditions.
+3. Use only information actually visible in the image.
+4. Do not invent unreadable values.
+5. Clearly distinguish visual observations from assumptions.
+6. Explain how the visual evidence affects the diagnosis.
 
 AENA STYLE
 
-Write like an experienced industrial field engineer.
-
-Use practical industrial terminology.
+Write naturally like an experienced industrial field engineer
+explaining the problem to a technician or another engineer.
 
 Do not sound like a generic AI.
 
-Do not unnecessarily repeat the user's description.
+Do not unnecessarily repeat the user's sentence.
+
+Use practical industrial terminology.
 
 Be technically detailed but understandable.
+
+Do not unnecessarily overcomplicate simple faults.
 
 SAFETY
 
 Electrical measurements, live measurements, high voltage systems,
-rotating machinery and stored mechanical, pneumatic or hydraulic
-energy are hazardous.
+rotating machinery and stored mechanical, pneumatic or hydraulic energy
+must be treated as hazardous.
 
 Recommend appropriate isolation and qualified personnel where necessary.
 
 COMMERCIAL PURPOSE
 
-The AI provides a preliminary engineering assessment.
+The preliminary analysis should provide real engineering value.
 
 When diagnosis requires:
 
@@ -152,7 +160,7 @@ When diagnosis requires:
 
 explain that an AENA engineer can continue the diagnosis.
 
-Do not claim AENA physically inspected the machine.
+Do not claim that AENA physically inspected the machine.
 
 Do not claim certainty without sufficient evidence.
 
@@ -194,51 +202,78 @@ RULES
 
 - probability must be between 0 and 100.
 - confidence must be between 0 and 100.
-- Provide 2-4 meaningful diagnoses when possible.
-- Diagnoses must represent technically different hypotheses.
+- Provide 2-4 meaningful diagnoses when the information allows it.
+- Do not make every diagnosis identical.
+- Causes must be technically different.
 - Recommended checks must correspond to the suspected fault.
 - Further questions must be specific and useful.
 - Never invent machine measurements or alarm codes.
 `;
 
+
+/* =========================================================
+   POST
+========================================================= */
+
 export async function POST(request: Request) {
+
   console.log("=================================");
   console.log("AENA RETROFIT AI");
   console.log("=================================");
 
   try {
-    /*
-     * -------------------------------------------------------
-     * READ FORM DATA
-     * -------------------------------------------------------
-     */
 
-    const formData = await request.formData();
+    /* -------------------------------------------------------
+       ENVIRONMENT CHECK
+    ------------------------------------------------------- */
 
-    const symptomValue = formData.get("symptom");
+    console.log("OLLAMA URL:", OLLAMA_URL);
+    console.log("OLLAMA MODEL:", OLLAMA_MODEL);
+
+    if (!OLLAMA_URL) {
+      throw new Error(
+        "OLLAMA_URL environment variable is not configured."
+      );
+    }
+
+
+    /* -------------------------------------------------------
+       READ FORM DATA
+    ------------------------------------------------------- */
+
+    const formData =
+      await request.formData();
+
+    const symptomValue =
+      formData.get("symptom");
 
     if (
       typeof symptomValue !== "string" ||
       symptomValue.trim().length < 10
     ) {
+
       return NextResponse.json(
         {
           error:
             "Please provide a detailed description of the machine problem.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
+
     }
 
-    const symptom = symptomValue.trim();
+    const symptom =
+      symptomValue.trim();
 
-    /*
-     * -------------------------------------------------------
-     * READ FILES
-     * -------------------------------------------------------
-     */
 
-    const files = formData.getAll("files");
+    /* -------------------------------------------------------
+       READ FILES
+    ------------------------------------------------------- */
+
+    const files =
+      formData.getAll("files");
 
     console.log("SYMPTOM:");
     console.log(symptom);
@@ -257,80 +292,89 @@ export async function POST(request: Request) {
       )
     );
 
-    /*
-     * -------------------------------------------------------
-     * PREPARE IMAGES
-     * -------------------------------------------------------
-     */
+
+    /* -------------------------------------------------------
+       PREPARE IMAGES
+    ------------------------------------------------------- */
 
     const images: string[] = [];
+
     const evidenceDescription: string[] = [];
 
+
     for (const item of files) {
+
       if (!(item instanceof File)) {
         continue;
       }
 
+
       evidenceDescription.push(
-        `${item.name} | ${item.type || "unknown"} | ${item.size} bytes`
+        `${item.name} | ${item.type} | ${item.size} bytes`
       );
 
-      /*
-       * IMAGE
-       */
 
-      if (item.type.startsWith("image/")) {
-        try {
-          const buffer = Buffer.from(
+      /* IMAGE */
+
+      if (
+        item.type.startsWith("image/")
+      ) {
+
+        const buffer =
+          Buffer.from(
             await item.arrayBuffer()
           );
 
-          const base64 = buffer.toString("base64");
+        const base64 =
+          buffer.toString("base64");
 
-          images.push(base64);
+        images.push(base64);
 
-          console.log(
-            `Image prepared: ${item.name}`
-          );
-        } catch (imageError) {
-          console.error(
-            `Image processing failed: ${item.name}`,
-            imageError
-          );
-        }
+        console.log(
+          `Image prepared: ${item.name}`
+        );
+
       }
 
-      /*
-       * VIDEO
-       */
 
-      if (item.type.startsWith("video/")) {
+      /* VIDEO */
+
+      if (
+        item.type.startsWith("video/")
+      ) {
+
         console.log(
           `Video received but not analyzed yet: ${item.name}`
         );
+
       }
 
-      /*
-       * PDF / DOCUMENT
-       */
+
+      /* PDF */
 
       if (
-        item.type === "application/pdf" ||
-        item.name.toLowerCase().endsWith(".pdf")
+        item.type ===
+          "application/pdf" ||
+        item.name
+          .toLowerCase()
+          .endsWith(".pdf")
       ) {
+
         console.log(
-          `PDF received but text extraction is not implemented yet: ${item.name}`
+          `PDF received but not analyzed yet: ${item.name}`
         );
+
       }
+
     }
 
-    /*
-     * -------------------------------------------------------
-     * ENGINEERING INPUT
-     * -------------------------------------------------------
-     */
+
+    /* -------------------------------------------------------
+       ENGINEERING INPUT
+    ------------------------------------------------------- */
 
     const engineeringInput = `
+
 USER REPORTED MACHINE PROBLEM
 
 ${symptom}
@@ -343,34 +387,40 @@ ${
     : "No files attached."
 }
 
-IMAGE EVIDENCE COUNT
+IMPORTANT:
 
-${images.length}
+Analyze the reported symptom together with the available evidence.
 
-IMPORTANT
+If an image is available, inspect the image carefully.
 
-Analyze the symptom together with the available evidence.
+Do not assume that a component is defective simply because
+it appears unusual.
 
-If images are supplied, inspect them carefully.
+Separate:
 
-Do not assume the user's suspected subsystem is automatically
-the source of the fault.
+Observed evidence
 
-Separate observed evidence from engineering hypotheses.
+from
 
-If evidence is insufficient, ask targeted questions.
+Engineering hypothesis.
 
-Return ONLY valid JSON.
+If the evidence is insufficient, ask targeted questions.
+
+Analyze the problem as an experienced industrial field engineer.
+
+Return only the required JSON.
 `;
 
-    const prompt =
-      `${AENA_ENGINEERING_PROMPT}\n\n${engineeringInput}`;
 
-    /*
-     * -------------------------------------------------------
-     * OLLAMA BODY
-     * -------------------------------------------------------
-     */
+    const prompt =
+      `${AENA_ENGINEERING_PROMPT}
+
+${engineeringInput}`;
+
+
+    /* -------------------------------------------------------
+       OLLAMA REQUEST BODY
+    ------------------------------------------------------- */
 
     const ollamaBody: {
       model: string;
@@ -383,57 +433,121 @@ Return ONLY valid JSON.
         num_ctx: number;
       };
     } = {
-      model: OLLAMA_MODEL,
+
+      model:
+        OLLAMA_MODEL,
+
       prompt,
-      stream: false,
-      format: "json",
+
+      stream:
+        false,
+
+      format:
+        "json",
+
       options: {
-        temperature: 0.2,
-        num_ctx: 8192,
+
+        temperature:
+          0.2,
+
+        num_ctx:
+          4096,
+
       },
+
     };
 
-    if (images.length > 0) {
-      ollamaBody.images = images;
+
+    /* -------------------------------------------------------
+       ATTACH IMAGES
+    ------------------------------------------------------- */
+
+    if (
+      images.length > 0
+    ) {
+
+      ollamaBody.images =
+        images;
 
       console.log(
         `Sending ${images.length} image(s) to Ollama.`
       );
+
+    } else {
+
+      console.log(
+        "No image evidence attached."
+      );
+
     }
 
-    /*
-     * -------------------------------------------------------
-     * OLLAMA CONNECTION
-     * -------------------------------------------------------
-     */
+
+    /* -------------------------------------------------------
+       CONNECT TO OLLAMA
+    ------------------------------------------------------- */
 
     console.log(
-      `Connecting to Ollama: ${OLLAMA_URL}`
+      "Connecting to Ollama..."
     );
 
-    const ollamaResponse = await fetch(
-      OLLAMA_URL,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(ollamaBody),
-      }
-    );
+    let ollamaResponse: Response;
+
+    try {
+
+      ollamaResponse =
+        await fetch(
+          OLLAMA_URL,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body:
+              JSON.stringify(
+                ollamaBody
+              ),
+
+            signal:
+              AbortSignal.timeout(
+                120000
+              ),
+          }
+        );
+
+    } catch (connectionError) {
+
+      console.error(
+        "OLLAMA CONNECTION ERROR:"
+      );
+
+      console.error(
+        connectionError
+      );
+
+      throw new Error(
+        `Cannot connect to Ollama at ${OLLAMA_URL}. Make sure the Cloudflare Tunnel is running and the Ollama endpoint is reachable.`
+      );
+
+    }
+
+
+    /* -------------------------------------------------------
+       OLLAMA HTTP ERROR
+    ------------------------------------------------------- */
 
     console.log(
       "OLLAMA STATUS:",
       ollamaResponse.status
     );
 
-    /*
-     * -------------------------------------------------------
-     * OLLAMA ERROR
-     * -------------------------------------------------------
-     */
 
-    if (!ollamaResponse.ok) {
+    if (
+      !ollamaResponse.ok
+    ) {
+
       const errorText =
         await ollamaResponse.text();
 
@@ -446,53 +560,71 @@ Return ONLY valid JSON.
       );
 
       throw new Error(
-        `Ollama request failed (${ollamaResponse.status}): ${errorText}`
+        `Ollama request failed with status ${ollamaResponse.status}: ${errorText}`
       );
+
     }
 
-    /*
-     * -------------------------------------------------------
-     * READ RESPONSE
-     * -------------------------------------------------------
-     */
+
+    /* -------------------------------------------------------
+       READ OLLAMA RESPONSE
+    ------------------------------------------------------- */
 
     const ollamaData =
       await ollamaResponse.json();
 
+
     console.log(
-      "OLLAMA RESPONSE RECEIVED"
+      "OLLAMA RAW RESPONSE:"
     );
+
+    console.log(
+      ollamaData
+    );
+
 
     const output =
       ollamaData?.response;
 
+
+    if (
+      !output
+    ) {
+
+      throw new Error(
+        "Ollama returned an empty response."
+      );
+
+    }
+
+
     console.log(
-      "AI OUTPUT:"
+      "OLLAMA RESPONSE:"
     );
 
     console.log(
       output
     );
 
-    if (!output) {
-      throw new Error(
-        "Ollama returned an empty response."
-      );
-    }
 
-    /*
-     * -------------------------------------------------------
-     * PARSE JSON
-     * -------------------------------------------------------
-     */
+    /* -------------------------------------------------------
+       PARSE AI JSON
+    ------------------------------------------------------- */
 
     let diagnosis: any;
 
+
     try {
-      diagnosis = JSON.parse(output);
-    } catch (parseError) {
+
+      diagnosis =
+        typeof output === "string"
+          ? JSON.parse(output)
+          : output;
+
+    } catch {
+
       console.error(
-        "JSON PARSE ERROR:"
+        "INVALID AI JSON:"
       );
 
       console.error(
@@ -500,60 +632,128 @@ Return ONLY valid JSON.
       );
 
       throw new Error(
-        "Ollama returned invalid JSON."
+        "Ollama returned an invalid JSON diagnosis."
       );
+
     }
 
-    /*
-     * -------------------------------------------------------
-     * BASIC VALIDATION
-     * -------------------------------------------------------
-     */
+
+    /* -------------------------------------------------------
+       BASIC VALIDATION
+    ------------------------------------------------------- */
 
     if (
       !diagnosis ||
-      typeof diagnosis !== "object"
+      typeof diagnosis !==
+        "object"
     ) {
+
       throw new Error(
         "AI returned an invalid diagnosis."
       );
+
     }
 
+
     if (
-      typeof diagnosis.summary !== "string"
+      typeof diagnosis.summary !==
+        "string"
     ) {
+
       throw new Error(
         "AI diagnosis is missing summary."
       );
+
     }
+
 
     if (
       !Array.isArray(
         diagnosis.diagnoses
       )
     ) {
+
       throw new Error(
         "AI diagnosis is missing diagnoses."
       );
+
     }
+
 
     if (
-      typeof diagnosis.confidence !== "number"
+      typeof diagnosis.confidence !==
+        "number"
     ) {
-      diagnosis.confidence = 0;
+
+      console.warn(
+        "AI confidence is missing or invalid."
+      );
+
     }
 
-    /*
-     * -------------------------------------------------------
-     * RETURN RESULT
-     * -------------------------------------------------------
-     */
+
+    /* -------------------------------------------------------
+       NORMALIZE RESPONSE
+    ------------------------------------------------------- */
+
+    const normalizedDiagnosis = {
+
+      summary:
+        diagnosis.summary,
+
+      severity:
+        diagnosis.severity ||
+        "medium",
+
+      diagnoses:
+        diagnosis.diagnoses,
+
+      immediateActions:
+        Array.isArray(
+          diagnosis.immediateActions
+        )
+          ? diagnosis.immediateActions
+          : [],
+
+      furtherQuestions:
+        Array.isArray(
+          diagnosis.furtherQuestions
+        )
+          ? diagnosis.furtherQuestions
+          : [],
+
+      safetyWarnings:
+        Array.isArray(
+          diagnosis.safetyWarnings
+        )
+          ? diagnosis.safetyWarnings
+          : [],
+
+      confidence:
+        typeof diagnosis.confidence ===
+          "number"
+          ? Math.max(
+              0,
+              Math.min(
+                100,
+                diagnosis.confidence
+              )
+            )
+          : 0,
+
+    };
+
+
+    /* -------------------------------------------------------
+       RETURN RESULT
+    ------------------------------------------------------- */
 
     return NextResponse.json(
-      diagnosis
+      normalizedDiagnosis
     );
 
   } catch (error) {
+
     console.error(
       "================================="
     );
@@ -570,35 +770,19 @@ Return ONLY valid JSON.
       "================================="
     );
 
-    let message =
-      "Retrofit AI analysis failed.";
-
-    if (error instanceof Error) {
-      message = error.message;
-
-      /*
-       * Node fetch errors sometimes hide
-       * the real connection problem.
-       */
-
-      if (
-        error.message
-          .toLowerCase()
-          .includes("fetch failed")
-      ) {
-        message =
-          "Cannot connect to Ollama at 127.0.0.1:11434. " +
-          "Make sure Ollama is running and the gemma3:4b model is available.";
-      }
-    }
 
     return NextResponse.json(
       {
-        error: message,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Retrofit AI analysis failed.",
       },
       {
         status: 500,
       }
     );
+
   }
+
 }
