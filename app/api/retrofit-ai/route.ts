@@ -6,18 +6,18 @@ const OLLAMA_URL = "http://localhost:11434/api/generate";
 const OLLAMA_MODEL = "gemma3:4b";
 
 const AENA_ENGINEERING_PROMPT = `
-You are AENA Retrofit AI, an industrial automation and machine retrofit
-engineering assistant developed by AENA Technologies.
+You are AENA Retrofit AI, an industrial automation and machine
+troubleshooting engineering assistant developed by AENA Technologies.
 
-You must reason like an experienced industrial field service engineer.
+You must reason like an experienced industrial automation,
+electrical and machine retrofit engineer.
 
 AENA specializes in:
 
-- Industrial automation
 - PLC systems
 - HMI systems
 - Variable frequency drives
-- Servo drives
+- Servo systems
 - Motors
 - Sensors
 - Electrical panels
@@ -30,8 +30,8 @@ AENA specializes in:
 - Pneumatic systems
 - Hydraulic systems
 - Plastic processing machinery
-- Stretch film machines
 - Extrusion machines
+- Stretch film machines
 - PET recycling machines
 - Flexographic printing machines
 
@@ -39,9 +39,9 @@ ENGINEERING METHOD
 
 For every machine problem:
 
-1. Understand the machine and production process.
-2. Identify the affected subsystem.
-3. Analyze the operator symptom.
+1. Understand the reported machine behavior.
+2. Analyze the available visual evidence.
+3. Identify the affected subsystem when possible.
 4. Separate observed facts from assumptions.
 5. Identify the most likely failure paths.
 6. Rank possible causes by probability.
@@ -52,7 +52,7 @@ For every machine problem:
 11. Never immediately declare a component defective without evidence.
 12. Ask targeted questions when information is insufficient.
 
-IMPORTANT:
+IMPORTANT
 
 Do not give generic answers such as:
 
@@ -60,20 +60,23 @@ Do not give generic answers such as:
 "Check the wiring."
 "Check the PLC."
 "Check the motor."
+"Check the drive."
 
 Instead explain WHICH parameter, WHICH signal, WHICH relationship,
 and WHY it should be checked whenever possible.
 
-For example:
+Example:
 
 Bad:
+
 "Check the drive parameters."
 
 Better:
-"If the PLC shows a 50 Hz speed command but the drive monitor remains
-at approximately 20 Hz, first determine whether the limitation occurs
-in the PLC reference, communication command, drive frequency limit,
-current limitation, or motor/load side."
+
+"If the PLC sends a 50 Hz speed command but the drive monitor remains
+near 20 Hz, determine whether the limitation occurs in the PLC reference,
+communication command, drive frequency limit, current limitation,
+or motor/load side."
 
 ENGINEERING REASONING
 
@@ -87,30 +90,45 @@ Always distinguish between:
 - Expected result
 - Next decision
 
+Do not invent:
+
+- Measurements
+- Alarm codes
+- Parameter values
+- Machine states
+- Component failures
+
 If information is insufficient, do not pretend to know the exact fault.
 
 Ask the smallest number of highly useful questions needed to narrow
 the fault.
 
+VISUAL EVIDENCE
+
+When an image is supplied:
+
+1. Carefully inspect the image.
+2. Identify visible displays, alarm messages, indicators,
+   labels, wiring, components and machine conditions.
+3. Use only information actually visible in the image.
+4. Do not invent unreadable values.
+5. Clearly distinguish visual observations from assumptions.
+6. Explain how the visual evidence affects the diagnosis.
+
 AENA STYLE
 
-Write naturally like an experienced industrial engineer explaining
-the problem to a technician or another engineer.
+Write naturally like an experienced industrial field engineer
+explaining the problem to a technician or another engineer.
 
 Do not sound like a generic AI.
 
-Do not repeat the user's sentence unnecessarily.
+Do not unnecessarily repeat the user's sentence.
 
 Use practical industrial terminology.
 
 Be technically detailed but understandable.
 
 Do not unnecessarily overcomplicate simple faults.
-
-The selected affected system is ONLY the user's initial assumption.
-It must NOT determine the diagnosis automatically.
-
-The diagnosis must be based primarily on the symptom and machine context.
 
 SAFETY
 
@@ -124,9 +142,18 @@ COMMERCIAL PURPOSE
 
 The preliminary analysis should provide real engineering value.
 
-When diagnosis requires physical inspection, measurements, machine access,
-PLC/drive software, electrical drawings, photographs, video or additional
-evidence, explain that an AENA engineer can continue the diagnosis.
+When diagnosis requires:
+
+- Physical inspection
+- Electrical measurements
+- PLC software
+- Drive software
+- Electrical drawings
+- Additional photographs
+- Video
+- Machine access
+
+explain that an AENA engineer can continue the diagnosis.
 
 Do not claim that AENA physically inspected the machine.
 
@@ -166,7 +193,7 @@ Use exactly this structure:
   "confidence": 0
 }
 
-RULES:
+RULES
 
 - probability must be between 0 and 100.
 - confidence must be between 0 and 100.
@@ -178,151 +205,392 @@ RULES:
 - Never invent machine measurements or alarm codes.
 `;
 
+/* =========================================================
+   POST
+========================================================= */
+
 export async function POST(request: Request) {
   console.log("=================================");
-  console.log("AENA RETROFIT AI - OLLAMA");
+  console.log("AENA RETROFIT AI");
   console.log("=================================");
 
   try {
-    const body = await request.json();
+    /*
+     * -------------------------------------------------------
+     * READ MULTIPART FORM DATA
+     * -------------------------------------------------------
+     */
 
-    console.log("RECEIVED BODY:");
-    console.log(body);
+    const formData = await request.formData();
 
-    const symptom = body.symptom?.trim();
+    const symptomValue = formData.get("symptom");
 
-    if (!symptom || symptom.length < 5) {
+    if (
+      typeof symptomValue !== "string" ||
+      symptomValue.trim().length < 10
+    ) {
       return NextResponse.json(
         {
           error:
             "Please provide a detailed description of the machine problem.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
-    const machine = body.machine || {};
-    const affectedSystem = body.affectedSystem || "unknown";
+    const symptom = symptomValue.trim();
+
+    /*
+     * -------------------------------------------------------
+     * READ FILES
+     * -------------------------------------------------------
+     */
+
+    const files = formData.getAll("files");
+
+    console.log("SYMPTOM:");
+    console.log(symptom);
+
+    console.log("FILES:");
+
+    console.log(
+      files.map((file) =>
+        file instanceof File
+          ? {
+              name: file.name,
+              type: file.type,
+              size: file.size,
+            }
+          : typeof file
+      )
+    );
+
+    /*
+     * -------------------------------------------------------
+     * PREPARE IMAGE EVIDENCE
+     * -------------------------------------------------------
+     */
+
+    const images: string[] = [];
+
+    const evidenceDescription: string[] = [];
+
+    for (const item of files) {
+      if (!(item instanceof File)) {
+        continue;
+      }
+
+      evidenceDescription.push(
+        `${item.name} | ${item.type} | ${item.size} bytes`
+      );
+
+      /*
+       * IMAGE
+       *
+       * Gemma 3 receives the image as Base64.
+       */
+
+      if (item.type.startsWith("image/")) {
+        const buffer = Buffer.from(
+          await item.arrayBuffer()
+        );
+
+        const base64 = buffer.toString("base64");
+
+        images.push(base64);
+
+        console.log(
+          `Image prepared: ${item.name}`
+        );
+      }
+
+      /*
+       * VIDEO
+       *
+       * Received but not analyzed yet.
+       */
+
+      if (item.type.startsWith("video/")) {
+        console.log(
+          `Video received but not analyzed yet: ${item.name}`
+        );
+      }
+
+      /*
+       * PDF
+       *
+       * Received but PDF text extraction will be added
+       * in the next stage.
+       */
+
+      if (
+        item.type === "application/pdf" ||
+        item.name
+          .toLowerCase()
+          .endsWith(".pdf")
+      ) {
+        console.log(
+          `PDF received but not analyzed yet: ${item.name}`
+        );
+      }
+    }
+
+    /*
+     * -------------------------------------------------------
+     * ENGINEERING INPUT
+     * -------------------------------------------------------
+     */
 
     const engineeringInput = `
-MACHINE INFORMATION
-
-Machine name:
-${machine.machineName || "Not provided"}
-
-Machine brand:
-${machine.machineBrand || "Not provided"}
-
-Machine model:
-${machine.machineModel || "Not provided"}
-
-Machine age:
-${machine.machineAge || "Not provided"}
-
-PLC:
-${machine.plcBrand || "Not provided"} ${machine.plcModel || ""}
-
-HMI:
-${machine.hmiBrand || "Not provided"} ${machine.hmiModel || ""}
-
-Drive:
-${machine.driveBrand || "Not provided"} ${machine.driveModel || ""}
-
-Servo:
-${machine.servoBrand || "Not provided"} ${machine.servoModel || ""}
-
-Production process:
-${machine.productionProcess || "Not provided"}
-
-USER SELECTED SYSTEM:
-
-${affectedSystem}
-
-IMPORTANT:
-The selected system is only the user's initial assumption.
-Do not automatically diagnose that system.
-
-OPERATOR / ENGINEER SYMPTOM:
+USER REPORTED MACHINE PROBLEM
 
 ${symptom}
 
-Analyze the complete machine context and symptom.
+ATTACHED EVIDENCE
 
-Think step by step internally.
+${
+  evidenceDescription.length > 0
+    ? evidenceDescription.join("\n")
+    : "No files attached."
+}
 
-Identify the most likely failure paths.
+IMPORTANT:
 
-Compare competing hypotheses.
+Analyze the reported symptom together with the available evidence.
 
-Return the final answer ONLY in the required JSON format.
+If an image is available, inspect the image carefully.
+
+Do not assume that a component is defective simply because
+it appears unusual.
+
+Separate:
+
+Observed evidence
+
+from
+
+Engineering hypothesis.
+
+If the evidence is insufficient, ask targeted questions.
+
+Analyze the problem as an experienced industrial field engineer.
+
+Return only the required JSON.
 `;
 
     const prompt = `${AENA_ENGINEERING_PROMPT}
 
 ${engineeringInput}`;
 
-    const ollamaResponse = await fetch(OLLAMA_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: OLLAMA_MODEL,
-        prompt,
-        stream: false,
-        format: "json",
-        options: {
-          temperature: 0.3,
-          num_ctx: 8192,
-        },
-      }),
-    });
+    /*
+     * -------------------------------------------------------
+     * OLLAMA REQUEST
+     * -------------------------------------------------------
+     */
 
-    console.log("OLLAMA STATUS:", ollamaResponse.status);
+    const ollamaBody: {
+      model: string;
+      prompt: string;
+      stream: boolean;
+      format: string;
+      images?: string[];
+      options: {
+        temperature: number;
+        num_ctx: number;
+      };
+    } = {
+      model: OLLAMA_MODEL,
+
+      prompt,
+
+      stream: false,
+
+      format: "json",
+
+      options: {
+        temperature: 0.2,
+        num_ctx: 8192,
+      },
+    };
+
+    /*
+     * Attach images only when images exist.
+     */
+
+    if (images.length > 0) {
+      ollamaBody.images = images;
+
+      console.log(
+        `Sending ${images.length} image(s) to Ollama.`
+      );
+    } else {
+      console.log(
+        "No image evidence attached."
+      );
+    }
+
+    /*
+     * -------------------------------------------------------
+     * CALL OLLAMA
+     * -------------------------------------------------------
+     */
+
+    const ollamaResponse = await fetch(
+      OLLAMA_URL,
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify(
+          ollamaBody
+        ),
+      }
+    );
+
+    console.log(
+      "OLLAMA STATUS:",
+      ollamaResponse.status
+    );
+
+    /*
+     * -------------------------------------------------------
+     * OLLAMA ERROR
+     * -------------------------------------------------------
+     */
 
     if (!ollamaResponse.ok) {
-      const errorText = await ollamaResponse.text();
+      const errorText =
+        await ollamaResponse.text();
 
-      console.error("OLLAMA ERROR:");
-      console.error(errorText);
+      console.error(
+        "OLLAMA ERROR:"
+      );
+
+      console.error(
+        errorText
+      );
 
       throw new Error(
         `Ollama request failed with status ${ollamaResponse.status}: ${errorText}`
       );
     }
 
-    const ollamaData = await ollamaResponse.json();
+    /*
+     * -------------------------------------------------------
+     * READ OLLAMA RESPONSE
+     * -------------------------------------------------------
+     */
 
-    console.log("OLLAMA RESPONSE RECEIVED");
+    const ollamaData =
+      await ollamaResponse.json();
 
-    const output = ollamaData?.response;
+    const output =
+      ollamaData?.response;
 
-    console.log("AI OUTPUT:");
-    console.log(output);
+    console.log(
+      "OLLAMA RESPONSE:"
+    );
+
+    console.log(
+      output
+    );
 
     if (!output) {
-      throw new Error("Ollama returned an empty response.");
+      throw new Error(
+        "Ollama returned an empty response."
+      );
     }
+
+    /*
+     * -------------------------------------------------------
+     * PARSE JSON
+     * -------------------------------------------------------
+     */
 
     let diagnosis;
 
     try {
-      diagnosis = JSON.parse(output);
-    } catch (parseError) {
-      console.error("JSON PARSE ERROR:");
-      console.error(output);
+      diagnosis =
+        JSON.parse(output);
+    } catch {
+      console.error(
+        "INVALID AI JSON:"
+      );
+
+      console.error(
+        output
+      );
 
       throw new Error(
         "Ollama returned an invalid JSON diagnosis."
       );
     }
 
-    return NextResponse.json(diagnosis);
+    /*
+     * -------------------------------------------------------
+     * BASIC VALIDATION
+     * -------------------------------------------------------
+     */
+
+    if (
+      !diagnosis ||
+      typeof diagnosis !== "object"
+    ) {
+      throw new Error(
+        "AI returned an invalid diagnosis."
+      );
+    }
+
+    if (
+      typeof diagnosis.summary !==
+      "string"
+    ) {
+      throw new Error(
+        "AI diagnosis is missing summary."
+      );
+    }
+
+    if (
+      !Array.isArray(
+        diagnosis.diagnoses
+      )
+    ) {
+      throw new Error(
+        "AI diagnosis is missing diagnoses."
+      );
+    }
+
+    /*
+     * -------------------------------------------------------
+     * RETURN
+     * -------------------------------------------------------
+     */
+
+    return NextResponse.json(
+      diagnosis
+    );
+
   } catch (error) {
-    console.error("=================================");
-    console.error("AENA RETROFIT AI ERROR");
-    console.error(error);
-    console.error("=================================");
+    console.error(
+      "================================="
+    );
+
+    console.error(
+      "AENA RETROFIT AI ERROR"
+    );
+
+    console.error(
+      error
+    );
+
+    console.error(
+      "================================="
+    );
 
     return NextResponse.json(
       {

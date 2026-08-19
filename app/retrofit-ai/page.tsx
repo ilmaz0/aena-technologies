@@ -1,6 +1,14 @@
 "use client";
 
-import { useRef, useState, FormEvent } from "react";
+import {
+  useRef,
+  useState,
+  FormEvent,
+} from "react";
+
+/* =========================================================
+   TYPES
+========================================================= */
 
 type Diagnosis = {
   id: string;
@@ -18,23 +26,42 @@ type Diagnosis = {
 
 type RetrofitAIResponse = {
   summary: string;
-  severity: "low" | "medium" | "high" | "critical";
+
+  severity:
+    | "low"
+    | "medium"
+    | "high"
+    | "critical";
+
   diagnoses: Diagnosis[];
+
   immediateActions: string[];
+
   furtherQuestions: string[];
+
   safetyWarnings: string[];
+
   confidence: number;
 };
 
-export default function RetrofitAIPage() {
-  const [symptom, setSymptom] = useState("");
+/* =========================================================
+   PAGE
+========================================================= */
 
-  const [loading, setLoading] = useState(false);
+export default function RetrofitAIPage() {
+  const [symptom, setSymptom] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
 
   const [result, setResult] =
-    useState<RetrofitAIResponse | null>(null);
+    useState<RetrofitAIResponse | null>(
+      null
+    );
 
-  const [error, setError] = useState("");
+  const [error, setError] =
+    useState("");
 
   const [selectedFiles, setSelectedFiles] =
     useState<File[]>([]);
@@ -48,50 +75,77 @@ export default function RetrofitAIPage() {
   const documentInputRef =
     useRef<HTMLInputElement>(null);
 
-  /* ---------------------------------------------------------
+  /* =======================================================
      FILE HANDLING
-  --------------------------------------------------------- */
+  ======================================================= */
 
-  function addFiles(files: FileList | null) {
-    if (!files) return;
+  function addFiles(
+    files: FileList | null
+  ) {
+    if (!files) {
+      return;
+    }
 
-    const incoming = Array.from(files);
+    const incoming =
+      Array.from(files);
 
     setSelectedFiles((prev) => {
-      const combined = [...prev, ...incoming];
+      const combined = [
+        ...prev,
+        ...incoming,
+      ];
 
-      const unique = combined.filter(
-        (file, index, self) =>
-          index ===
-          self.findIndex(
-            (item) =>
-              item.name === file.name &&
-              item.size === file.size &&
-              item.lastModified === file.lastModified
-          )
-      );
+      const unique =
+        combined.filter(
+          (
+            file,
+            index,
+            self
+          ) =>
+            index ===
+            self.findIndex(
+              (item) =>
+                item.name ===
+                  file.name &&
+                item.size ===
+                  file.size &&
+                item.lastModified ===
+                  file.lastModified
+            )
+        );
 
       return unique;
     });
   }
 
-  function removeFile(index: number) {
+  function removeFile(
+    index: number
+  ) {
     setSelectedFiles((prev) =>
-      prev.filter((_, i) => i !== index)
+      prev.filter(
+        (_, i) =>
+          i !== index
+      )
     );
   }
 
-  /* ---------------------------------------------------------
+  /* =======================================================
      AI ANALYSIS
-  --------------------------------------------------------- */
+  ======================================================= */
 
-  async function analyzeMachine(e?: FormEvent) {
+  async function analyzeMachine(
+    e?: FormEvent
+  ) {
     if (e) {
       e.preventDefault();
     }
 
     setError("");
     setResult(null);
+
+    /*
+     * Problem validation
+     */
 
     if (!symptom.trim()) {
       setError(
@@ -101,7 +155,10 @@ export default function RetrofitAIPage() {
       return;
     }
 
-    if (symptom.trim().length < 10) {
+    if (
+      symptom.trim().length <
+      10
+    ) {
       setError(
         "Please provide a little more information about the machine problem."
       );
@@ -113,24 +170,33 @@ export default function RetrofitAIPage() {
 
     try {
       /*
-       * IMPORTANT
+       * ---------------------------------------------------
+       * FORM DATA
+       * ---------------------------------------------------
        *
-       * At this stage only file metadata is sent.
+       * IMPORTANT:
        *
-       * The actual file-content analysis will be implemented
-       * in the next stage.
+       * We are no longer sending JSON.
+       *
+       * The actual files are sent to the backend.
        */
 
-      const requestBody = {
-        symptom: symptom.trim(),
+      const formData =
+        new FormData();
 
-        evidence: selectedFiles.map((file) => ({
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          lastModified: file.lastModified,
-        })),
-      };
+      formData.append(
+        "symptom",
+        symptom.trim()
+      );
+
+      selectedFiles.forEach(
+        (file) => {
+          formData.append(
+            "files",
+            file
+          );
+        }
+      );
 
       console.log(
         "================================="
@@ -144,23 +210,41 @@ export default function RetrofitAIPage() {
         "================================="
       );
 
-      console.log(requestBody);
-
-      const response = await fetch(
-        "/api/retrofit-ai",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
-          body: JSON.stringify(
-            requestBody
-          ),
-        }
+      console.log(
+        "Symptom:",
+        symptom
       );
+
+      console.log(
+        "Files:",
+        selectedFiles.map(
+          (file) => ({
+            name: file.name,
+            type: file.type,
+            size: file.size,
+          })
+        )
+      );
+
+      /*
+       * ---------------------------------------------------
+       * API REQUEST
+       * ---------------------------------------------------
+       *
+       * Do NOT manually specify Content-Type.
+       *
+       * Browser will create multipart/form-data boundary.
+       */
+
+      const response =
+        await fetch(
+          "/api/retrofit-ai",
+          {
+            method: "POST",
+
+            body: formData,
+          }
+        );
 
       console.log(
         "API STATUS:",
@@ -173,10 +257,9 @@ export default function RetrofitAIPage() {
       );
 
       /*
-       * Read raw response first.
-       *
-       * This is useful because Ollama / Next.js
-       * errors may sometimes return plain text.
+       * ---------------------------------------------------
+       * READ RAW RESPONSE
+       * ---------------------------------------------------
        */
 
       const responseText =
@@ -198,12 +281,19 @@ export default function RetrofitAIPage() {
         "================================="
       );
 
+      /*
+       * ---------------------------------------------------
+       * PARSE RESPONSE
+       * ---------------------------------------------------
+       */
+
       let data: any;
 
       try {
-        data = JSON.parse(
-          responseText
-        );
+        data =
+          JSON.parse(
+            responseText
+          );
       } catch {
         throw new Error(
           `Server returned an invalid response.
@@ -219,7 +309,9 @@ ${responseText.substring(
       }
 
       /*
+       * ---------------------------------------------------
        * HTTP ERROR
+       * ---------------------------------------------------
        */
 
       if (!response.ok) {
@@ -230,12 +322,15 @@ ${responseText.substring(
       }
 
       /*
-       * BASIC RESPONSE VALIDATION
+       * ---------------------------------------------------
+       * RESPONSE VALIDATION
+       * ---------------------------------------------------
        */
 
       if (
         !data ||
-        typeof data !== "object"
+        typeof data !==
+          "object"
       ) {
         throw new Error(
           "The AI returned an invalid diagnosis."
@@ -270,7 +365,9 @@ ${responseText.substring(
       }
 
       /*
+       * ---------------------------------------------------
        * SAVE RESULT
+       * ---------------------------------------------------
        */
 
       setResult(
@@ -278,8 +375,7 @@ ${responseText.substring(
       );
 
       /*
-       * Scroll to top so the user
-       * immediately sees the diagnosis.
+       * Scroll to result
        */
 
       window.scrollTo({
@@ -296,7 +392,9 @@ ${responseText.substring(
         "AENA RETROFIT AI ERROR"
       );
 
-      console.error(err);
+      console.error(
+        err
+      );
 
       console.error(
         "================================="
@@ -307,23 +405,36 @@ ${responseText.substring(
           ? err.message
           : "An unexpected error occurred."
       );
+
     } finally {
       setLoading(false);
     }
   }
 
-  /* ---------------------------------------------------------
+  /* =======================================================
      WHATSAPP
-  --------------------------------------------------------- */
+  ======================================================= */
 
   function startWhatsApp() {
     /*
-     * Replace this number with the real
-     * AENA WhatsApp number.
+     * IMPORTANT:
+     *
+     * Replace this with the real AENA WhatsApp number.
+     *
+     * Format:
+     *
+     * 905XXXXXXXXX
+     *
+     * No + sign.
+     * No spaces.
      */
 
     const phone =
       "905XXXXXXXXX";
+
+    /*
+     * AI diagnosis
+     */
 
     const diagnosisText =
       result
@@ -331,24 +442,37 @@ ${responseText.substring(
 
 AENA AI preliminary assessment:
 
+Summary:
 ${result.summary}
 
-Severity: ${result.severity}
-Confidence: ${result.confidence}%
+Severity:
+${result.severity}
+
+Confidence:
+${result.confidence}%
+
 `
         : "";
+
+    /*
+     * WhatsApp message
+     */
 
     const message = `Hello AENA,
 
 I need engineering support for an industrial machine.
 
-Problem:
+Reported problem:
 
 ${symptom}
 
 ${diagnosisText}
 
 I would like to continue the diagnosis with an AENA engineer.`;
+
+    /*
+     * WhatsApp URL
+     */
 
     const url =
       `https://wa.me/${phone}?text=` +
@@ -362,14 +486,17 @@ I would like to continue the diagnosis with an AENA engineer.`;
     );
   }
 
-  /* ---------------------------------------------------------
+  /* =======================================================
      NEW ANALYSIS
-  --------------------------------------------------------- */
+  ======================================================= */
 
   function startNewAnalysis() {
     setResult(null);
+
     setError("");
+
     setSymptom("");
+
     setSelectedFiles([]);
 
     window.scrollTo({
@@ -378,9 +505,9 @@ I would like to continue the diagnosis with an AENA engineer.`;
     });
   }
 
-  /* ---------------------------------------------------------
-     PAGE
-  --------------------------------------------------------- */
+  /* =======================================================
+     PAGE UI
+  ======================================================= */
 
   return (
     <main className="min-h-screen bg-[#020617] text-white">
@@ -423,20 +550,23 @@ I would like to continue the diagnosis with an AENA engineer.`;
 
       </header>
 
+
       {/* MAIN */}
 
       <section className="mx-auto max-w-5xl px-5 py-10">
 
-        {/* INPUT SCREEN */}
-
         {!result && (
 
           <form
-            onSubmit={analyzeMachine}
+            onSubmit={
+              analyzeMachine
+            }
             className="space-y-6"
           >
 
-            {/* HERO */}
+            {/* =========================================
+                PROBLEM
+            ========================================= */}
 
             <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
 
@@ -451,9 +581,10 @@ I would like to continue the diagnosis with an AENA engineer.`;
                 </h2>
 
                 <p className="mt-3 text-sm leading-7 text-slate-500">
-                  Describe the problem as you see it in
-                  the field. You do not need to know which
-                  component is causing the fault.
+                  Describe the problem as you see it
+                  in the field. You do not need to
+                  know which component is causing
+                  the fault.
                 </p>
 
               </div>
@@ -485,7 +616,10 @@ The extruder was running normally. When production speed increases, the motor cu
 
             </section>
 
-            {/* EVIDENCE */}
+
+            {/* =========================================
+                EVIDENCE
+            ========================================= */}
 
             <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
 
@@ -505,6 +639,7 @@ The extruder was running normally. When production speed increases, the motor cu
                 </p>
 
               </div>
+
 
               <div className="mt-5 grid gap-3 sm:grid-cols-3">
 
@@ -537,10 +672,13 @@ The extruder was running normally. When production speed increases, the motor cu
 
               </div>
 
-              {/* IMAGE */}
+
+              {/* IMAGE INPUT */}
 
               <input
-                ref={imageInputRef}
+                ref={
+                  imageInputRef
+                }
                 type="file"
                 accept="image/*"
                 multiple
@@ -557,10 +695,13 @@ The extruder was running normally. When production speed increases, the motor cu
                 }}
               />
 
-              {/* VIDEO */}
+
+              {/* VIDEO INPUT */}
 
               <input
-                ref={videoInputRef}
+                ref={
+                  videoInputRef
+                }
                 type="file"
                 accept="video/*"
                 multiple
@@ -577,24 +718,15 @@ The extruder was running normally. When production speed increases, the motor cu
                 }}
               />
 
-              {/* DOCUMENT */}
+
+              {/* DOCUMENT INPUT */}
 
               <input
-                ref={documentInputRef}
+                ref={
+                  documentInputRef
+                }
                 type="file"
-                accept="
-                  .pdf,
-                  .zip,
-                  .rar,
-                  .doc,
-                  .docx,
-                  .xls,
-                  .xlsx,
-                  .csv,
-                  .txt,
-                  .log,
-                  .prj
-                "
+                accept=".pdf,.zip,.rar,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.prj"
                 multiple
                 className="hidden"
                 onChange={(e) => {
@@ -608,6 +740,7 @@ The extruder was running normally. When production speed increases, the motor cu
 
                 }}
               />
+
 
               {/* SELECTED FILES */}
 
@@ -673,7 +806,10 @@ The extruder was running normally. When production speed increases, the motor cu
 
             </section>
 
-            {/* ERROR */}
+
+            {/* =========================================
+                ERROR
+            ========================================= */}
 
             {error && (
 
@@ -691,7 +827,10 @@ The extruder was running normally. When production speed increases, the motor cu
 
             )}
 
-            {/* ANALYZE */}
+
+            {/* =========================================
+                ANALYZE BUTTON
+            ========================================= */}
 
             <button
               type="submit"
@@ -704,6 +843,7 @@ The extruder was running normally. When production speed increases, the motor cu
                 : "Analyze Machine Problem →"}
 
             </button>
+
 
             {/* DISCLAIMER */}
 
@@ -718,16 +858,29 @@ The extruder was running normally. When production speed increases, the motor cu
 
         )}
 
-        {/* RESULTS */}
+
+        {/* =========================================
+            RESULTS
+        ========================================= */}
 
         {result && (
 
           <DiagnosisView
-            result={result}
-            symptom={symptom}
-            selectedFiles={selectedFiles}
-            onWhatsApp={startWhatsApp}
-            onNewAnalysis={startNewAnalysis}
+            result={
+              result
+            }
+            symptom={
+              symptom
+            }
+            selectedFiles={
+              selectedFiles
+            }
+            onWhatsApp={
+              startWhatsApp
+            }
+            onNewAnalysis={
+              startNewAnalysis
+            }
           />
 
         )}
@@ -787,9 +940,11 @@ function DiagnosisView({
 
         </div>
 
+
         <p className="mt-6 text-base leading-8 text-slate-300">
           {result.summary}
         </p>
+
 
         <div className="mt-6 flex flex-wrap gap-3">
 
@@ -805,6 +960,7 @@ function DiagnosisView({
 
           </div>
 
+
           <div className="rounded-xl border border-slate-800 bg-slate-950 px-4 py-3">
 
             <span className="text-xs text-slate-500">
@@ -814,7 +970,8 @@ function DiagnosisView({
             <p className="mt-1 font-bold text-slate-300">
 
               {selectedFiles.length} file
-              {selectedFiles.length === 1
+              {selectedFiles.length ===
+              1
                 ? ""
                 : "s"}
 
@@ -848,7 +1005,9 @@ function DiagnosisView({
         (diagnosis) => (
 
           <section
-            key={diagnosis.id}
+            key={
+              diagnosis.id
+            }
             className="rounded-2xl border border-slate-800 bg-slate-950 p-6 sm:p-8"
           >
 
@@ -866,6 +1025,7 @@ function DiagnosisView({
 
               </div>
 
+
               <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-3 py-2 text-sm font-bold text-orange-400">
                 {diagnosis.probability}% probability
               </div>
@@ -873,7 +1033,7 @@ function DiagnosisView({
             </div>
 
 
-            {/* REASONING */}
+            {/* ENGINEERING REASONING */}
 
             <div className="mt-7">
 
@@ -1070,7 +1230,9 @@ function DiagnosisView({
       )}
 
 
-      {/* ENGINEER CTA */}
+      {/* =========================================
+          WHATSAPP CTA
+      ========================================= */}
 
       <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
 
@@ -1091,7 +1253,9 @@ function DiagnosisView({
 
         <button
           type="button"
-          onClick={onWhatsApp}
+          onClick={
+            onWhatsApp
+          }
           className="mt-6 w-full rounded-xl bg-green-600 px-6 py-4 text-sm font-bold text-white transition hover:bg-green-500 sm:w-auto"
         >
           Continue with AENA on WhatsApp →
@@ -1111,7 +1275,9 @@ function DiagnosisView({
 
         <button
           type="button"
-          onClick={onNewAnalysis}
+          onClick={
+            onNewAnalysis
+          }
           className="text-sm text-slate-500 transition hover:text-orange-400"
         >
           ← Start a new diagnosis
@@ -1195,7 +1361,8 @@ function ResultList({
 
   if (
     !items ||
-    items.length === 0
+    items.length ===
+      0
   ) {
     return null;
   }
@@ -1211,7 +1378,10 @@ function ResultList({
       <ul className="mt-3 space-y-2">
 
         {items.map(
-          (item, index) => (
+          (
+            item,
+            index
+          ) => (
 
             <li
               key={index}
@@ -1243,7 +1413,8 @@ function SafetyList({
 
   if (
     !items ||
-    items.length === 0
+    items.length ===
+      0
   ) {
     return null;
   }
@@ -1259,7 +1430,10 @@ function SafetyList({
       <ul className="mt-4 space-y-2">
 
         {items.map(
-          (item, index) => (
+          (
+            item,
+            index
+          ) => (
 
             <li
               key={index}
