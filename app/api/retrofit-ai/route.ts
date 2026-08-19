@@ -2,13 +2,18 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-const OLLAMA_URL =
-  process.env.OLLAMA_URL ||
-  "http://127.0.0.1:11434/api/generate";
+/* =========================================================
+   ENVIRONMENT
+========================================================= */
+
+const OLLAMA_URL = process.env.OLLAMA_URL;
 
 const OLLAMA_MODEL =
-  process.env.OLLAMA_MODEL ||
-  "gemma3:4b";
+  process.env.OLLAMA_MODEL || "gemma3:4b";
+
+/* =========================================================
+   AENA ENGINEERING PROMPT
+========================================================= */
 
 const AENA_ENGINEERING_PROMPT = `
 You are AENA Retrofit AI, an industrial automation and machine
@@ -210,7 +215,6 @@ RULES
 - Never invent machine measurements or alarm codes.
 `;
 
-
 /* =========================================================
    POST
 ========================================================= */
@@ -223,23 +227,40 @@ export async function POST(request: Request) {
 
   try {
 
-    /* -------------------------------------------------------
-       ENVIRONMENT CHECK
-    ------------------------------------------------------- */
-
-    console.log("OLLAMA URL:", OLLAMA_URL);
-    console.log("OLLAMA MODEL:", OLLAMA_MODEL);
+    /* =====================================================
+       CHECK ENVIRONMENT
+    ===================================================== */
 
     if (!OLLAMA_URL) {
-      throw new Error(
-        "OLLAMA_URL environment variable is not configured."
+
+      console.error(
+        "OLLAMA_URL environment variable is missing."
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "OLLAMA_URL environment variable is not configured."
+        },
+        {
+          status: 500,
+        }
       );
     }
 
+    console.log(
+      "OLLAMA URL:",
+      OLLAMA_URL
+    );
 
-    /* -------------------------------------------------------
-       READ FORM DATA
-    ------------------------------------------------------- */
+    console.log(
+      "OLLAMA MODEL:",
+      OLLAMA_MODEL
+    );
+
+    /* =====================================================
+       READ MULTIPART FORM DATA
+    ===================================================== */
 
     const formData =
       await request.formData();
@@ -255,22 +276,20 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error:
-            "Please provide a detailed description of the machine problem.",
+            "Please provide a detailed description of the machine problem."
         },
         {
           status: 400,
         }
       );
-
     }
 
     const symptom =
       symptomValue.trim();
 
-
-    /* -------------------------------------------------------
+    /* =====================================================
        READ FILES
-    ------------------------------------------------------- */
+    ===================================================== */
 
     const files =
       formData.getAll("files");
@@ -292,15 +311,13 @@ export async function POST(request: Request) {
       )
     );
 
-
-    /* -------------------------------------------------------
-       PREPARE IMAGES
-    ------------------------------------------------------- */
+    /* =====================================================
+       PREPARE IMAGE EVIDENCE
+    ===================================================== */
 
     const images: string[] = [];
 
     const evidenceDescription: string[] = [];
-
 
     for (const item of files) {
 
@@ -308,13 +325,13 @@ export async function POST(request: Request) {
         continue;
       }
 
-
       evidenceDescription.push(
         `${item.name} | ${item.type} | ${item.size} bytes`
       );
 
-
-      /* IMAGE */
+      /* ===================================================
+         IMAGE
+      =================================================== */
 
       if (
         item.type.startsWith("image/")
@@ -333,11 +350,11 @@ export async function POST(request: Request) {
         console.log(
           `Image prepared: ${item.name}`
         );
-
       }
 
-
-      /* VIDEO */
+      /* ===================================================
+         VIDEO
+      =================================================== */
 
       if (
         item.type.startsWith("video/")
@@ -346,11 +363,11 @@ export async function POST(request: Request) {
         console.log(
           `Video received but not analyzed yet: ${item.name}`
         );
-
       }
 
-
-      /* PDF */
+      /* ===================================================
+         PDF / DOCUMENT
+      =================================================== */
 
       if (
         item.type ===
@@ -363,18 +380,14 @@ export async function POST(request: Request) {
         console.log(
           `PDF received but not analyzed yet: ${item.name}`
         );
-
       }
-
     }
 
-
-    /* -------------------------------------------------------
+    /* =====================================================
        ENGINEERING INPUT
-    ------------------------------------------------------- */
+    ===================================================== */
 
     const engineeringInput = `
-
 USER REPORTED MACHINE PROBLEM
 
 ${symptom}
@@ -411,16 +424,14 @@ Analyze the problem as an experienced industrial field engineer.
 Return only the required JSON.
 `;
 
-
     const prompt =
       `${AENA_ENGINEERING_PROMPT}
 
 ${engineeringInput}`;
 
-
-    /* -------------------------------------------------------
+    /* =====================================================
        OLLAMA REQUEST BODY
-    ------------------------------------------------------- */
+    ===================================================== */
 
     const ollamaBody: {
       model: string;
@@ -451,16 +462,13 @@ ${engineeringInput}`;
           0.2,
 
         num_ctx:
-          4096,
-
+          8192,
       },
-
     };
 
-
-    /* -------------------------------------------------------
+    /* =====================================================
        ATTACH IMAGES
-    ------------------------------------------------------- */
+    ===================================================== */
 
     if (
       images.length > 0
@@ -478,71 +486,48 @@ ${engineeringInput}`;
       console.log(
         "No image evidence attached."
       );
-
     }
 
-
-    /* -------------------------------------------------------
-       CONNECT TO OLLAMA
-    ------------------------------------------------------- */
+    /* =====================================================
+       CALL OLLAMA
+    ===================================================== */
 
     console.log(
-      "Connecting to Ollama..."
+      "Sending request to Ollama..."
     );
 
-    let ollamaResponse: Response;
+    console.log(
+      "Endpoint:",
+      OLLAMA_URL
+    );
 
-    try {
+    const ollamaResponse =
+      await fetch(
+        OLLAMA_URL,
+        {
+          method:
+            "POST",
 
-      ollamaResponse =
-        await fetch(
-          OLLAMA_URL,
-          {
-            method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
 
-            headers: {
-              "Content-Type":
-                "application/json",
-            },
-
-            body:
-              JSON.stringify(
-                ollamaBody
-              ),
-
-            signal:
-              AbortSignal.timeout(
-                120000
-              ),
-          }
-        );
-
-    } catch (connectionError) {
-
-      console.error(
-        "OLLAMA CONNECTION ERROR:"
+          body:
+            JSON.stringify(
+              ollamaBody
+            ),
+        }
       );
-
-      console.error(
-        connectionError
-      );
-
-      throw new Error(
-        `Cannot connect to Ollama at ${OLLAMA_URL}. Make sure the Cloudflare Tunnel is running and the Ollama endpoint is reachable.`
-      );
-
-    }
-
-
-    /* -------------------------------------------------------
-       OLLAMA HTTP ERROR
-    ------------------------------------------------------- */
 
     console.log(
       "OLLAMA STATUS:",
       ollamaResponse.status
     );
 
+    /* =====================================================
+       OLLAMA HTTP ERROR
+    ===================================================== */
 
     if (
       !ollamaResponse.ok
@@ -552,7 +537,7 @@ ${engineeringInput}`;
         await ollamaResponse.text();
 
       console.error(
-        "OLLAMA ERROR:"
+        "OLLAMA HTTP ERROR:"
       );
 
       console.error(
@@ -562,41 +547,21 @@ ${engineeringInput}`;
       throw new Error(
         `Ollama request failed with status ${ollamaResponse.status}: ${errorText}`
       );
-
     }
 
-
-    /* -------------------------------------------------------
-       READ OLLAMA RESPONSE
-    ------------------------------------------------------- */
+    /* =====================================================
+       READ RESPONSE
+    ===================================================== */
 
     const ollamaData =
       await ollamaResponse.json();
 
-
     console.log(
-      "OLLAMA RAW RESPONSE:"
+      "OLLAMA RAW DATA RECEIVED"
     );
-
-    console.log(
-      ollamaData
-    );
-
 
     const output =
       ollamaData?.response;
-
-
-    if (
-      !output
-    ) {
-
-      throw new Error(
-        "Ollama returned an empty response."
-      );
-
-    }
-
 
     console.log(
       "OLLAMA RESPONSE:"
@@ -606,13 +571,24 @@ ${engineeringInput}`;
       output
     );
 
+    /* =====================================================
+       EMPTY RESPONSE
+    ===================================================== */
 
-    /* -------------------------------------------------------
+    if (
+      !output
+    ) {
+
+      throw new Error(
+        "Ollama returned an empty response."
+      );
+    }
+
+    /* =====================================================
        PARSE AI JSON
-    ------------------------------------------------------- */
+    ===================================================== */
 
-    let diagnosis: any;
-
+    let diagnosis;
 
     try {
 
@@ -634,13 +610,11 @@ ${engineeringInput}`;
       throw new Error(
         "Ollama returned an invalid JSON diagnosis."
       );
-
     }
 
-
-    /* -------------------------------------------------------
+    /* =====================================================
        BASIC VALIDATION
-    ------------------------------------------------------- */
+    ===================================================== */
 
     if (
       !diagnosis ||
@@ -651,21 +625,17 @@ ${engineeringInput}`;
       throw new Error(
         "AI returned an invalid diagnosis."
       );
-
     }
-
 
     if (
       typeof diagnosis.summary !==
-        "string"
+      "string"
     ) {
 
       throw new Error(
         "AI diagnosis is missing summary."
       );
-
     }
-
 
     if (
       !Array.isArray(
@@ -676,80 +646,58 @@ ${engineeringInput}`;
       throw new Error(
         "AI diagnosis is missing diagnoses."
       );
-
     }
-
 
     if (
       typeof diagnosis.confidence !==
-        "number"
+      "number"
     ) {
 
       console.warn(
-        "AI confidence is missing or invalid."
+        "AI confidence value is missing or invalid."
       );
-
     }
 
+    /* =====================================================
+       NORMALIZE OPTIONAL ARRAYS
+    ===================================================== */
 
-    /* -------------------------------------------------------
-       NORMALIZE RESPONSE
-    ------------------------------------------------------- */
+    if (
+      !Array.isArray(
+        diagnosis.immediateActions
+      )
+    ) {
 
-    const normalizedDiagnosis = {
+      diagnosis.immediateActions =
+        [];
+    }
 
-      summary:
-        diagnosis.summary,
+    if (
+      !Array.isArray(
+        diagnosis.furtherQuestions
+      )
+    ) {
 
-      severity:
-        diagnosis.severity ||
-        "medium",
+      diagnosis.furtherQuestions =
+        [];
+    }
 
-      diagnoses:
-        diagnosis.diagnoses,
+    if (
+      !Array.isArray(
+        diagnosis.safetyWarnings
+      )
+    ) {
 
-      immediateActions:
-        Array.isArray(
-          diagnosis.immediateActions
-        )
-          ? diagnosis.immediateActions
-          : [],
+      diagnosis.safetyWarnings =
+        [];
+    }
 
-      furtherQuestions:
-        Array.isArray(
-          diagnosis.furtherQuestions
-        )
-          ? diagnosis.furtherQuestions
-          : [],
-
-      safetyWarnings:
-        Array.isArray(
-          diagnosis.safetyWarnings
-        )
-          ? diagnosis.safetyWarnings
-          : [],
-
-      confidence:
-        typeof diagnosis.confidence ===
-          "number"
-          ? Math.max(
-              0,
-              Math.min(
-                100,
-                diagnosis.confidence
-              )
-            )
-          : 0,
-
-    };
-
-
-    /* -------------------------------------------------------
+    /* =====================================================
        RETURN RESULT
-    ------------------------------------------------------- */
+    ===================================================== */
 
     return NextResponse.json(
-      normalizedDiagnosis
+      diagnosis
     );
 
   } catch (error) {
@@ -770,19 +718,43 @@ ${engineeringInput}`;
       "================================="
     );
 
+    let errorMessage =
+      "Retrofit AI analysis failed.";
+
+    if (
+      error instanceof Error
+    ) {
+
+      errorMessage =
+        error.message;
+
+    }
+
+    /* =====================================================
+       CONNECTION ERROR
+    ===================================================== */
+
+    if (
+      error instanceof TypeError &&
+      error.message
+        .toLowerCase()
+        .includes("fetch")
+    ) {
+
+      errorMessage =
+        `Cannot connect to Ollama at ${OLLAMA_URL}. ` +
+        `Make sure the Cloudflare Tunnel is running ` +
+        `and the Ollama endpoint is reachable.`;
+    }
 
     return NextResponse.json(
       {
         error:
-          error instanceof Error
-            ? error.message
-            : "Retrofit AI analysis failed.",
+          errorMessage,
       },
       {
         status: 500,
       }
     );
-
   }
-
 }
