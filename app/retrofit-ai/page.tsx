@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useRef, useState, FormEvent } from "react";
 
 type Diagnosis = {
   id: string;
@@ -29,132 +29,199 @@ type RetrofitAIResponse = {
 export default function RetrofitAIPage() {
   const [symptom, setSymptom] = useState("");
 
-  const [machine, setMachine] = useState({
-    machineName: "",
-    machineBrand: "",
-    machineModel: "",
-    plcBrand: "",
-    plcModel: "",
-    hmiBrand: "",
-    hmiModel: "",
-    driveBrand: "",
-    driveModel: "",
-    servoBrand: "",
-    servoModel: "",
-    productionProcess: "",
-    machineAge: "",
-  });
-
-  const [system, setSystem] = useState("drive");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<RetrofitAIResponse | null>(null);
+
+  const [result, setResult] =
+    useState<RetrofitAIResponse | null>(null);
+
   const [error, setError] = useState("");
 
-  const systems = [
-    "PLC",
-    "HMI",
-    "Drive",
-    "Servo",
-    "Sensor",
-    "Motor",
-    "Electrical Panel",
-    "Communication",
-    "Mechanical",
-    "Pneumatic",
-    "Hydraulic",
-    "Process",
-  ];
+  const [selectedFiles, setSelectedFiles] =
+    useState<File[]>([]);
 
-  const updateMachineField = (
-    field: keyof typeof machine,
-    value: string
-  ) => {
-    setMachine((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+  const imageInputRef =
+    useRef<HTMLInputElement>(null);
+
+  const videoInputRef =
+    useRef<HTMLInputElement>(null);
+
+  const documentInputRef =
+    useRef<HTMLInputElement>(null);
+
+  /* ---------------------------------------------------------
+     FILE HANDLING
+  --------------------------------------------------------- */
+
+  function addFiles(files: FileList | null) {
+    if (!files) return;
+
+    const incoming = Array.from(files);
+
+    setSelectedFiles((prev) => {
+      const combined = [...prev, ...incoming];
+
+      const unique = combined.filter(
+        (file, index, self) =>
+          index ===
+          self.findIndex(
+            (item) =>
+              item.name === file.name &&
+              item.size === file.size &&
+              item.lastModified === file.lastModified
+          )
+      );
+
+      return unique;
+    });
+  }
+
+  function removeFile(index: number) {
+    setSelectedFiles((prev) =>
+      prev.filter((_, i) => i !== index)
+    );
+  }
+
+  /* ---------------------------------------------------------
+     AI ANALYSIS
+  --------------------------------------------------------- */
 
   async function analyzeMachine(e?: FormEvent) {
-    if (e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
 
     setError("");
     setResult(null);
 
     if (!symptom.trim()) {
       setError(
-        "Please describe the machine problem before starting the analysis."
+        "Please describe what is happening with the machine."
       );
+
+      return;
+    }
+
+    if (symptom.trim().length < 10) {
+      setError(
+        "Please provide a little more information about the machine problem."
+      );
+
       return;
     }
 
     setLoading(true);
 
     try {
-      console.log("=================================");
-      console.log("STARTING RETROFIT AI ANALYSIS");
-      console.log("=================================");
+      /*
+       * IMPORTANT
+       *
+       * At this stage only file metadata is sent.
+       *
+       * The actual file-content analysis will be implemented
+       * in the next stage.
+       */
 
       const requestBody = {
-        machine: {
-          ...machine,
-          machineAge: machine.machineAge
-            ? Number(machine.machineAge)
-            : undefined,
-        },
-        symptom,
-        affectedSystem: system,
+        symptom: symptom.trim(),
+
+        evidence: selectedFiles.map((file) => ({
+          name: file.name,
+          type: file.type,
+          size: file.size,
+          lastModified: file.lastModified,
+        })),
       };
 
-      console.log("REQUEST BODY:");
+      console.log(
+        "================================="
+      );
+
+      console.log(
+        "AENA RETROFIT AI REQUEST"
+      );
+
+      console.log(
+        "================================="
+      );
+
       console.log(requestBody);
 
-      const response = await fetch("/api/retrofit-ai", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      });
+      const response = await fetch(
+        "/api/retrofit-ai",
+        {
+          method: "POST",
 
-      console.log("API STATUS:", response.status);
-      console.log("API STATUS TEXT:", response.statusText);
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify(
+            requestBody
+          ),
+        }
+      );
+
+      console.log(
+        "API STATUS:",
+        response.status
+      );
+
+      console.log(
+        "API STATUS TEXT:",
+        response.statusText
+      );
 
       /*
-       * IMPORTANT:
-       * Instead of response.json(), first read the raw response.
-       * This allows us to see exactly what the server returns.
+       * Read raw response first.
+       *
+       * This is useful because Ollama / Next.js
+       * errors may sometimes return plain text.
        */
-      const responseText = await response.text();
 
-      console.log("=================================");
-      console.log("RAW API RESPONSE:");
-      console.log(responseText);
-      console.log("=================================");
+      const responseText =
+        await response.text();
+
+      console.log(
+        "================================="
+      );
+
+      console.log(
+        "AENA RETROFIT AI RAW RESPONSE"
+      );
+
+      console.log(
+        responseText
+      );
+
+      console.log(
+        "================================="
+      );
 
       let data: any;
 
       try {
-        data = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("JSON PARSE ERROR:", parseError);
-
+        data = JSON.parse(
+          responseText
+        );
+      } catch {
         throw new Error(
-          `Server returned invalid response.
+          `Server returned an invalid response.
 
 Status: ${response.status}
 
 Response:
-${responseText.substring(0, 1000)}`
+${responseText.substring(
+  0,
+  1500
+)}`
         );
       }
 
-      console.log("PARSED API DATA:");
-      console.log(data);
-
       /*
-       * Check HTTP status
+       * HTTP ERROR
        */
+
       if (!response.ok) {
         throw new Error(
           data?.error ||
@@ -163,39 +230,77 @@ ${responseText.substring(0, 1000)}`
       }
 
       /*
-       * Basic validation of expected response structure
+       * BASIC RESPONSE VALIDATION
        */
-      if (!data || typeof data !== "object") {
+
+      if (
+        !data ||
+        typeof data !== "object"
+      ) {
         throw new Error(
-          "Server returned an empty or invalid data object."
+          "The AI returned an invalid diagnosis."
         );
       }
 
-      if (!data.summary) {
+      if (
+        !data.summary
+      ) {
         console.warn(
-          "WARNING: API response does not contain 'summary'."
+          "AI response does not contain summary."
         );
       }
 
-      if (!Array.isArray(data.diagnoses)) {
+      if (
+        !Array.isArray(
+          data.diagnoses
+        )
+      ) {
         console.warn(
-          "WARNING: API response does not contain a valid 'diagnoses' array."
+          "AI response does not contain diagnoses array."
+        );
+      }
+
+      if (
+        typeof data.confidence !==
+        "number"
+      ) {
+        console.warn(
+          "AI response does not contain a valid confidence value."
         );
       }
 
       /*
-       * Everything looks usable.
+       * SAVE RESULT
        */
-      setResult(data as RetrofitAIResponse);
 
-      console.log("=================================");
-      console.log("RETROFIT AI ANALYSIS SUCCESS");
-      console.log("=================================");
+      setResult(
+        data as RetrofitAIResponse
+      );
+
+      /*
+       * Scroll to top so the user
+       * immediately sees the diagnosis.
+       */
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+
     } catch (err) {
-      console.error("=================================");
-      console.error("RETROFIT AI FRONTEND ERROR");
+      console.error(
+        "================================="
+      );
+
+      console.error(
+        "AENA RETROFIT AI ERROR"
+      );
+
       console.error(err);
-      console.error("=================================");
+
+      console.error(
+        "================================="
+      );
 
       setError(
         err instanceof Error
@@ -207,303 +312,373 @@ ${responseText.substring(0, 1000)}`
     }
   }
 
+  /* ---------------------------------------------------------
+     WHATSAPP
+  --------------------------------------------------------- */
+
+  function startWhatsApp() {
+    /*
+     * Replace this number with the real
+     * AENA WhatsApp number.
+     */
+
+    const phone =
+      "905XXXXXXXXX";
+
+    const diagnosisText =
+      result
+        ? `
+
+AENA AI preliminary assessment:
+
+${result.summary}
+
+Severity: ${result.severity}
+Confidence: ${result.confidence}%
+`
+        : "";
+
+    const message = `Hello AENA,
+
+I need engineering support for an industrial machine.
+
+Problem:
+
+${symptom}
+
+${diagnosisText}
+
+I would like to continue the diagnosis with an AENA engineer.`;
+
+    const url =
+      `https://wa.me/${phone}?text=` +
+      encodeURIComponent(
+        message
+      );
+
+    window.open(
+      url,
+      "_blank"
+    );
+  }
+
+  /* ---------------------------------------------------------
+     NEW ANALYSIS
+  --------------------------------------------------------- */
+
+  function startNewAnalysis() {
+    setResult(null);
+    setError("");
+    setSymptom("");
+    setSelectedFiles([]);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }
+
+  /* ---------------------------------------------------------
+     PAGE
+  --------------------------------------------------------- */
+
   return (
     <main className="min-h-screen bg-[#020617] text-white">
+
       {/* HEADER */}
-      <section className="border-b border-slate-800">
-        <div className="mx-auto max-w-7xl px-6 py-10">
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+
+      <header className="border-b border-slate-800">
+
+        <div className="mx-auto max-w-5xl px-5 py-8">
+
+          <div className="flex items-center justify-between gap-4">
+
             <div>
+
               <p className="text-xs font-semibold uppercase tracking-[4px] text-orange-400">
                 AENA Technologies
               </p>
 
-              <h1 className="mt-3 text-3xl font-bold sm:text-4xl">
-                AENA Retrofit AI
+              <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
+                Retrofit AI
               </h1>
 
-              <p className="mt-3 max-w-3xl text-slate-400">
-                Industrial machine troubleshooting and retrofit engineering
-                intelligence.
+              <p className="mt-2 text-sm text-slate-500">
+                Industrial machine troubleshooting assistant
               </p>
+
             </div>
 
-            <div className="flex items-center gap-2 text-sm text-emerald-400">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-              ENGINEERING AI
+            <div className="hidden items-center gap-2 text-xs text-emerald-400 sm:flex">
+
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+
+              ONLINE
+
             </div>
+
           </div>
+
         </div>
-      </section>
+
+      </header>
 
       {/* MAIN */}
-      <section className="mx-auto max-w-7xl px-6 py-12">
-        <form
-          onSubmit={analyzeMachine}
-          className="grid gap-8 lg:grid-cols-[1fr_380px]"
-        >
-          {/* LEFT SIDE */}
-          <div className="space-y-8">
-            {/* STEP 01 */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
-              <div className="mb-6">
-                <p className="text-xs uppercase tracking-[3px] text-orange-400">
-                  Step 01
+
+      <section className="mx-auto max-w-5xl px-5 py-10">
+
+        {/* INPUT SCREEN */}
+
+        {!result && (
+
+          <form
+            onSubmit={analyzeMachine}
+            className="space-y-6"
+          >
+
+            {/* HERO */}
+
+            <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
+
+              <div className="max-w-3xl">
+
+                <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+                  Start diagnosis
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold">
-                  Machine Information
+                <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
+                  What is happening with your machine?
                 </h2>
 
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Enter the basic machine and automation information. The more
-                  accurate the information, the better the engineering analysis.
-                </p>
-              </div>
-
-              <div className="grid gap-4 md:grid-cols-2">
-                <Input
-                  label="Machine Name"
-                  placeholder="Stretch Film Machine"
-                  value={machine.machineName}
-                  onChange={(val) =>
-                    updateMachineField("machineName", val)
-                  }
-                />
-
-                <Input
-                  label="Machine Brand"
-                  placeholder="Colines"
-                  value={machine.machineBrand}
-                  onChange={(val) =>
-                    updateMachineField("machineBrand", val)
-                  }
-                />
-
-                <Input
-                  label="Machine Model"
-                  placeholder="Example: BOPP / Stretch Line"
-                  value={machine.machineModel}
-                  onChange={(val) =>
-                    updateMachineField("machineModel", val)
-                  }
-                />
-
-                <Input
-                  label="Machine Age"
-                  placeholder="Example: 15"
-                  value={machine.machineAge}
-                  onChange={(val) =>
-                    updateMachineField("machineAge", val)
-                  }
-                />
-
-                <Input
-                  label="PLC Brand"
-                  placeholder="Siemens"
-                  value={machine.plcBrand}
-                  onChange={(val) =>
-                    updateMachineField("plcBrand", val)
-                  }
-                />
-
-                <Input
-                  label="PLC Model"
-                  placeholder="S7-300 / S7-1200 / S7-1500"
-                  value={machine.plcModel}
-                  onChange={(val) =>
-                    updateMachineField("plcModel", val)
-                  }
-                />
-
-                <Input
-                  label="HMI Brand"
-                  placeholder="Siemens / Proface / Weintek"
-                  value={machine.hmiBrand}
-                  onChange={(val) =>
-                    updateMachineField("hmiBrand", val)
-                  }
-                />
-
-                <Input
-                  label="HMI Model"
-                  placeholder="Example: Comfort Panel"
-                  value={machine.hmiModel}
-                  onChange={(val) =>
-                    updateMachineField("hmiModel", val)
-                  }
-                />
-
-                <Input
-                  label="Drive Brand"
-                  placeholder="Mitsubishi / ABB / Siemens"
-                  value={machine.driveBrand}
-                  onChange={(val) =>
-                    updateMachineField("driveBrand", val)
-                  }
-                />
-
-                <Input
-                  label="Drive Model"
-                  placeholder="FR-A840 / ACS880 / G120"
-                  value={machine.driveModel}
-                  onChange={(val) =>
-                    updateMachineField("driveModel", val)
-                  }
-                />
-
-                <Input
-                  label="Servo Brand"
-                  placeholder="Mitsubishi / Yaskawa / Siemens"
-                  value={machine.servoBrand}
-                  onChange={(val) =>
-                    updateMachineField("servoBrand", val)
-                  }
-                />
-
-                <Input
-                  label="Servo Model"
-                  placeholder="Servo model"
-                  value={machine.servoModel}
-                  onChange={(val) =>
-                    updateMachineField("servoModel", val)
-                  }
-                />
-
-                <div className="md:col-span-2">
-                  <Input
-                    label="Production Process"
-                    placeholder="Stretch film production / PET washing / extrusion..."
-                    value={machine.productionProcess}
-                    onChange={(val) =>
-                      updateMachineField(
-                        "productionProcess",
-                        val
-                      )
-                    }
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* STEP 02 */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
-              <div className="mb-6">
-                <p className="text-xs uppercase tracking-[3px] text-orange-400">
-                  Step 02
+                <p className="mt-3 text-sm leading-7 text-slate-500">
+                  Describe the problem as you see it in
+                  the field. You do not need to know which
+                  component is causing the fault.
                 </p>
 
-                <h2 className="mt-2 text-xl font-bold">
-                  Describe the Machine Problem
-                </h2>
-
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Describe the symptom exactly as observed in the field.
-                  Include alarms, unusual sounds, recent component changes,
-                  speed problems, communication problems or anything that
-                  changed before the fault.
-                </p>
               </div>
 
               <textarea
                 value={symptom}
-                onChange={(e) => setSymptom(e.target.value)}
-                placeholder="Example: The machine was running normally. After replacing the drive, the motor starts but the machine cannot reach production speed. The PLC shows Run command but the drive frequency remains at 20 Hz..."
-                className="min-h-[220px] w-full resize-none rounded-xl border border-slate-700 bg-slate-900 p-4 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500"
+                onChange={(e) =>
+                  setSymptom(
+                    e.target.value
+                  )
+                }
+                placeholder={`Example:
+
+The extruder was running normally. When production speed increases, the motor current rises to around 90A, but the feeding motor continues running at the same speed. There is no alarm on the HMI.`}
+                className="mt-7 min-h-[240px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
               />
 
-              <div className="mt-3 text-xs text-slate-600">
-                {symptom.length} characters
-              </div>
-            </div>
+              <div className="mt-3 flex justify-between text-xs text-slate-600">
 
-            {/* STEP 03 */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
-              <div className="mb-6">
-                <p className="text-xs uppercase tracking-[3px] text-orange-400">
-                  Step 03
+                <span>
+                  {symptom.length} characters
+                </span>
+
+                <span>
+                  More detail = better diagnosis
+                </span>
+
+              </div>
+
+            </section>
+
+            {/* EVIDENCE */}
+
+            <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+
+              <div>
+
+                <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+                  Optional evidence
                 </p>
 
                 <h2 className="mt-2 text-xl font-bold">
-                  Select Affected System
-                </h2>
-
-                <p className="mt-2 text-sm text-slate-500">
-                  Select the subsystem that appears to be responsible for the
-                  problem.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                {systems.map((item) => {
-                  const value = item
-                    .toLowerCase()
-                    .replaceAll(" ", "-");
-
-                  const active = system === value;
-
-                  return (
-                    <button
-                      key={item}
-                      type="button"
-                      onClick={() => setSystem(value)}
-                      className={`rounded-xl border px-4 py-4 text-sm font-semibold transition ${
-                        active
-                          ? "border-orange-500 bg-orange-500/10 text-orange-400 shadow-lg shadow-orange-500/5"
-                          : "border-slate-800 bg-slate-900 text-slate-400 hover:border-slate-600 hover:text-white"
-                      }`}
-                    >
-                      {item}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* STEP 04 */}
-            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
-              <div className="mb-6">
-                <p className="text-xs uppercase tracking-[3px] text-orange-400">
-                  Step 04
-                </p>
-
-                <h2 className="mt-2 text-xl font-bold">
-                  Field Evidence
+                  Show AENA what you see
                 </h2>
 
                 <p className="mt-2 text-sm leading-6 text-slate-500">
-                  In the next development stage these sections will be
-                  connected to image, video, audio, PLC and drive data
-                  analysis.
+                  Add photos, videos or engineering
+                  documents when available.
                 </p>
+
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                <EvidenceButton
-                  icon="📷"
-                  title="Machine Image"
-                />
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
 
                 <EvidenceButton
-                  icon="🎙️"
-                  title="Voice Recording"
+                  icon="📷"
+                  title="Photo"
+                  description="HMI, panel, drive or machine"
+                  onClick={() =>
+                    imageInputRef.current?.click()
+                  }
                 />
 
                 <EvidenceButton
                   icon="🎥"
-                  title="Machine Video"
+                  title="Video"
+                  description="Machine behavior or fault"
+                  onClick={() =>
+                    videoInputRef.current?.click()
+                  }
                 />
 
                 <EvidenceButton
                   icon="📄"
-                  title="Fault Report"
+                  title="Document"
+                  description="PLC, drive or electrical files"
+                  onClick={() =>
+                    documentInputRef.current?.click()
+                  }
                 />
+
               </div>
-            </div>
+
+              {/* IMAGE */}
+
+              <input
+                ref={imageInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+
+                  addFiles(
+                    e.target.files
+                  );
+
+                  e.target.value =
+                    "";
+
+                }}
+              />
+
+              {/* VIDEO */}
+
+              <input
+                ref={videoInputRef}
+                type="file"
+                accept="video/*"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+
+                  addFiles(
+                    e.target.files
+                  );
+
+                  e.target.value =
+                    "";
+
+                }}
+              />
+
+              {/* DOCUMENT */}
+
+              <input
+                ref={documentInputRef}
+                type="file"
+                accept="
+                  .pdf,
+                  .zip,
+                  .rar,
+                  .doc,
+                  .docx,
+                  .xls,
+                  .xlsx,
+                  .csv,
+                  .txt,
+                  .log,
+                  .prj
+                "
+                multiple
+                className="hidden"
+                onChange={(e) => {
+
+                  addFiles(
+                    e.target.files
+                  );
+
+                  e.target.value =
+                    "";
+
+                }}
+              />
+
+              {/* SELECTED FILES */}
+
+              {selectedFiles.length >
+                0 && (
+
+                <div className="mt-5 space-y-2">
+
+                  <p className="text-xs uppercase tracking-wider text-slate-500">
+                    Selected evidence
+                  </p>
+
+                  {selectedFiles.map(
+                    (
+                      file,
+                      index
+                    ) => (
+
+                      <div
+                        key={`${file.name}-${index}`}
+                        className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 px-4 py-3"
+                      >
+
+                        <div className="min-w-0">
+
+                          <p className="truncate text-sm text-slate-300">
+                            {file.name}
+                          </p>
+
+                          <p className="text-xs text-slate-600">
+                            {(
+                              file.size /
+                              1024 /
+                              1024
+                            ).toFixed(
+                              2
+                            )}{" "}
+                            MB
+                          </p>
+
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            removeFile(
+                              index
+                            )
+                          }
+                          className="ml-4 text-xs text-red-400 hover:text-red-300"
+                        >
+                          Remove
+                        </button>
+
+                      </div>
+
+                    )
+                  )}
+
+                </div>
+
+              )}
+
+            </section>
 
             {/* ERROR */}
+
             {error && (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5">
+
                 <p className="text-sm font-semibold text-red-400">
                   Analysis Error
                 </p>
@@ -511,369 +686,504 @@ ${responseText.substring(0, 1000)}`
                 <pre className="mt-2 whitespace-pre-wrap text-sm leading-6 text-red-300">
                   {error}
                 </pre>
+
               </div>
+
             )}
 
-            {/* ANALYZE BUTTON */}
+            {/* ANALYZE */}
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-orange-500 px-6 py-5 text-sm font-bold text-white transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-2xl bg-orange-500 px-6 py-5 text-sm font-bold transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
             >
+
               {loading
-                ? "Analyzing Machine Problem..."
+                ? "AENA AI is analyzing the machine..."
                 : "Analyze Machine Problem →"}
+
             </button>
 
-            {/* RESULTS */}
-            {result && (
-              <div className="space-y-6">
-                {/* SUMMARY */}
-                <div className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <p className="text-xs uppercase tracking-[3px] text-orange-400">
-                        AENA AI Diagnosis
-                      </p>
+            {/* DISCLAIMER */}
 
-                      <h2 className="mt-2 text-2xl font-bold">
-                        Engineering Analysis
-                      </h2>
-                    </div>
-
-                    <SeverityBadge severity={result.severity} />
-                  </div>
-
-                  <p className="mt-5 text-sm leading-7 text-slate-300">
-                    {result.summary}
-                  </p>
-
-                  <div className="mt-6 rounded-xl border border-slate-800 bg-slate-950 p-4">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs uppercase tracking-wider text-slate-500">
-                        AI Confidence
-                      </span>
-
-                      <span className="text-lg font-bold text-orange-400">
-                        {result.confidence}%
-                      </span>
-                    </div>
-
-                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-800">
-                      <div
-                        className="h-full rounded-full bg-orange-500 transition-all"
-                        style={{
-                          width: `${result.confidence}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* DIAGNOSES */}
-                {result.diagnoses.map((diagnosis) => (
-                  <div
-                    key={diagnosis.id}
-                    className="rounded-2xl border border-slate-800 bg-slate-950 p-6"
-                  >
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
-                        <p className="text-xs uppercase tracking-[3px] text-slate-500">
-                          {diagnosis.system}
-                        </p>
-
-                        <h3 className="mt-2 text-xl font-bold">
-                          {diagnosis.fault}
-                        </h3>
-                      </div>
-
-                      <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-3 py-2 text-sm font-bold text-orange-400">
-                        {diagnosis.probability}% probability
-                      </div>
-                    </div>
-
-                    <div className="mt-5">
-                      <p className="text-xs uppercase tracking-[2px] text-orange-400">
-                        Engineering Assessment
-                      </p>
-
-                      <p className="mt-2 text-sm leading-7 text-slate-300">
-                        {diagnosis.explanation}
-                      </p>
-                    </div>
-
-                    <ResultList
-                      title="Possible Causes"
-                      items={diagnosis.possibleCauses}
-                    />
-
-                    <ResultList
-                      title="Recommended Checks"
-                      items={diagnosis.recommendedChecks}
-                    />
-
-                    <ResultList
-                      title="Recommended Actions"
-                      items={diagnosis.recommendedActions}
-                    />
-
-                    {diagnosis.requiredTools &&
-                      diagnosis.requiredTools.length > 0 && (
-                        <ResultList
-                          title="Required Tools"
-                          items={diagnosis.requiredTools}
-                        />
-                      )}
-
-                    {diagnosis.safetyWarnings &&
-                      diagnosis.safetyWarnings.length > 0 && (
-                        <div className="mt-6 rounded-xl border border-red-500/20 bg-red-500/5 p-4">
-                          <p className="text-xs uppercase tracking-[2px] text-red-400">
-                            Safety Warnings
-                          </p>
-
-                          <ul className="mt-3 space-y-2">
-                            {diagnosis.safetyWarnings.map(
-                              (item, index) => (
-                                <li
-                                  key={index}
-                                  className="text-sm leading-6 text-red-300"
-                                >
-                                  • {item}
-                                </li>
-                              )
-                            )}
-                          </ul>
-                        </div>
-                      )}
-                  </div>
-                ))}
-
-                {/* IMMEDIATE ACTIONS */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
-                  <p className="text-xs uppercase tracking-[3px] text-orange-400">
-                    Immediate Diagnostic Actions
-                  </p>
-
-                  <h2 className="mt-2 text-xl font-bold">
-                    What should be checked first?
-                  </h2>
-
-                  <ul className="mt-5 space-y-3">
-                    {result.immediateActions.map(
-                      (item, index) => (
-                        <li
-                          key={index}
-                          className="flex gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4"
-                        >
-                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-orange-500/10 text-xs font-bold text-orange-400">
-                            {index + 1}
-                          </span>
-
-                          <span className="text-sm leading-6 text-slate-300">
-                            {item}
-                          </span>
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-
-                {/* FURTHER QUESTIONS */}
-                <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
-                  <p className="text-xs uppercase tracking-[3px] text-orange-400">
-                    Next Diagnostic Questions
-                  </p>
-
-                  <h2 className="mt-2 text-xl font-bold">
-                    Additional information required
-                  </h2>
-
-                  <ul className="mt-5 space-y-3">
-                    {result.furtherQuestions.map(
-                      (question, index) => (
-                        <li
-                          key={index}
-                          className="rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm leading-6 text-slate-300"
-                        >
-                          {index + 1}. {question}
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-
-                {/* GLOBAL SAFETY */}
-                <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6">
-                  <p className="text-xs uppercase tracking-[3px] text-red-400">
-                    Safety
-                  </p>
-
-                  <ul className="mt-4 space-y-2">
-                    {result.safetyWarnings.map(
-                      (warning, index) => (
-                        <li
-                          key={index}
-                          className="text-sm leading-6 text-red-300"
-                        >
-                          • {warning}
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* RIGHT SIDEBAR */}
-          <aside className="h-fit rounded-2xl border border-slate-800 bg-slate-950 p-6 lg:sticky lg:top-8">
-            <p className="text-xs uppercase tracking-[3px] text-orange-400">
-              AENA Retrofit Intelligence
+            <p className="text-center text-xs leading-5 text-slate-600">
+              Preliminary AI analysis only.
+              Final diagnosis may require
+              measurements, machine access
+              and engineering inspection.
             </p>
 
-            <h2 className="mt-3 text-xl font-bold">
-              Engineering Diagnosis
-            </h2>
+          </form>
 
-            <p className="mt-4 text-sm leading-7 text-slate-500">
-              The system collects machine context, operator symptoms and
-              affected-system information before generating a preliminary
-              engineering diagnosis.
-            </p>
+        )}
 
-            <div className="mt-8 space-y-4">
-              <Status
-                number="01"
-                title="Machine Context"
-                active={true}
-              />
+        {/* RESULTS */}
 
-              <Status
-                number="02"
-                title="Fault Analysis"
-                active={Boolean(symptom)}
-              />
+        {result && (
 
-              <Status
-                number="03"
-                title="System Analysis"
-                active={Boolean(system)}
-              />
+          <DiagnosisView
+            result={result}
+            symptom={symptom}
+            selectedFiles={selectedFiles}
+            onWhatsApp={startWhatsApp}
+            onNewAnalysis={startNewAnalysis}
+          />
 
-              <Status
-                number="04"
-                title="Engineering Diagnosis"
-                active={Boolean(result)}
-              />
+        )}
 
-              <Status
-                number="05"
-                title="Recommended Action"
-                active={Boolean(result)}
-              />
-            </div>
-
-            <div className="mt-8 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
-              <p className="text-xs uppercase tracking-[2px] text-orange-400">
-                AENA AI
-              </p>
-
-              <p className="mt-2 text-sm leading-6 text-slate-400">
-                Built for industrial machine troubleshooting, retrofit and
-                modernization.
-              </p>
-            </div>
-          </aside>
-        </form>
       </section>
+
     </main>
   );
 }
 
-function Input({
-  label,
-  placeholder,
-  value,
-  onChange,
-}: {
-  label: string;
-  placeholder?: string;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div>
-      <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">
-        {label}
-      </label>
 
-      <input
-        value={value}
-        placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-slate-700 bg-slate-900 px-4 py-3 text-sm text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/30"
-      />
+/* =========================================================
+   DIAGNOSIS VIEW
+========================================================= */
+
+function DiagnosisView({
+  result,
+  symptom,
+  selectedFiles,
+  onWhatsApp,
+  onNewAnalysis,
+}: {
+  result: RetrofitAIResponse;
+  symptom: string;
+  selectedFiles: File[];
+  onWhatsApp: () => void;
+  onNewAnalysis: () => void;
+}) {
+
+  return (
+
+    <div className="space-y-6">
+
+      {/* RESULT HEADER */}
+
+      <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
+
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+
+          <div>
+
+            <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+              AENA Engineering Assessment
+            </p>
+
+            <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
+              Preliminary Diagnosis
+            </h2>
+
+          </div>
+
+          <SeverityBadge
+            severity={
+              result.severity
+            }
+          />
+
+        </div>
+
+        <p className="mt-6 text-base leading-8 text-slate-300">
+          {result.summary}
+        </p>
+
+        <div className="mt-6 flex flex-wrap gap-3">
+
+          <div className="rounded-xl border border-slate-800 bg-slate-950 px-4 py-3">
+
+            <span className="text-xs text-slate-500">
+              AI confidence
+            </span>
+
+            <p className="mt-1 font-bold text-orange-400">
+              {result.confidence}%
+            </p>
+
+          </div>
+
+          <div className="rounded-xl border border-slate-800 bg-slate-950 px-4 py-3">
+
+            <span className="text-xs text-slate-500">
+              Evidence
+            </span>
+
+            <p className="mt-1 font-bold text-slate-300">
+
+              {selectedFiles.length} file
+              {selectedFiles.length === 1
+                ? ""
+                : "s"}
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* USER PROBLEM */}
+
+      <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+
+        <p className="text-xs uppercase tracking-[3px] text-slate-500">
+          Reported problem
+        </p>
+
+        <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-slate-300">
+          {symptom}
+        </p>
+
+      </section>
+
+
+      {/* DIAGNOSES */}
+
+      {result.diagnoses.map(
+        (diagnosis) => (
+
+          <section
+            key={diagnosis.id}
+            className="rounded-2xl border border-slate-800 bg-slate-950 p-6 sm:p-8"
+          >
+
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+
+              <div>
+
+                <p className="text-xs uppercase tracking-[3px] text-slate-500">
+                  {diagnosis.system}
+                </p>
+
+                <h3 className="mt-2 text-xl font-bold sm:text-2xl">
+                  {diagnosis.fault}
+                </h3>
+
+              </div>
+
+              <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-3 py-2 text-sm font-bold text-orange-400">
+                {diagnosis.probability}% probability
+              </div>
+
+            </div>
+
+
+            {/* REASONING */}
+
+            <div className="mt-7">
+
+              <p className="text-xs uppercase tracking-[2px] text-orange-400">
+                Engineering reasoning
+              </p>
+
+              <p className="mt-3 text-sm leading-8 text-slate-300">
+                {diagnosis.explanation}
+              </p>
+
+            </div>
+
+
+            {/* EVIDENCE USED */}
+
+            {diagnosis.evidenceUsed &&
+              diagnosis.evidenceUsed.length >
+                0 && (
+
+                <ResultList
+                  title="Evidence used"
+                  items={
+                    diagnosis.evidenceUsed
+                  }
+                />
+
+              )}
+
+
+            {/* POSSIBLE CAUSES */}
+
+            <ResultList
+              title="Possible causes"
+              items={
+                diagnosis.possibleCauses
+              }
+            />
+
+
+            {/* CHECKS */}
+
+            <ResultList
+              title="Recommended checks"
+              items={
+                diagnosis.recommendedChecks
+              }
+            />
+
+
+            {/* ACTIONS */}
+
+            <ResultList
+              title="Recommended actions"
+              items={
+                diagnosis.recommendedActions
+              }
+            />
+
+
+            {/* TOOLS */}
+
+            {diagnosis.requiredTools &&
+              diagnosis.requiredTools.length >
+                0 && (
+
+                <ResultList
+                  title="Required tools"
+                  items={
+                    diagnosis.requiredTools
+                  }
+                />
+
+              )}
+
+
+            {/* SAFETY */}
+
+            {diagnosis.safetyWarnings &&
+              diagnosis.safetyWarnings.length >
+                0 && (
+
+                <div className="mt-7">
+
+                  <SafetyList
+                    items={
+                      diagnosis.safetyWarnings
+                    }
+                  />
+
+                </div>
+
+              )}
+
+          </section>
+
+        )
+      )}
+
+
+      {/* IMMEDIATE ACTIONS */}
+
+      {result.immediateActions &&
+        result.immediateActions.length >
+          0 && (
+
+        <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
+
+          <p className="text-xs uppercase tracking-[3px] text-orange-400">
+            First diagnostic step
+          </p>
+
+          <h2 className="mt-2 text-xl font-bold">
+            What should be checked first?
+          </h2>
+
+          <div className="mt-5 space-y-3">
+
+            {result.immediateActions.map(
+              (
+                item,
+                index
+              ) => (
+
+                <div
+                  key={index}
+                  className="flex gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4"
+                >
+
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-orange-500/10 text-xs font-bold text-orange-400">
+                    {index + 1}
+                  </span>
+
+                  <p className="text-sm leading-7 text-slate-300">
+                    {item}
+                  </p>
+
+                </div>
+
+              )
+            )}
+
+          </div>
+
+        </section>
+
+      )}
+
+
+      {/* QUESTIONS */}
+
+      {result.furtherQuestions &&
+        result.furtherQuestions.length >
+          0 && (
+
+        <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
+
+          <p className="text-xs uppercase tracking-[3px] text-orange-400">
+            To narrow the diagnosis
+          </p>
+
+          <h2 className="mt-2 text-xl font-bold">
+            AENA needs a little more information
+          </h2>
+
+          <div className="mt-5 space-y-3">
+
+            {result.furtherQuestions.map(
+              (
+                question,
+                index
+              ) => (
+
+                <div
+                  key={index}
+                  className="rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm leading-7 text-slate-300"
+                >
+
+                  <span className="mr-2 font-bold text-orange-400">
+                    {index + 1}.
+                  </span>
+
+                  {question}
+
+                </div>
+
+              )
+            )}
+
+          </div>
+
+        </section>
+
+      )}
+
+
+      {/* ENGINEER CTA */}
+
+      <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
+
+        <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+          Need deeper diagnosis?
+        </p>
+
+        <h2 className="mt-3 text-2xl font-bold">
+          Continue with an AENA engineer
+        </h2>
+
+        <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+          AI can narrow the possible fault paths,
+          but some machine problems require
+          measurements, PLC/drive diagnostics,
+          electrical drawings or physical inspection.
+        </p>
+
+        <button
+          type="button"
+          onClick={onWhatsApp}
+          className="mt-6 w-full rounded-xl bg-green-600 px-6 py-4 text-sm font-bold text-white transition hover:bg-green-500 sm:w-auto"
+        >
+          Continue with AENA on WhatsApp →
+        </button>
+
+        <p className="mt-3 text-xs text-slate-600">
+          The preliminary diagnosis can be included
+          in the WhatsApp conversation.
+        </p>
+
+      </section>
+
+
+      {/* NEW ANALYSIS */}
+
+      <div className="text-center">
+
+        <button
+          type="button"
+          onClick={onNewAnalysis}
+          className="text-sm text-slate-500 transition hover:text-orange-400"
+        >
+          ← Start a new diagnosis
+        </button>
+
+      </div>
+
+
+      {/* GLOBAL SAFETY */}
+
+      {result.safetyWarnings &&
+        result.safetyWarnings.length >
+          0 && (
+
+        <SafetyList
+          items={
+            result.safetyWarnings
+          }
+        />
+
+      )}
+
     </div>
   );
 }
 
+
+/* =========================================================
+   EVIDENCE BUTTON
+========================================================= */
+
 function EvidenceButton({
   icon,
   title,
+  description,
+  onClick,
 }: {
   icon: string;
   title: string;
+  description: string;
+  onClick: () => void;
 }) {
+
   return (
+
     <button
       type="button"
+      onClick={onClick}
       className="rounded-xl border border-slate-800 bg-slate-900 p-5 text-left transition hover:border-orange-500/50 hover:bg-slate-800"
     >
-      <div className="text-2xl">{icon}</div>
+
+      <div className="text-2xl">
+        {icon}
+      </div>
 
       <p className="mt-3 text-sm font-semibold text-slate-200">
         {title}
       </p>
 
-      <p className="mt-1 text-xs text-slate-500">
-        Coming in evidence analysis
+      <p className="mt-1 text-xs leading-5 text-slate-500">
+        {description}
       </p>
+
     </button>
+
   );
 }
 
-function Status({
-  number,
-  title,
-  active,
-}: {
-  number: string;
-  title: string;
-  active: boolean;
-}) {
-  return (
-    <div className="flex items-center gap-3">
-      <div
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border text-xs font-bold transition ${
-          active
-            ? "border-orange-500/40 bg-orange-500/10 text-orange-400"
-            : "border-slate-800 bg-slate-900 text-slate-600"
-        }`}
-      >
-        {number}
-      </div>
 
-      <p
-        className={`text-sm ${
-          active ? "text-slate-200" : "text-slate-600"
-        }`}
-      >
-        {title}
-      </p>
-    </div>
-  );
-}
+/* =========================================================
+   RESULT LIST
+========================================================= */
 
 function ResultList({
   title,
@@ -882,50 +1192,130 @@ function ResultList({
   title: string;
   items: string[];
 }) {
-  if (!items || items.length === 0) {
+
+  if (
+    !items ||
+    items.length === 0
+  ) {
     return null;
   }
 
   return (
-    <div className="mt-6">
+
+    <div className="mt-7">
+
       <p className="text-xs uppercase tracking-[2px] text-orange-400">
         {title}
       </p>
 
       <ul className="mt-3 space-y-2">
-        {items.map((item, index) => (
-          <li
-            key={index}
-            className="rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm leading-6 text-slate-300"
-          >
-            • {item}
-          </li>
-        ))}
+
+        {items.map(
+          (item, index) => (
+
+            <li
+              key={index}
+              className="rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm leading-7 text-slate-300"
+            >
+              • {item}
+            </li>
+
+          )
+        )}
+
       </ul>
+
     </div>
+
   );
 }
+
+
+/* =========================================================
+   SAFETY LIST
+========================================================= */
+
+function SafetyList({
+  items,
+}: {
+  items: string[];
+}) {
+
+  if (
+    !items ||
+    items.length === 0
+  ) {
+    return null;
+  }
+
+  return (
+
+    <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6">
+
+      <p className="text-xs uppercase tracking-[2px] text-red-400">
+        Safety
+      </p>
+
+      <ul className="mt-4 space-y-2">
+
+        {items.map(
+          (item, index) => (
+
+            <li
+              key={index}
+              className="text-sm leading-7 text-red-300"
+            >
+              • {item}
+            </li>
+
+          )
+        )}
+
+      </ul>
+
+    </div>
+
+  );
+}
+
+
+/* =========================================================
+   SEVERITY BADGE
+========================================================= */
 
 function SeverityBadge({
   severity,
 }: {
-  severity: "low" | "medium" | "high" | "critical";
+  severity:
+    | "low"
+    | "medium"
+    | "high"
+    | "critical";
 }) {
+
   const styles = {
-    low: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+
+    low:
+      "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+
     medium:
       "border-yellow-500/30 bg-yellow-500/10 text-yellow-400",
+
     high:
       "border-orange-500/30 bg-orange-500/10 text-orange-400",
+
     critical:
       "border-red-500/30 bg-red-500/10 text-red-400",
+
   };
 
   return (
+
     <div
       className={`rounded-lg border px-3 py-2 text-xs font-bold uppercase tracking-wider ${styles[severity]}`}
     >
       Severity: {severity}
     </div>
+
   );
 }

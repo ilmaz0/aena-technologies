@@ -1,20 +1,15 @@
 import { NextResponse } from "next/server";
-import OpenAI from "openai";
 
 export const dynamic = "force-dynamic";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const OLLAMA_URL = "http://localhost:11434/api/generate";
+const OLLAMA_MODEL = "gemma3:4b";
 
 const AENA_ENGINEERING_PROMPT = `
 You are AENA Retrofit AI, an industrial automation and machine retrofit
 engineering assistant developed by AENA Technologies.
 
-Your role is NOT to give generic chatbot answers.
-
-You must reason like an experienced field service engineer working on
-industrial machinery.
+You must reason like an experienced industrial field service engineer.
 
 AENA specializes in:
 
@@ -67,7 +62,7 @@ Do not give generic answers such as:
 "Check the motor."
 
 Instead explain WHICH parameter, WHICH signal, WHICH relationship,
-and WHY it should be checked whenever the available information allows it.
+and WHY it should be checked whenever possible.
 
 For example:
 
@@ -92,73 +87,107 @@ Always distinguish between:
 - Expected result
 - Next decision
 
-If the available information is insufficient, do not pretend to know
-the exact fault.
+If information is insufficient, do not pretend to know the exact fault.
 
-Instead explain what information is missing and ask the smallest number
-of highly useful questions needed to narrow the fault.
+Ask the smallest number of highly useful questions needed to narrow
+the fault.
 
 AENA STYLE
 
-Write naturally like an experienced industrial engineer explaining the
-problem to another engineer or technician.
+Write naturally like an experienced industrial engineer explaining
+the problem to a technician or another engineer.
 
 Do not sound like a generic AI.
 
 Do not repeat the user's sentence unnecessarily.
 
-Use practical field terminology.
+Use practical industrial terminology.
 
 Be technically detailed but understandable.
 
 Do not unnecessarily overcomplicate simple faults.
 
+The selected affected system is ONLY the user's initial assumption.
+It must NOT determine the diagnosis automatically.
+
+The diagnosis must be based primarily on the symptom and machine context.
+
 SAFETY
 
 Electrical measurements, live measurements, high voltage systems,
-rotating machinery and stored mechanical/pneumatic/hydraulic energy
+rotating machinery and stored mechanical, pneumatic or hydraulic energy
 must be treated as hazardous.
 
 Recommend appropriate isolation and qualified personnel where necessary.
 
 COMMERCIAL PURPOSE
 
-The preliminary analysis should provide real value to the customer.
+The preliminary analysis should provide real engineering value.
 
-However, when the diagnosis requires physical inspection, measurements,
-machine access, PLC/drive software, electrical drawings or additional
-evidence, clearly explain that an AENA engineer can continue the diagnosis.
+When diagnosis requires physical inspection, measurements, machine access,
+PLC/drive software, electrical drawings, photographs, video or additional
+evidence, explain that an AENA engineer can continue the diagnosis.
 
-The objective is to move the customer naturally toward contacting
-AENA Technologies for professional engineering support.
+Do not claim that AENA physically inspected the machine.
 
-DO NOT claim that AENA has physically inspected the machine.
+Do not claim certainty without sufficient evidence.
 
-DO NOT claim certainty without sufficient evidence.
+OUTPUT FORMAT
+
+Return ONLY valid JSON.
+
+Do not use markdown.
+
+Do not write anything before or after the JSON.
+
+Use exactly this structure:
+
+{
+  "summary": "string",
+  "severity": "low | medium | high | critical",
+  "diagnoses": [
+    {
+      "id": "string",
+      "system": "string",
+      "fault": "string",
+      "probability": 0,
+      "explanation": "string",
+      "evidenceUsed": ["string"],
+      "possibleCauses": ["string"],
+      "recommendedChecks": ["string"],
+      "recommendedActions": ["string"],
+      "requiredTools": ["string"],
+      "safetyWarnings": ["string"]
+    }
+  ],
+  "immediateActions": ["string"],
+  "furtherQuestions": ["string"],
+  "safetyWarnings": ["string"],
+  "confidence": 0
+}
+
+RULES:
+
+- probability must be between 0 and 100.
+- confidence must be between 0 and 100.
+- Provide 2-4 meaningful diagnoses when the information allows it.
+- Do not make every diagnosis identical.
+- Causes must be technically different.
+- Recommended checks must correspond to the suspected fault.
+- Further questions must be specific and useful.
+- Never invent machine measurements or alarm codes.
 `;
 
 export async function POST(request: Request) {
   console.log("=================================");
-  console.log("AENA RETROFIT AI");
+  console.log("AENA RETROFIT AI - OLLAMA");
   console.log("=================================");
 
   try {
     const body = await request.json();
 
-    console.log("RECEIVED BODY:", body);
-
-    if (!process.env.OPENAI_API_KEY) {
-      console.error("OPENAI_API_KEY is missing.");
-
-      return NextResponse.json(
-        {
-          error: "OPENAI_API_KEY is not configured.",
-        },
-        {
-          status: 500,
-        }
-      );
-    }
+    console.log("RECEIVED BODY:");
+    console.log(body);
 
     const symptom = body.symptom?.trim();
 
@@ -168,9 +197,7 @@ export async function POST(request: Request) {
           error:
             "Please provide a detailed description of the machine problem.",
         },
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
 
@@ -207,196 +234,88 @@ ${machine.servoBrand || "Not provided"} ${machine.servoModel || ""}
 Production process:
 ${machine.productionProcess || "Not provided"}
 
-AFFECTED SYSTEM
+USER SELECTED SYSTEM:
 
 ${affectedSystem}
 
-OPERATOR / ENGINEER SYMPTOM
+IMPORTANT:
+The selected system is only the user's initial assumption.
+Do not automatically diagnose that system.
+
+OPERATOR / ENGINEER SYMPTOM:
 
 ${symptom}
 
-Analyze this machine problem as an industrial field engineer.
+Analyze the complete machine context and symptom.
 
-Do not assume that the selected affected system is definitely the cause.
-It is only the user's initial assumption.
+Think step by step internally.
 
-Return a detailed preliminary engineering diagnosis.
+Identify the most likely failure paths.
+
+Compare competing hypotheses.
+
+Return the final answer ONLY in the required JSON format.
 `;
 
-    const response = await openai.responses.create({
-      model: "gpt-5.6-luna",
+    const prompt = `${AENA_ENGINEERING_PROMPT}
 
-      input: [
-        {
-          role: "system",
-          content: AENA_ENGINEERING_PROMPT,
-        },
-        {
-          role: "user",
-          content: engineeringInput,
-        },
-      ],
+${engineeringInput}`;
 
-      text: {
-        format: {
-          type: "json_schema",
-          name: "retrofit_ai_diagnosis",
-          strict: true,
-          schema: {
-            type: "object",
-            additionalProperties: false,
-            properties: {
-              summary: {
-                type: "string",
-              },
-
-              severity: {
-                type: "string",
-                enum: [
-                  "low",
-                  "medium",
-                  "high",
-                  "critical",
-                ],
-              },
-
-              diagnoses: {
-                type: "array",
-                items: {
-                  type: "object",
-                  additionalProperties: false,
-                  properties: {
-                    id: {
-                      type: "string",
-                    },
-
-                    system: {
-                      type: "string",
-                    },
-
-                    fault: {
-                      type: "string",
-                    },
-
-                    probability: {
-                      type: "number",
-                    },
-
-                    explanation: {
-                      type: "string",
-                    },
-
-                    evidenceUsed: {
-                      type: "array",
-                      items: {
-                        type: "string",
-                      },
-                    },
-
-                    possibleCauses: {
-                      type: "array",
-                      items: {
-                        type: "string",
-                      },
-                    },
-
-                    recommendedChecks: {
-                      type: "array",
-                      items: {
-                        type: "string",
-                      },
-                    },
-
-                    recommendedActions: {
-                      type: "array",
-                      items: {
-                        type: "string",
-                      },
-                    },
-
-                    requiredTools: {
-                      type: "array",
-                      items: {
-                        type: "string",
-                      },
-                    },
-
-                    safetyWarnings: {
-                      type: "array",
-                      items: {
-                        type: "string",
-                      },
-                    },
-                  },
-
-                  required: [
-                    "id",
-                    "system",
-                    "fault",
-                    "probability",
-                    "explanation",
-                    "evidenceUsed",
-                    "possibleCauses",
-                    "recommendedChecks",
-                    "recommendedActions",
-                    "requiredTools",
-                    "safetyWarnings",
-                  ],
-                },
-              },
-
-              immediateActions: {
-                type: "array",
-                items: {
-                  type: "string",
-                },
-              },
-
-              furtherQuestions: {
-                type: "array",
-                items: {
-                  type: "string",
-                },
-              },
-
-              safetyWarnings: {
-                type: "array",
-                items: {
-                  type: "string",
-                },
-              },
-
-              confidence: {
-                type: "number",
-              },
-            },
-
-            required: [
-              "summary",
-              "severity",
-              "diagnoses",
-              "immediateActions",
-              "furtherQuestions",
-              "safetyWarnings",
-              "confidence",
-            ],
-          },
-        },
+    const ollamaResponse = await fetch(OLLAMA_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        model: OLLAMA_MODEL,
+        prompt,
+        stream: false,
+        format: "json",
+        options: {
+          temperature: 0.3,
+          num_ctx: 8192,
+        },
+      }),
     });
 
-    console.log("OPENAI RESPONSE RECEIVED");
+    console.log("OLLAMA STATUS:", ollamaResponse.status);
 
-    const output = response.output_text;
+    if (!ollamaResponse.ok) {
+      const errorText = await ollamaResponse.text();
+
+      console.error("OLLAMA ERROR:");
+      console.error(errorText);
+
+      throw new Error(
+        `Ollama request failed with status ${ollamaResponse.status}: ${errorText}`
+      );
+    }
+
+    const ollamaData = await ollamaResponse.json();
+
+    console.log("OLLAMA RESPONSE RECEIVED");
+
+    const output = ollamaData?.response;
 
     console.log("AI OUTPUT:");
     console.log(output);
 
     if (!output) {
-      throw new Error("AI returned an empty response.");
+      throw new Error("Ollama returned an empty response.");
     }
 
-    const diagnosis = JSON.parse(output);
+    let diagnosis;
+
+    try {
+      diagnosis = JSON.parse(output);
+    } catch (parseError) {
+      console.error("JSON PARSE ERROR:");
+      console.error(output);
+
+      throw new Error(
+        "Ollama returned an invalid JSON diagnosis."
+      );
+    }
 
     return NextResponse.json(diagnosis);
   } catch (error) {
