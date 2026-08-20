@@ -173,12 +173,6 @@ export default function RetrofitAIPage() {
        * ---------------------------------------------------
        * FORM DATA
        * ---------------------------------------------------
-       *
-       * IMPORTANT:
-       *
-       * We are no longer sending JSON.
-       *
-       * The actual files are sent to the backend.
        */
 
       const formData =
@@ -230,10 +224,6 @@ export default function RetrofitAIPage() {
        * ---------------------------------------------------
        * API REQUEST
        * ---------------------------------------------------
-       *
-       * Do NOT manually specify Content-Type.
-       *
-       * Browser will create multipart/form-data boundary.
        */
 
       const response =
@@ -241,7 +231,6 @@ export default function RetrofitAIPage() {
           "/api/retrofit-ai",
           {
             method: "POST",
-
             body: formData,
           }
         );
@@ -417,16 +406,10 @@ ${responseText.substring(
 
   function startWhatsApp() {
     /*
-     * IMPORTANT:
-     *
-     * Replace this with the real AENA WhatsApp number.
+     * Replace this with your real AENA WhatsApp number.
      *
      * Format:
-     *
      * 905XXXXXXXXX
-     *
-     * No + sign.
-     * No spaces.
      */
 
     const phone =
@@ -512,7 +495,9 @@ I would like to continue the diagnosis with an AENA engineer.`;
   return (
     <main className="min-h-screen bg-[#020617] text-white">
 
-      {/* HEADER */}
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
 
       <header className="border-b border-slate-800">
 
@@ -551,317 +536,360 @@ I would like to continue the diagnosis with an AENA engineer.`;
       </header>
 
 
-      {/* MAIN */}
+      {/* =====================================================
+          MAIN
+      ===================================================== */}
 
       <section className="mx-auto max-w-5xl px-5 py-10">
 
         {!result && (
+          <>
 
-          <form
-            onSubmit={
-              analyzeMachine
-            }
-            className="space-y-6"
-          >
+            {/* =================================================
+                INTRODUCTION
+            ================================================= */}
 
-            {/* =========================================
-                PROBLEM
-            ========================================= */}
+            <div className="mb-10 max-w-4xl">
 
-            <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
+              <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+                Industrial Machine Troubleshooting
+              </p>
 
-              <div className="max-w-3xl">
+              <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
+                AI-Assisted Industrial Machine Fault Diagnosis
+              </h2>
 
-                <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-                  Start diagnosis
-                </p>
+              <p className="mt-4 text-sm leading-8 text-slate-400">
+                AENA Retrofit AI helps engineers and maintenance teams
+                analyze industrial machine problems involving PLCs,
+                HMIs, variable frequency drives, servo systems, motors,
+                sensors, electrical panels and industrial communication.
+              </p>
 
-                <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-                  What is happening with your machine?
-                </h2>
+              <p className="mt-4 text-sm leading-8 text-slate-400">
+                Describe the machine symptom and provide available
+                technical evidence such as HMI screenshots, drive
+                displays, electrical panel photographs or machine
+                videos. The system analyzes the available information
+                and identifies possible fault paths, recommended
+                diagnostic checks and engineering actions.
+              </p>
 
-                <p className="mt-3 text-sm leading-7 text-slate-500">
-                  Describe the problem as you see it
-                  in the field. You do not need to
-                  know which component is causing
-                  the fault.
-                </p>
-
-              </div>
-
-              <textarea
-                value={symptom}
-                onChange={(e) =>
-                  setSymptom(
-                    e.target.value
-                  )
-                }
-                placeholder={`Example:
-
-The extruder was running normally. When production speed increases, the motor current rises to around 90A, but the feeding motor continues running at the same speed. There is no alarm on the HMI.`}
-                className="mt-7 min-h-[240px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
-              />
-
-              <div className="mt-3 flex justify-between text-xs text-slate-600">
-
-                <span>
-                  {symptom.length} characters
-                </span>
-
-                <span>
-                  More detail = better diagnosis
-                </span>
-
-              </div>
-
-            </section>
+            </div>
 
 
-            {/* =========================================
-                EVIDENCE
-            ========================================= */}
+            {/* =================================================
+                DIAGNOSIS FORM
+            ================================================= */}
 
-            <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+            <form
+              onSubmit={
+                analyzeMachine
+              }
+              className="space-y-6"
+            >
 
-              <div>
+              {/* =========================================
+                  PROBLEM
+              ========================================= */}
 
-                <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-                  Optional evidence
-                </p>
+              <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
 
-                <h2 className="mt-2 text-xl font-bold">
-                  Show AENA what you see
-                </h2>
+                <div className="max-w-3xl">
 
-                <p className="mt-2 text-sm leading-6 text-slate-500">
-                  Add photos, videos or engineering
-                  documents when available.
-                </p>
-
-              </div>
-
-
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-
-                <EvidenceButton
-                  icon="📷"
-                  title="Photo"
-                  description="HMI, panel, drive or machine"
-                  onClick={() =>
-                    imageInputRef.current?.click()
-                  }
-                />
-
-                <EvidenceButton
-                  icon="🎥"
-                  title="Video"
-                  description="Machine behavior or fault"
-                  onClick={() =>
-                    videoInputRef.current?.click()
-                  }
-                />
-
-                <EvidenceButton
-                  icon="📄"
-                  title="Document"
-                  description="PLC, drive or electrical files"
-                  onClick={() =>
-                    documentInputRef.current?.click()
-                  }
-                />
-
-              </div>
-
-
-              {/* IMAGE INPUT */}
-
-              <input
-                ref={
-                  imageInputRef
-                }
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={(e) => {
-
-                  addFiles(
-                    e.target.files
-                  );
-
-                  e.target.value =
-                    "";
-
-                }}
-              />
-
-
-              {/* VIDEO INPUT */}
-
-              <input
-                ref={
-                  videoInputRef
-                }
-                type="file"
-                accept="video/*"
-                multiple
-                className="hidden"
-                onChange={(e) => {
-
-                  addFiles(
-                    e.target.files
-                  );
-
-                  e.target.value =
-                    "";
-
-                }}
-              />
-
-
-              {/* DOCUMENT INPUT */}
-
-              <input
-                ref={
-                  documentInputRef
-                }
-                type="file"
-                accept=".pdf,.zip,.rar,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.prj"
-                multiple
-                className="hidden"
-                onChange={(e) => {
-
-                  addFiles(
-                    e.target.files
-                  );
-
-                  e.target.value =
-                    "";
-
-                }}
-              />
-
-
-              {/* SELECTED FILES */}
-
-              {selectedFiles.length >
-                0 && (
-
-                <div className="mt-5 space-y-2">
-
-                  <p className="text-xs uppercase tracking-wider text-slate-500">
-                    Selected evidence
+                  <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+                    Start diagnosis
                   </p>
 
-                  {selectedFiles.map(
-                    (
-                      file,
-                      index
-                    ) => (
+                  <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
+                    What is happening with your machine?
+                  </h2>
 
-                      <div
-                        key={`${file.name}-${index}`}
-                        className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 px-4 py-3"
-                      >
+                  <p className="mt-3 text-sm leading-7 text-slate-500">
+                    Describe the problem as you see it
+                    in the field. You do not need to
+                    know which component is causing
+                    the fault.
+                  </p>
 
-                        <div className="min-w-0">
+                </div>
 
-                          <p className="truncate text-sm text-slate-300">
-                            {file.name}
-                          </p>
+                <textarea
+                  value={symptom}
+                  onChange={(e) =>
+                    setSymptom(
+                      e.target.value
+                    )
+                  }
+                  placeholder={`Example:
 
-                          <p className="text-xs text-slate-600">
-                            {(
-                              file.size /
-                              1024 /
-                              1024
-                            ).toFixed(
-                              2
-                            )}{" "}
-                            MB
-                          </p>
+The extruder was running normally. When production speed increases, the motor current rises to around 90A, but the feeding motor continues running at the same speed. There is no alarm on the HMI.`}
+                  className="mt-7 min-h-[240px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
+                />
+
+                <div className="mt-3 flex justify-between text-xs text-slate-600">
+
+                  <span>
+                    {symptom.length} characters
+                  </span>
+
+                  <span>
+                    More detail = better diagnosis
+                  </span>
+
+                </div>
+
+              </section>
+
+
+              {/* =========================================
+                  EVIDENCE
+              ========================================= */}
+
+              <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+
+                <div>
+
+                  <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+                    Optional evidence
+                  </p>
+
+                  <h2 className="mt-2 text-xl font-bold">
+                    Show AENA what you see
+                  </h2>
+
+                  <p className="mt-2 text-sm leading-6 text-slate-500">
+                    Add photos, videos or engineering
+                    documents when available.
+                  </p>
+
+                </div>
+
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+
+                  <EvidenceButton
+                    icon="📷"
+                    title="Photo"
+                    description="HMI, panel, drive or machine"
+                    onClick={() =>
+                      imageInputRef.current?.click()
+                    }
+                  />
+
+                  <EvidenceButton
+                    icon="🎥"
+                    title="Video"
+                    description="Machine behavior or fault"
+                    onClick={() =>
+                      videoInputRef.current?.click()
+                    }
+                  />
+
+                  <EvidenceButton
+                    icon="📄"
+                    title="Document"
+                    description="PLC, drive or electrical files"
+                    onClick={() =>
+                      documentInputRef.current?.click()
+                    }
+                  />
+
+                </div>
+
+
+                {/* IMAGE INPUT */}
+
+                <input
+                  ref={
+                    imageInputRef
+                  }
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+
+                    addFiles(
+                      e.target.files
+                    );
+
+                    e.target.value =
+                      "";
+
+                  }}
+                />
+
+
+                {/* VIDEO INPUT */}
+
+                <input
+                  ref={
+                    videoInputRef
+                  }
+                  type="file"
+                  accept="video/*"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+
+                    addFiles(
+                      e.target.files
+                    );
+
+                    e.target.value =
+                      "";
+
+                  }}
+                />
+
+
+                {/* DOCUMENT INPUT */}
+
+                <input
+                  ref={
+                    documentInputRef
+                  }
+                  type="file"
+                  accept=".pdf,.zip,.rar,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.prj"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+
+                    addFiles(
+                      e.target.files
+                    );
+
+                    e.target.value =
+                      "";
+
+                  }}
+                />
+
+
+                {/* SELECTED FILES */}
+
+                {selectedFiles.length >
+                  0 && (
+
+                  <div className="mt-5 space-y-2">
+
+                    <p className="text-xs uppercase tracking-wider text-slate-500">
+                      Selected evidence
+                    </p>
+
+                    {selectedFiles.map(
+                      (
+                        file,
+                        index
+                      ) => (
+
+                        <div
+                          key={`${file.name}-${index}`}
+                          className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 px-4 py-3"
+                        >
+
+                          <div className="min-w-0">
+
+                            <p className="truncate text-sm text-slate-300">
+                              {file.name}
+                            </p>
+
+                            <p className="text-xs text-slate-600">
+
+                              {(
+                                file.size /
+                                1024 /
+                                1024
+                              ).toFixed(
+                                2
+                              )}{" "}
+                              MB
+
+                            </p>
+
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              removeFile(
+                                index
+                              )
+                            }
+                            className="ml-4 text-xs text-red-400 hover:text-red-300"
+                          >
+                            Remove
+                          </button>
 
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={() =>
-                            removeFile(
-                              index
-                            )
-                          }
-                          className="ml-4 text-xs text-red-400 hover:text-red-300"
-                        >
-                          Remove
-                        </button>
+                      )
+                    )}
 
-                      </div>
+                  </div>
 
-                    )
-                  )}
+                )}
+
+              </section>
+
+
+              {/* =========================================
+                  ERROR
+              ========================================= */}
+
+              {error && (
+
+                <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5">
+
+                  <p className="text-sm font-semibold text-red-400">
+                    Analysis Error
+                  </p>
+
+                  <pre className="mt-2 whitespace-pre-wrap text-sm leading-6 text-red-300">
+                    {error}
+                  </pre>
 
                 </div>
 
               )}
 
-            </section>
+
+              {/* =========================================
+                  ANALYZE BUTTON
+              ========================================= */}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-2xl bg-orange-500 px-6 py-5 text-sm font-bold transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+
+                {loading
+                  ? "AENA AI is analyzing the machine..."
+                  : "Analyze Machine Problem →"}
+
+              </button>
 
 
-            {/* =========================================
-                ERROR
-            ========================================= */}
+              {/* DISCLAIMER */}
 
-            {error && (
+              <p className="text-center text-xs leading-5 text-slate-600">
+                Preliminary AI analysis only.
+                Final diagnosis may require
+                measurements, machine access
+                and engineering inspection.
+              </p>
 
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5">
+            </form>
 
-                <p className="text-sm font-semibold text-red-400">
-                  Analysis Error
-                </p>
-
-                <pre className="mt-2 whitespace-pre-wrap text-sm leading-6 text-red-300">
-                  {error}
-                </pre>
-
-              </div>
-
-            )}
-
-
-            {/* =========================================
-                ANALYZE BUTTON
-            ========================================= */}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-2xl bg-orange-500 px-6 py-5 text-sm font-bold transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-
-              {loading
-                ? "AENA AI is analyzing the machine..."
-                : "Analyze Machine Problem →"}
-
-            </button>
-
-
-            {/* DISCLAIMER */}
-
-            <p className="text-center text-xs leading-5 text-slate-600">
-              Preliminary AI analysis only.
-              Final diagnosis may require
-              measurements, machine access
-              and engineering inspection.
-            </p>
-
-          </form>
-
+          </>
         )}
 
 
-        {/* =========================================
+        {/* =================================================
             RESULTS
-        ========================================= */}
+        ================================================= */}
 
         {result && (
 
@@ -1230,9 +1258,9 @@ function DiagnosisView({
       )}
 
 
-      {/* =========================================
+      {/* =================================================
           WHATSAPP CTA
-      ========================================= */}
+      ================================================= */}
 
       <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
 

@@ -1,71 +1,41 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title:
-    "Retrofit AI | Industrial Machine Troubleshooting & Diagnosis | AENA Technologies",
+    "Retrofit AI | Industrial Machine Troubleshooting & Fault Diagnosis",
 
   description:
-    "AENA Retrofit AI provides preliminary engineering diagnosis for industrial machine faults, PLC, HMI, drives, servo systems, sensors, motors, electrical panels, communication and mechanical systems.",
+    "Retrofit AI by AENA Technologies helps diagnose industrial machine faults involving PLCs, HMIs, drives, servo systems, motors, sensors, electrical panels and industrial communication.",
 
   keywords: [
-    "retrofit AI",
     "industrial machine troubleshooting",
-    "industrial machine diagnosis",
+    "industrial fault diagnosis",
     "machine fault diagnosis",
-    "industrial automation",
-    "machine retrofit",
-    "machine modernization",
+    "industrial automation troubleshooting",
+    "machine troubleshooting AI",
+    "industrial automation AI",
+    "machine retrofit AI",
     "PLC troubleshooting",
     "HMI troubleshooting",
     "drive troubleshooting",
     "servo troubleshooting",
     "industrial electrical troubleshooting",
-    "industrial automation engineering",
-    "PLC fault diagnosis",
-    "VFD troubleshooting",
-    "servo motor troubleshooting",
-    "machine automation",
-    "AENA Technologies",
+    "machine modernization",
+    "industrial machine retrofit",
+    "endüstriyel otomasyon arıza",
+    "makine arıza tespiti",
+    "makine arıza teşhisi",
+    "makine revizyonu",
+    "makine modernizasyonu",
+    "PLC arıza",
+    "sürücü arızası",
+    "endüstriyel otomasyon arıza giderme",
   ],
-
-  authors: [
-    {
-      name: "AENA Technologies",
-      url: "https://aenatechnologies.com",
-    },
-  ],
-
-  creator: "AENA Technologies",
-  publisher: "AENA Technologies",
 
   alternates: {
-    canonical: "https://aenatechnologies.com/retrofit-ai",
-  },
-
-  openGraph: {
-    title:
-      "Retrofit AI | Industrial Machine Troubleshooting & Diagnosis",
-
-    description:
-      "Preliminary engineering diagnosis for industrial machine faults, automation systems and retrofit applications.",
-
-    url: "https://aenatechnologies.com/retrofit-ai",
-
-    siteName: "AENA Technologies",
-
-    type: "website",
-
-    locale: "en_US",
-  },
-
-  twitter: {
-    card: "summary_large_image",
-
-    title:
-      "Retrofit AI | Industrial Machine Troubleshooting & Diagnosis",
-
-    description:
-      "Industrial machine troubleshooting and retrofit engineering intelligence by AENA Technologies.",
+    canonical:
+      "https://www.aenatechnologies.com/retrofit-ai",
   },
 
   robots: {
@@ -80,12 +50,195 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+
+  openGraph: {
+    type: "website",
+
+    url:
+      "https://www.aenatechnologies.com/retrofit-ai",
+
+    title:
+      "Retrofit AI | Industrial Machine Troubleshooting",
+
+    description:
+      "AI-assisted industrial machine troubleshooting developed by AENA Technologies for PLC, HMI, drive, servo, motor, sensor and electrical system fault diagnosis.",
+
+    siteName:
+      "AENA Technologies",
+
+    locale: "en_US",
+
+    images: [
+      {
+        url: "/images/aena3.png",
+        width: 1200,
+        height: 630,
+        alt:
+          "AENA Technologies Retrofit AI",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+
+    title:
+      "Retrofit AI | Industrial Machine Troubleshooting",
+
+    description:
+      "AI-assisted industrial machine fault diagnosis by AENA Technologies.",
+
+    images: [
+      "/images/aena3.png",
+    ],
+  },
+};
+
+const structuredData = {
+  "@context": "https://schema.org",
+
+  "@graph": [
+    {
+      "@type": "WebApplication",
+
+      "@id":
+        "https://www.aenatechnologies.com/retrofit-ai#application",
+
+      name: "AENA Retrofit AI",
+
+      url:
+        "https://www.aenatechnologies.com/retrofit-ai",
+
+      description:
+        "AI-assisted industrial machine troubleshooting and fault diagnosis tool developed by AENA Technologies.",
+
+      applicationCategory:
+        "BusinessApplication",
+
+      applicationSubCategory:
+        "Industrial Automation Troubleshooting",
+
+      operatingSystem:
+        "Web",
+
+      browserRequirements:
+        "Requires JavaScript",
+
+      creator: {
+        "@id":
+          "https://www.aenatechnologies.com/#organization",
+      },
+
+      provider: {
+        "@id":
+          "https://www.aenatechnologies.com/#organization",
+      },
+
+      featureList: [
+        "Industrial machine fault diagnosis",
+        "PLC troubleshooting",
+        "HMI troubleshooting",
+        "Variable frequency drive troubleshooting",
+        "Servo system troubleshooting",
+        "Motor troubleshooting",
+        "Sensor troubleshooting",
+        "Electrical panel troubleshooting",
+        "Industrial communication troubleshooting",
+        "Machine retrofit analysis",
+        "Machine modernization analysis",
+        "Image-based machine evidence analysis",
+      ],
+
+      areaServed: {
+        "@type": "Country",
+        name: "Türkiye",
+      },
+    },
+
+    {
+      "@type": "Service",
+
+      "@id":
+        "https://www.aenatechnologies.com/retrofit-ai#service",
+
+      name:
+        "Industrial Machine Troubleshooting",
+
+      serviceType:
+        "Industrial Automation Troubleshooting",
+
+      provider: {
+        "@id":
+          "https://www.aenatechnologies.com/#organization",
+      },
+
+      url:
+        "https://www.aenatechnologies.com/retrofit-ai",
+
+      areaServed: [
+        {
+          "@type": "Country",
+          name: "Türkiye",
+        },
+        {
+          "@type": "Place",
+          name: "Adana",
+        },
+        {
+          "@type": "Place",
+          name: "Mersin",
+        },
+        {
+          "@type": "Place",
+          name: "Gaziantep",
+        },
+      ],
+    },
+
+    {
+      "@type": "BreadcrumbList",
+
+      "@id":
+        "https://www.aenatechnologies.com/retrofit-ai#breadcrumb",
+
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "AENA Technologies",
+          item:
+            "https://www.aenatechnologies.com/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Retrofit AI",
+          item:
+            "https://www.aenatechnologies.com/retrofit-ai",
+        },
+      ],
+    },
+  ],
 };
 
 export default function RetrofitAILayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
-  return children;
+}>) {
+  return (
+    <>
+      <Script
+        id="retrofit-ai-structured-data"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+      >
+        {JSON.stringify(
+          structuredData
+        )}
+      </Script>
+
+      {children}
+    </>
+  );
 }
