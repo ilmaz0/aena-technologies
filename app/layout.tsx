@@ -80,39 +80,19 @@ export default function RootLayout({
    * STRUCTURED DATA / SEO
    * ============================================================
    *
-   * Geographic SEO strategy:
+   * AENA Technologies
    *
-   * PRIMARY:
-   * - Adana
-   * - Sarıçam
-   * - Hacı Sabancı Organized Industrial Zone
+   * Primary location:
+   * - Acıdere OSB
+   * - Sarıçam / Adana
+   * - Türkiye
    *
-   * TURKEY:
-   * - Mersin
-   * - Gaziantep
-   * - Osmaniye
-   * - Konya
-   * - Kayseri
-   * - Bursa
-   * - Kocaeli
-   * - Istanbul
-   * - Izmir
-   * - Ankara
-   * - Manisa
-   * - Sakarya
-   * - Tekirdag
-   * - Denizli
-   * - Hatay
-   * - Kahramanmaras
+   * Business identity:
+   * - Industrial Automation
+   * - Machine Retrofit
+   * - Machine Modernization
    *
-   * INTERNATIONAL:
-   * - Middle East
-   * - Central Asia
-   * - Europe
-   *
-   * IMPORTANT:
-   * Exact street address is intentionally not included yet.
-   * Google Business Profile verification is still in progress.
+   * The Google Business Profile is already established.
    */
 
   const structuredData = {
@@ -134,6 +114,36 @@ export default function RootLayout({
 
         url: "https://www.aenatechnologies.com",
 
+        logo: {
+          "@type": "ImageObject",
+
+          "@id":
+            "https://www.aenatechnologies.com/#logo",
+
+          url:
+            "https://www.aenatechnologies.com/images/aena3.png",
+
+          contentUrl:
+            "https://www.aenatechnologies.com/images/aena3.png",
+        },
+
+        telephone: "+90 506 123 48 43",
+
+        address: {
+          "@type": "PostalAddress",
+
+          streetAddress:
+            "Acıdere OSB, AOSB Adana Hacı Sabancı Organize Sanayi",
+
+          postalCode: "01170",
+
+          addressLocality: "Sarıçam",
+
+          addressRegion: "Adana",
+
+          addressCountry: "TR",
+        },
+
         description:
           "AENA Technologies provides industrial machine retrofit, machine modernization and industrial automation engineering services for manufacturing machinery and production equipment.",
 
@@ -153,7 +163,8 @@ export default function RootLayout({
 
           {
             "@type": "Place",
-            name: "Hacı Sabancı Organized Industrial Zone, Adana",
+            name:
+              "Hacı Sabancı Organized Industrial Zone, Adana",
           },
 
           /*
@@ -265,7 +276,7 @@ export default function RootLayout({
 
         knowsAbout: [
           /*
-           * ENGLISH SEARCH TOPICS
+           * ENGLISH TOPICS
            */
           "Industrial Machine Retrofit",
           "Machine Modernization",
@@ -359,6 +370,9 @@ export default function RootLayout({
         },
 
         serviceType: [
+          /*
+           * ENGLISH SERVICES
+           */
           "Industrial Machine Retrofit",
           "Machine Modernization",
           "Industrial Automation",
@@ -378,7 +392,7 @@ export default function RootLayout({
           "Industrial Automation Troubleshooting",
 
           /*
-           * Turkish service concepts
+           * TURKISH SERVICES
            */
           "Makine Revizyonu",
           "Makine Modernizasyonu",
@@ -409,7 +423,8 @@ export default function RootLayout({
 
           {
             "@type": "Place",
-            name: "Hacı Sabancı Organized Industrial Zone, Adana",
+            name:
+              "Hacı Sabancı Organized Industrial Zone, Adana",
           },
 
           /*
