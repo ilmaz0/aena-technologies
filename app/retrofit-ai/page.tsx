@@ -413,7 +413,7 @@ ${responseText.substring(
      */
 
     const phone =
-      "905XXXXXXXXX";
+      "905061234843";
 
     /*
      * AI diagnosis
