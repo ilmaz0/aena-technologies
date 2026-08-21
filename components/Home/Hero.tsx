@@ -513,61 +513,62 @@ export default function Hero() {
   </div>
 </Link>
 
-        {/* TECHNOLOGIES */}
-        <div className="mt-14 border-t border-slate-800 pt-9 sm:mt-16 sm:pt-10">
-          <div>
-            <p className="text-xs uppercase tracking-[3px] text-slate-500">
-              Technologies We Work With
-            </p>
-            <p className="mt-2 text-sm text-slate-400">
-              Industrial automation platforms and control technologies
-            </p>
-            {/* SEO TEXT */}
-            <p className="mt-2 max-w-4xl text-xs leading-6 text-slate-500">
-              Siemens, ABB, Mitsubishi Electric, Beckhoff, Schneider Electric,
-              Omron, Yaskawa, Festo, SMC, IFM, Lenze, Leuze, Delta and Rittal
-              industrial automation technologies.
-            </p>
-          </div>
+       {/* TECHNOLOGIES */}
+<div className="mt-14 border-t border-slate-800 pt-9 sm:mt-16 sm:pt-10">
+  <div>
+    <p className="text-xs uppercase tracking-[3px] text-slate-500">
+      Technologies We Work With
+    </p>
 
-          {/* BRAND GRID */}
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
-            {brands.map((brand) => (
-              <div
-                key={brand}
-                className="
-                  flex
-                  h-20
-                  items-center
-                  justify-center
-                  rounded-xl
-                  border
-                  border-slate-800
-                  bg-slate-900/60
-                  px-4
-                  transition
-                  duration-300
-                  hover:-translate-y-1
-                  hover:border-orange-500/60
-                  hover:bg-slate-800
-                "
-              >
-                <Image
-                  src={`/logos/${brand}.png`}
-                  alt={`${brand} industrial automation`}
-                  width={220}
-                  height={80}
-                  className="
-                    max-h-10
-                    max-w-[130px]
-                    object-contain
-                  "
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+    <p className="mt-2 text-sm text-slate-400">
+      Industrial automation platforms and control technologies
+    </p>
 
+    {/* SEO TEXT */}
+    <p className="mt-2 max-w-4xl text-xs leading-6 text-slate-500">
+      Siemens, ABB, Mitsubishi Electric, Beckhoff, Schneider Electric,
+      Omron, Yaskawa, Festo, SMC, IFM, Lenze, Leuze, Delta and Rittal
+      industrial automation technologies.
+    </p>
+  </div>
+
+  {/* BRAND GRID */}
+  <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+    {brands.map((brand) => (
+      <div
+        key={brand}
+        className="
+          flex
+          h-20
+          items-center
+          justify-center
+          rounded-xl
+          border
+          border-slate-800
+          bg-slate-900/60
+          px-4
+          transition
+          duration-300
+          hover:-translate-y-1
+          hover:border-orange-500/60
+          hover:bg-slate-800
+        "
+      >
+        <Image
+          src={`/logos/${brand}.png`}
+          alt={`${brand} industrial automation`}
+          width={220}
+          height={80}
+          className="
+            max-h-10
+            max-w-[130px]
+            object-contain
+          "
+        />
+      </div>
+    ))}
+  </div>
+</div>
       </div>
       </div>
       </div>
