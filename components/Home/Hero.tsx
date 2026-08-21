@@ -263,162 +263,255 @@ export default function Hero() {
                   </div>
                 </div>
 
-                {/* AENA RETROFIT AI (Tıklanabilir Link Haline Getirildi) */}
-                <Link
-                  href="/retrofit-ai"
-                  className="
-                    mt-5
-                    block
-                    rounded-2xl
-                    border
-                    border-orange-500/40
-                    bg-gradient-to-r
-                    from-orange-500/10
-                    via-orange-500/5
-                    to-transparent
-                    p-5
-                    shadow-lg
-                    shadow-orange-500/5
-                    transition
-                    duration-300
-                    hover:border-orange-500/80
-                    hover:bg-orange-500/15
-                  "
-                >
-                  <div className="flex items-start gap-4">
+               {/* AENA RETROFIT AI */}
+<Link
+  href="/retrofit-ai"
+  className="
+    group
+    relative
+    mt-5
+    block
+    overflow-hidden
+    rounded-2xl
+    border
+    border-orange-500/40
+    bg-gradient-to-r
+    from-orange-500/10
+    via-orange-500/5
+    to-transparent
+    p-5
+    shadow-lg
+    shadow-orange-500/5
+    transition-all
+    duration-300
+    hover:-translate-y-1
+    hover:border-orange-500
+    hover:bg-orange-500/15
+    hover:shadow-xl
+    hover:shadow-orange-500/10
+  "
+>
+  {/* SUBTLE HOVER GLOW */}
+  <div
+    className="
+      pointer-events-none
+      absolute
+      -right-20
+      -top-20
+      h-40
+      w-40
+      rounded-full
+      bg-orange-500/10
+      blur-3xl
+      transition-opacity
+      duration-300
+      group-hover:bg-orange-500/20
+    "
+  />
 
-                    {/* AI ICON */}
-                    <div
-                      className="
-                        flex
-                        h-14
-                        w-14
-                        shrink-0
-                        items-center
-                        justify-center
-                        rounded-xl
-                        border
-                        border-orange-500/40
-                        bg-orange-500/10
-                        text-2xl
-                        font-bold
-                        text-orange-400
-                      "
-                    >
-                      AI
-                    </div>
+  <div className="relative">
 
-                    {/* AI CONTENT */}
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <p className="text-base font-bold text-white">
-                          AENA Retrofit AI
-                        </p>
-                        <span
-                          className="
-                            rounded-full
-                            border
-                            border-orange-500/30
-                            bg-orange-500/10
-                            px-2
-                            py-0.5
-                            text-[10px]
-                            font-semibold
-                            uppercase
-                            tracking-wider
-                            text-orange-400
-                          "
-                        >
-                          Next Generation
-                        </span>
-                      </div>
+    {/* AI HEADER */}
+    <div className="flex items-start gap-4">
 
-                      <p className="mt-2 text-sm leading-6 text-slate-300">
-                        AI-assisted field diagnostics and troubleshooting
-                        designed to help technicians analyze machine faults
-                        using visual, voice and command-based interaction.
-                      </p>
-                    </div>
+      {/* AI ICON */}
+      <div
+        className="
+          flex
+          h-14
+          w-14
+          shrink-0
+          items-center
+          justify-center
+          rounded-xl
+          border
+          border-orange-500/40
+          bg-orange-500/10
+          text-2xl
+          font-bold
+          text-orange-400
+          transition-all
+          duration-300
+          group-hover:border-orange-500
+          group-hover:bg-orange-500/20
+          group-hover:shadow-lg
+          group-hover:shadow-orange-500/20
+        "
+      >
+        AI
+      </div>
 
-                  </div>
+      {/* AI CONTENT */}
+      <div className="min-w-0 flex-1">
 
-                  {/* AI CAPABILITIES */}
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-center">
-                      <p className="text-[10px] uppercase tracking-wider text-slate-500">
-                        INPUT
-                      </p>
-                      <p className="mt-1 text-xs font-semibold text-slate-200">
-                        Voice / Image
-                      </p>
-                    </div>
+        <div className="flex flex-wrap items-center gap-2">
 
-                    <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-center">
-                      <p className="text-[10px] uppercase tracking-wider text-slate-500">
-                        ANALYSIS
-                      </p>
-                      <p className="mt-1 text-xs font-semibold text-slate-200">
-                        AI Diagnostics
-                      </p>
-                    </div>
+          <p className="text-base font-bold text-white transition-colors duration-300 group-hover:text-orange-50">
+            AENA Retrofit AI
+          </p>
 
-                    <div className="rounded-lg border border-slate-800 bg-slate-950/70 px-3 py-2 text-center">
-                      <p className="text-[10px] uppercase tracking-wider text-slate-500">
-                        OUTPUT
-                      </p>
-                      <p className="mt-1 text-xs font-semibold text-slate-200">
-                        Guided Solution
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-
-                {/* BENEFITS */}
-                <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">
-                      Focus
-                    </p>
-                    <p className="mt-2 text-sm font-bold text-white">
-                      Machine Retrofit
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">
-                      Goal
-                    </p>
-                    <p className="mt-2 text-sm font-bold text-white">
-                      Reduce Downtime
-                    </p>
-                  </div>
-
-                  <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-4">
-                    <p className="text-xs uppercase tracking-wider text-slate-500">
-                      Result
-                    </p>
-                    <p className="mt-2 text-sm font-bold text-white">
-                      Extend Machine Life
-                    </p>
-                  </div>
-                </div>
-
-                {/* MESSAGE */}
-                <div className="mt-5 rounded-xl border border-orange-500/20 bg-orange-500/5 p-4">
-                  <p className="text-sm leading-6 text-slate-300">
-                    Upgrade your existing production machinery with modern
-                    automation technology instead of investing in completely
-                    new equipment.
-                  </p>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
+          <span
+            className="
+              rounded-full
+              border
+              border-orange-500/30
+              bg-orange-500/10
+              px-2
+              py-0.5
+              text-[10px]
+              font-semibold
+              uppercase
+              tracking-wider
+              text-orange-400
+            "
+          >
+            Next Generation
+          </span>
 
         </div>
+
+        <p className="mt-2 text-sm leading-6 text-slate-300">
+          AI-assisted field diagnostics and troubleshooting designed to help
+          technicians analyze machine faults using visual, voice and
+          command-based interaction.
+        </p>
+
+      </div>
+
+      {/* CLICK INDICATOR */}
+      <div
+        className="
+          hidden
+          shrink-0
+          items-center
+          justify-center
+          rounded-lg
+          border
+          border-slate-700
+          bg-slate-950/60
+          px-3
+          py-2
+          text-xs
+          font-semibold
+          text-slate-400
+          transition-all
+          duration-300
+          group-hover:border-orange-500/50
+          group-hover:text-orange-400
+          sm:flex
+        "
+      >
+        TRY AI →
+      </div>
+
+    </div>
+
+    {/* AI CAPABILITIES */}
+    <div className="mt-4 grid grid-cols-3 gap-2">
+
+      <div
+        className="
+          rounded-lg
+          border
+          border-slate-800
+          bg-slate-950/70
+          px-3
+          py-2
+          text-center
+          transition-colors
+          duration-300
+          group-hover:border-orange-500/20
+        "
+      >
+        <p className="text-[10px] uppercase tracking-wider text-slate-500">
+          INPUT
+        </p>
+
+        <p className="mt-1 text-xs font-semibold text-slate-200">
+          Voice / Image
+        </p>
+      </div>
+
+      <div
+        className="
+          rounded-lg
+          border
+          border-slate-800
+          bg-slate-950/70
+          px-3
+          py-2
+          text-center
+          transition-colors
+          duration-300
+          group-hover:border-orange-500/20
+        "
+      >
+        <p className="text-[10px] uppercase tracking-wider text-slate-500">
+          ANALYSIS
+        </p>
+
+        <p className="mt-1 text-xs font-semibold text-slate-200">
+          AI Diagnostics
+        </p>
+      </div>
+
+      <div
+        className="
+          rounded-lg
+          border
+          border-slate-800
+          bg-slate-950/70
+          px-3
+          py-2
+          text-center
+          transition-colors
+          duration-300
+          group-hover:border-orange-500/20
+        "
+      >
+        <p className="text-[10px] uppercase tracking-wider text-slate-500">
+          OUTPUT
+        </p>
+
+        <p className="mt-1 text-xs font-semibold text-slate-200">
+          Guided Solution
+        </p>
+      </div>
+
+    </div>
+
+    {/* BOTTOM CTA */}
+    <div
+      className="
+        mt-4
+        flex
+        items-center
+        justify-between
+        border-t
+        border-slate-800/80
+        pt-3
+      "
+    >
+      <span className="text-[11px] uppercase tracking-[2px] text-slate-500">
+        Field Diagnostic System
+      </span>
+
+      <span
+        className="
+          text-xs
+          font-semibold
+          text-orange-400
+          transition-transform
+          duration-300
+          group-hover:translate-x-1
+        "
+      >
+        Explore Retrofit AI →
+      </span>
+    </div>
+
+  </div>
+</Link>
 
         {/* TECHNOLOGIES */}
         <div className="mt-14 border-t border-slate-800 pt-9 sm:mt-16 sm:pt-10">
