@@ -11,13 +11,20 @@ import Process from "@/components/Home/Process";
 import CTA from "@/components/Home/CTA";
 
 export const metadata: Metadata = {
-  title: "Industrial Machine Retrofit & Automation Services | AENA Technologies",
+  title:
+    "Industrial Machine Retrofit & Automation | Electrical Engineering | AENA",
 
   description:
-    "AENA Technologies provides industrial machine retrofit, machine modernization, PLC programming, HMI, electrical engineering, drive systems, servo motion control, industrial automation and commissioning services in Turkey and international markets.",
-
+    "AENA Technologies provides industrial machine retrofit, automation and electrical engineering services, including PLC programming, HMI, drive systems, servo motion control, machine modernization and commissioning in Turkey and international markets.",
   keywords: [
     "industrial machine retrofit",
+    "industrial machine retrofit automation",
+"industrial machine retrofit electrical engineering",
+"industrial machine retrofit and automation",
+"industrial machine retrofit automation services",
+"industrial machine retrofit electrical engineering services",
+"machine retrofit and automation",
+"machine modernization and automation",
     "machine retrofit",
     "industrial machine modernization",
     "machine modernization",
@@ -65,7 +72,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main>
+    <>
       <Hero />
 
       <Stats />
@@ -83,7 +90,6 @@ export default function Home() {
       <Process />
 
       <CTA />
-    </main>
+    </>
   );
 }
-

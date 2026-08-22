@@ -58,18 +58,17 @@ export default function Services() {
           <span className="font-semibold uppercase tracking-[3px] text-orange-400">
             Our Services
           </span>
-
-          <h2 className="mt-4 text-4xl font-bold sm:text-5xl">
-            Industrial Automation & Machine Retrofit Services
-          </h2>
+<h2 className="mt-4 text-4xl font-bold sm:text-5xl">
+  Industrial Machine Retrofit & Automation Services
+</h2>
 
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-slate-400">
-            AENA Technologies provides industrial automation, machine
-            retrofit and modernization services for machinery and
-            production lines. We combine PLC programming, electrical
-            engineering, drive systems, motion control and commissioning
-            to improve machine performance and reduce downtime.
-          </p>
+  AENA Technologies provides industrial machine retrofit, automation
+  and electrical engineering services for existing machinery and
+  production lines. We combine PLC programming, HMI, drive systems,
+  servo motion control, electrical engineering and commissioning to
+  modernize machines, reduce downtime and extend equipment life.
+</p>
 
         </div>
 

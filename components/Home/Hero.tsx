@@ -51,26 +51,28 @@ export default function Hero() {
 
             {/* MAIN TITLE */}
             <h1 className="text-[clamp(2.7rem,6vw,5rem)] font-extrabold leading-[0.98] tracking-tight text-white">
-              Industrial
-              <br />
-              Machine
-              <br />
-              <span className="text-orange-500">
-                Retrofit
-              </span>
-            </h1>
+  Industrial Machine
+  <br />
+  <span className="text-orange-500">
+    Retrofit & Automation
+  </span>
+</h1>
+
+<h2 className="mt-5 text-[clamp(1.4rem,3vw,2.25rem)] font-bold leading-tight text-slate-200">
+  & Electrical Engineering
+</h2>
 
             <h2 className="mt-5 text-[clamp(1.4rem,3vw,2.25rem)] font-bold leading-tight text-slate-200">
               Automation & Electrical Engineering
             </h2>
 
             {/* DESCRIPTION */}
-            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-              Modernize your existing machinery without replacing the entire
-              production system. AENA Technologies provides industrial machine
-              retrofit, PLC & HMI programming, electrical engineering, drive
-              systems, servo motion control and commissioning.
-            </p>
+           <p className="mt-6 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
+  AENA Technologies provides industrial machine retrofit, automation
+  and electrical engineering services for existing industrial machinery.
+  Our solutions include PLC & HMI programming, drive systems, servo
+  motion control, electrical panel modernization and machine commissioning.
+</p>
 
             {/* TECHNICAL SERVICES */}
             <div className="mt-7 flex flex-wrap gap-2">
