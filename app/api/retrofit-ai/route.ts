@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -288,6 +289,19 @@ export async function POST(request: Request) {
       symptomValue.trim();
 
     /* =====================================================
+       READ OPTIONAL MACHINE INFORMATION
+    ===================================================== */
+
+    const affectedSystemValue =
+      formData.get("affected_system");
+
+    const affectedSystem =
+      typeof affectedSystemValue === "string" &&
+      affectedSystemValue.trim().length > 0
+        ? affectedSystemValue.trim()
+        : null;
+
+    /* =====================================================
        READ FILES
     ===================================================== */
 
@@ -296,6 +310,9 @@ export async function POST(request: Request) {
 
     console.log("SYMPTOM:");
     console.log(symptom);
+
+    console.log("AFFECTED SYSTEM:");
+    console.log(affectedSystem);
 
     console.log("FILES:");
 
@@ -391,6 +408,13 @@ export async function POST(request: Request) {
 USER REPORTED MACHINE PROBLEM
 
 ${symptom}
+
+AFFECTED SYSTEM
+
+${
+  affectedSystem ||
+  "Not specified by the user."
+}
 
 ATTACHED EVIDENCE
 
@@ -588,7 +612,7 @@ ${engineeringInput}`;
        PARSE AI JSON
     ===================================================== */
 
-    let diagnosis;
+    let diagnosis: any;
 
     try {
 
@@ -693,7 +717,73 @@ ${engineeringInput}`;
     }
 
     /* =====================================================
-       RETURN RESULT
+       SAVE AI RESULT TO SUPABASE
+    ===================================================== */
+
+    console.log(
+      "Saving Retrofit AI analysis to Supabase..."
+    );
+
+    const { error: supabaseError } =
+      await supabase
+        .from("retrofit_ai_cases")
+        .insert({
+          symptom:
+
+            symptom,
+
+          affected_system:
+
+            affectedSystem,
+
+          ai_summary:
+
+            diagnosis.summary,
+
+          ai_diagnoses:
+
+            diagnosis.diagnoses,
+
+          ai_recommendations: {
+
+            immediateActions:
+              diagnosis.immediateActions,
+
+            furtherQuestions:
+              diagnosis.furtherQuestions,
+
+            safetyWarnings:
+              diagnosis.safetyWarnings,
+          },
+        });
+
+    /* =====================================================
+       SUPABASE ERROR
+    ===================================================== */
+
+    if (
+      supabaseError
+    ) {
+
+      console.error(
+        "SUPABASE INSERT ERROR:"
+      );
+
+      console.error(
+        supabaseError
+      );
+
+      throw new Error(
+        `Supabase database error: ${supabaseError.message}`
+      );
+    }
+
+    console.log(
+      "Retrofit AI analysis saved to Supabase successfully."
+    );
+
+    /* =====================================================
+       RETURN RESULT TO FRONTEND
     ===================================================== */
 
     return NextResponse.json(
@@ -727,7 +817,6 @@ ${engineeringInput}`;
 
       errorMessage =
         error.message;
-
     }
 
     /* =====================================================

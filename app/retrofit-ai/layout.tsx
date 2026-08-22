@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Script from "next/script";
+
 
 export const metadata: Metadata = {
   title:
@@ -228,15 +228,22 @@ export default function RetrofitAILayout({
 }>) {
   return (
     <>
-      <Script
-        id="retrofit-ai-structured-data"
-        type="application/ld+json"
-        strategy="beforeInteractive"
-      >
-        {JSON.stringify(
-          structuredData
-        )}
-      </Script>
+      <script
+  id="retrofit-ai-structured-data"
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: "AENA Retrofit AI",
+      description:
+        "AI-assisted industrial machine troubleshooting and retrofit diagnosis.",
+      applicationCategory:
+        "BusinessApplication",
+      operatingSystem: "Web",
+    }),
+  }}
+/>
 
       {children}
     </>

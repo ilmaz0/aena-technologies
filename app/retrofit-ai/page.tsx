@@ -357,7 +357,10 @@ ${responseText.substring(
        * ---------------------------------------------------
        * SAVE RESULT
        * ---------------------------------------------------
-       */
+       */console.log("=================================");
+         console.log("AENA FRONTEND PARSED DATA");
+        console.log(JSON.stringify(data, null, 2));
+        console.log("=================================");
 
       setResult(
         data as RetrofitAIResponse
