@@ -13,20 +13,20 @@ const OLLAMA_MODEL =
   process.env.OLLAMA_MODEL || "gemma3:4b";
 
 /* =========================================================
-   AENA ENGINEERING PROMPT
+   AENA RETROFIT AI PROMPT
 ========================================================= */
 
 const AENA_ENGINEERING_PROMPT = `
-You are AENA Retrofit AI, an industrial automation and machine
-troubleshooting engineering assistant developed by AENA Technologies.
+You are AENA Retrofit AI, an industrial troubleshooting assistant
+developed by AENA Technologies.
 
-You must reason like an experienced industrial automation,
-electrical and machine retrofit engineer.
+You reason like an experienced industrial automation, electrical,
+machine retrofit and field service engineer.
 
-AENA specializes in:
+AENA works with:
 
-- PLC systems
-- HMI systems
+- PLC
+- HMI
 - Variable frequency drives
 - Servo systems
 - Motors
@@ -46,175 +46,232 @@ AENA specializes in:
 - PET recycling machines
 - Flexographic printing machines
 
-ENGINEERING METHOD
+=========================================================
+PRIMARY OBJECTIVE
+=========================================================
 
-For every machine problem:
+Your job is NOT to produce a long engineering report.
 
-1. Understand the reported machine behavior.
-2. Analyze the available visual evidence.
-3. Identify the affected subsystem when possible.
-4. Separate observed facts from assumptions.
-5. Identify the most likely failure paths.
-6. Rank possible causes by probability.
-7. Explain WHY each cause is possible.
-8. Provide practical diagnostic checks.
-9. Explain what result should be expected from each check.
-10. Explain what the engineer should investigate next depending on the result.
-11. Never immediately declare a component defective without evidence.
-12. Ask targeted questions when information is insufficient.
+Your job is to have a short, practical troubleshooting conversation
+with the user.
 
-IMPORTANT
+The goal is:
 
-Do not give generic answers such as:
+1. Understand the machine symptom.
+2. Make the most useful current engineering assessment.
+3. Suggest the most useful immediate check when appropriate.
+4. Ask ONE highly useful question.
+5. Use the user's answer to narrow the diagnosis.
+6. Continue until there is enough information for a reasonable
+   preliminary conclusion.
+7. When physical inspection, measurements, PLC/drive software,
+   drawings or engineering intervention is required, recommend
+   continuing with an AENA engineer.
 
-"Check the parameters."
-"Check the wiring."
-"Check the PLC."
-"Check the motor."
-"Check the drive."
+=========================================================
+RESPONSE STYLE
+=========================================================
 
-Instead explain WHICH parameter, WHICH signal, WHICH relationship,
-and WHY it should be checked whenever possible.
+Keep the response SHORT.
 
-Example:
+The customer should NOT receive a long engineering report.
 
-Bad:
+Do NOT show:
 
-"Check the drive parameters."
+- probability percentages
+- confidence percentages
+- multiple diagnosis lists
+- long lists of possible causes
+- unnecessary technical explanations
+- unnecessary tools lists
+- unnecessary repeated information
 
-Better:
+Think deeply internally, but communicate simply.
 
-"If the PLC sends a 50 Hz speed command but the drive monitor remains
-near 20 Hz, determine whether the limitation occurs in the PLC reference,
-communication command, drive frequency limit, current limitation,
-or motor/load side."
+A good response normally contains:
 
+1. Short assessment
+2. One useful check
+3. One question
+
+Do not ask multiple questions at once.
+
+=========================================================
 ENGINEERING REASONING
+=========================================================
 
 Always distinguish between:
 
-- Symptom
-- Evidence
-- Hypothesis
-- Probability
-- Diagnostic test
-- Expected result
-- Next decision
+- Observed fact
+- Engineering hypothesis
+- Diagnostic evidence
 
-Do not invent:
+Never invent:
 
-- Measurements
-- Alarm codes
-- Parameter values
-- Machine states
-- Component failures
+- measurements
+- alarm codes
+- parameter values
+- machine states
+- component failures
+- visual information that cannot actually be seen
 
-If information is insufficient, do not pretend to know the exact fault.
+Never immediately declare a component defective without evidence.
 
-Ask the smallest number of highly useful questions needed to narrow
-the fault.
+For example:
 
+BAD:
+
+"The motor is defective."
+
+BETTER:
+
+"The symptom is more consistent with a load or drive-side issue
+at this stage. We should first check what happens to the motor
+current at the speed where the problem starts."
+
+=========================================================
+QUESTION STRATEGY
+=========================================================
+
+Ask the SINGLE question that provides the greatest diagnostic value.
+
+Good:
+
+"Does the motor current increase significantly when the problem starts?"
+
+Bad:
+
+"Check the motor current, drive parameters, mechanical system,
+PLC output and wiring. Also tell me the motor model."
+
+Only ask one question.
+
+The next question should depend on the previous answer.
+
+=========================================================
+PROGRESSIVE DIAGNOSIS
+=========================================================
+
+Do not repeat questions that have already been answered.
+
+Use the complete conversation history provided to you.
+
+If the user already provided enough evidence for a reasonable
+preliminary diagnosis, stop asking unnecessary questions.
+
+At that point:
+
+- give a concise preliminary conclusion
+- state the most useful next action
+- set needsEngineer to true when professional intervention
+  would be useful
+
+=========================================================
 VISUAL EVIDENCE
+=========================================================
 
-When an image is supplied:
+If an image is supplied:
 
-1. Carefully inspect the image.
-2. Identify visible displays, alarm messages, indicators,
-   labels, wiring, components and machine conditions.
-3. Use only information actually visible in the image.
-4. Do not invent unreadable values.
-5. Clearly distinguish visual observations from assumptions.
-6. Explain how the visual evidence affects the diagnosis.
+- inspect visible information carefully
+- use only information actually visible
+- identify displays, alarms, labels, components and conditions
+- never invent unreadable values
+- distinguish observation from hypothesis
 
-AENA STYLE
-
-Write naturally like an experienced industrial field engineer
-explaining the problem to a technician or another engineer.
-
-Do not sound like a generic AI.
-
-Do not unnecessarily repeat the user's sentence.
-
-Use practical industrial terminology.
-
-Be technically detailed but understandable.
-
-Do not unnecessarily overcomplicate simple faults.
-
+=========================================================
 SAFETY
+=========================================================
 
-Electrical measurements, live measurements, high voltage systems,
-rotating machinery and stored mechanical, pneumatic or hydraulic energy
-must be treated as hazardous.
+For electrical measurements, high voltage systems, rotating
+machinery, stored mechanical energy, pneumatic systems and
+hydraulic systems, mention appropriate safety precautions when
+relevant.
 
-Recommend appropriate isolation and qualified personnel where necessary.
+Do not overload the response with generic safety warnings.
 
+=========================================================
 COMMERCIAL PURPOSE
+=========================================================
 
-The preliminary analysis should provide real engineering value.
+The AI should provide genuine preliminary engineering value.
 
-When diagnosis requires:
+However, it should not attempt to replace an AENA field engineer
+when diagnosis requires:
 
-- Physical inspection
-- Electrical measurements
+- physical inspection
+- electrical measurements
 - PLC software
-- Drive software
-- Electrical drawings
-- Additional photographs
-- Video
-- Machine access
+- drive software
+- electrical drawings
+- machine access
+- detailed commissioning
+- mechanical inspection
 
-explain that an AENA engineer can continue the diagnosis.
+When appropriate, set:
 
-Do not claim that AENA physically inspected the machine.
+"needsEngineer": true
 
-Do not claim certainty without sufficient evidence.
+Do NOT claim that AENA physically inspected the machine.
 
-OUTPUT FORMAT
+=========================================================
+OUTPUT
+=========================================================
 
 Return ONLY valid JSON.
 
 Do not use markdown.
 
-Do not write anything before or after the JSON.
-
 Use exactly this structure:
 
 {
-  "summary": "string",
+  "summary": "Short current engineering assessment.",
+  "check": "The single most useful immediate check, or an empty string if not appropriate.",
+  "question": "Exactly one useful diagnostic question, or an empty string if enough information is available.",
   "severity": "low | medium | high | critical",
-  "diagnoses": [
-    {
-      "id": "string",
-      "system": "string",
-      "fault": "string",
-      "probability": 0,
-      "explanation": "string",
-      "evidenceUsed": ["string"],
-      "possibleCauses": ["string"],
-      "recommendedChecks": ["string"],
-      "recommendedActions": ["string"],
-      "requiredTools": ["string"],
-      "safetyWarnings": ["string"]
-    }
-  ],
-  "immediateActions": ["string"],
-  "furtherQuestions": ["string"],
-  "safetyWarnings": ["string"],
-  "confidence": 0
+  "needsEngineer": false,
+  "safetyWarning": "Short safety warning when relevant, otherwise an empty string."
 }
 
-RULES
+=========================================================
+OUTPUT RULES
+=========================================================
 
-- probability must be between 0 and 100.
-- confidence must be between 0 and 100.
-- Provide 2-4 meaningful diagnoses when the information allows it.
-- Do not make every diagnosis identical.
-- Causes must be technically different.
-- Recommended checks must correspond to the suspected fault.
-- Further questions must be specific and useful.
-- Never invent machine measurements or alarm codes.
+- summary should normally be 1-3 short sentences.
+- check should normally be one short instruction.
+- question must contain only ONE question.
+- Do not include probability values.
+- Do not include confidence values.
+- Do not create diagnosis arrays.
+- Do not create long lists.
+- Do not repeat the entire user problem.
+- Do not ask questions whose answers are already present.
+- If information is insufficient, ask the most useful single question.
+- If enough information exists, question may be empty.
+- If professional engineering intervention is appropriate,
+  set needsEngineer to true.
 `;
+
+/* =========================================================
+   TYPES
+========================================================= */
+
+type ConversationMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
+
+type AIResponse = {
+  summary: string;
+  check: string;
+  question: string;
+  severity:
+    | "low"
+    | "medium"
+    | "high"
+    | "critical";
+  needsEngineer: boolean;
+  safetyWarning: string;
+};
 
 /* =========================================================
    POST
@@ -229,7 +286,7 @@ export async function POST(request: Request) {
   try {
 
     /* =====================================================
-       CHECK ENVIRONMENT
+       ENVIRONMENT
     ===================================================== */
 
     if (!OLLAMA_URL) {
@@ -260,7 +317,7 @@ export async function POST(request: Request) {
     );
 
     /* =====================================================
-       READ MULTIPART FORM DATA
+       FORM DATA
     ===================================================== */
 
     const formData =
@@ -271,13 +328,13 @@ export async function POST(request: Request) {
 
     if (
       typeof symptomValue !== "string" ||
-      symptomValue.trim().length < 10
+      symptomValue.trim().length < 3
     ) {
 
       return NextResponse.json(
         {
           error:
-            "Please provide a detailed description of the machine problem."
+            "Please describe what is happening with the machine."
         },
         {
           status: 400,
@@ -289,7 +346,7 @@ export async function POST(request: Request) {
       symptomValue.trim();
 
     /* =====================================================
-       READ OPTIONAL MACHINE INFORMATION
+       OPTIONAL SYSTEM
     ===================================================== */
 
     const affectedSystemValue =
@@ -302,35 +359,63 @@ export async function POST(request: Request) {
         : null;
 
     /* =====================================================
-       READ FILES
+       CONVERSATION
+    ===================================================== */
+
+    let conversation: ConversationMessage[] = [];
+
+    const conversationValue =
+      formData.get("conversation");
+
+    if (
+      typeof conversationValue === "string" &&
+      conversationValue.trim()
+    ) {
+
+      try {
+
+        const parsed =
+          JSON.parse(
+            conversationValue
+          );
+
+        if (
+          Array.isArray(parsed)
+        ) {
+
+          conversation =
+            parsed.filter(
+              (item) =>
+                item &&
+                (
+                  item.role === "user" ||
+                  item.role === "assistant"
+                ) &&
+                typeof item.content === "string"
+            );
+
+        }
+
+      } catch {
+
+        console.warn(
+          "Conversation history could not be parsed."
+        );
+
+      }
+    }
+
+    console.log(
+      "Conversation messages:",
+      conversation.length
+    );
+
+    /* =====================================================
+       FILES
     ===================================================== */
 
     const files =
       formData.getAll("files");
-
-    console.log("SYMPTOM:");
-    console.log(symptom);
-
-    console.log("AFFECTED SYSTEM:");
-    console.log(affectedSystem);
-
-    console.log("FILES:");
-
-    console.log(
-      files.map((file) =>
-        file instanceof File
-          ? {
-              name: file.name,
-              type: file.type,
-              size: file.size,
-            }
-          : typeof file
-      )
-    );
-
-    /* =====================================================
-       PREPARE IMAGE EVIDENCE
-    ===================================================== */
 
     const images: string[] = [];
 
@@ -383,7 +468,7 @@ export async function POST(request: Request) {
       }
 
       /* ===================================================
-         PDF / DOCUMENT
+         DOCUMENT
       =================================================== */
 
       if (
@@ -401,11 +486,25 @@ export async function POST(request: Request) {
     }
 
     /* =====================================================
+       BUILD CONVERSATION CONTEXT
+    ===================================================== */
+
+    const conversationText =
+      conversation.length > 0
+        ? conversation
+            .map(
+              (message) =>
+                `${message.role === "user" ? "USER" : "AENA AI"}: ${message.content}`
+            )
+            .join("\n\n")
+        : "No previous conversation.";
+
+    /* =====================================================
        ENGINEERING INPUT
     ===================================================== */
 
     const engineeringInput = `
-USER REPORTED MACHINE PROBLEM
+CURRENT USER MESSAGE
 
 ${symptom}
 
@@ -413,8 +512,12 @@ AFFECTED SYSTEM
 
 ${
   affectedSystem ||
-  "Not specified by the user."
+  "Not specified."
 }
+
+PREVIOUS CONVERSATION
+
+${conversationText}
 
 ATTACHED EVIDENCE
 
@@ -426,24 +529,21 @@ ${
 
 IMPORTANT:
 
-Analyze the reported symptom together with the available evidence.
+Use the previous conversation.
 
-If an image is available, inspect the image carefully.
+Do not repeat questions already answered.
 
-Do not assume that a component is defective simply because
-it appears unusual.
+The current user message may be:
 
-Separate:
+- the initial machine problem
+- an answer to your previous question
+- additional technical information
 
-Observed evidence
+Determine which it is from the conversation context.
 
-from
+Provide only the next useful troubleshooting step.
 
-Engineering hypothesis.
-
-If the evidence is insufficient, ask targeted questions.
-
-Analyze the problem as an experienced industrial field engineer.
+Keep the response concise.
 
 Return only the required JSON.
 `;
@@ -454,7 +554,7 @@ Return only the required JSON.
 ${engineeringInput}`;
 
     /* =====================================================
-       OLLAMA REQUEST BODY
+       OLLAMA REQUEST
     ===================================================== */
 
     const ollamaBody: {
@@ -483,16 +583,12 @@ ${engineeringInput}`;
       options: {
 
         temperature:
-          0.2,
+          0.1,
 
         num_ctx:
-          8192,
+          4096,
       },
     };
-
-    /* =====================================================
-       ATTACH IMAGES
-    ===================================================== */
 
     if (
       images.length > 0
@@ -520,11 +616,6 @@ ${engineeringInput}`;
       "Sending request to Ollama..."
     );
 
-    console.log(
-      "Endpoint:",
-      OLLAMA_URL
-    );
-
     const ollamaResponse =
       await fetch(
         OLLAMA_URL,
@@ -550,7 +641,7 @@ ${engineeringInput}`;
     );
 
     /* =====================================================
-       OLLAMA HTTP ERROR
+       OLLAMA ERROR
     ===================================================== */
 
     if (
@@ -561,10 +652,7 @@ ${engineeringInput}`;
         await ollamaResponse.text();
 
       console.error(
-        "OLLAMA HTTP ERROR:"
-      );
-
-      console.error(
+        "OLLAMA HTTP ERROR:",
         errorText
       );
 
@@ -580,28 +668,15 @@ ${engineeringInput}`;
     const ollamaData =
       await ollamaResponse.json();
 
-    console.log(
-      "OLLAMA RAW DATA RECEIVED"
-    );
-
     const output =
       ollamaData?.response;
 
     console.log(
-      "OLLAMA RESPONSE:"
-    );
-
-    console.log(
+      "OLLAMA RESPONSE:",
       output
     );
 
-    /* =====================================================
-       EMPTY RESPONSE
-    ===================================================== */
-
-    if (
-      !output
-    ) {
+    if (!output) {
 
       throw new Error(
         "Ollama returned an empty response."
@@ -609,10 +684,10 @@ ${engineeringInput}`;
     }
 
     /* =====================================================
-       PARSE AI JSON
+       PARSE JSON
     ===================================================== */
 
-    let diagnosis: any;
+    let diagnosis: AIResponse;
 
     try {
 
@@ -624,32 +699,18 @@ ${engineeringInput}`;
     } catch {
 
       console.error(
-        "INVALID AI JSON:"
-      );
-
-      console.error(
+        "INVALID AI JSON:",
         output
       );
 
       throw new Error(
-        "Ollama returned an invalid JSON diagnosis."
+        "Ollama returned an invalid JSON response."
       );
     }
 
     /* =====================================================
-       BASIC VALIDATION
+       NORMALIZE
     ===================================================== */
-
-    if (
-      !diagnosis ||
-      typeof diagnosis !==
-        "object"
-    ) {
-
-      throw new Error(
-        "AI returned an invalid diagnosis."
-      );
-    }
 
     if (
       typeof diagnosis.summary !==
@@ -657,133 +718,128 @@ ${engineeringInput}`;
     ) {
 
       throw new Error(
-        "AI diagnosis is missing summary."
+        "AI response is missing summary."
       );
     }
 
     if (
-      !Array.isArray(
-        diagnosis.diagnoses
-      )
+      typeof diagnosis.check !==
+      "string"
     ) {
 
-      throw new Error(
-        "AI diagnosis is missing diagnoses."
-      );
+      diagnosis.check = "";
     }
 
     if (
-      typeof diagnosis.confidence !==
-      "number"
+      typeof diagnosis.question !==
+      "string"
     ) {
 
-      console.warn(
-        "AI confidence value is missing or invalid."
-      );
+      diagnosis.question = "";
     }
+
+    if (
+      typeof diagnosis.safetyWarning !==
+      "string"
+    ) {
+
+      diagnosis.safetyWarning = "";
+    }
+
+    if (
+      diagnosis.severity !== "low" &&
+      diagnosis.severity !== "medium" &&
+      diagnosis.severity !== "high" &&
+      diagnosis.severity !== "critical"
+    ) {
+
+      diagnosis.severity =
+        "medium";
+    }
+
+    diagnosis.needsEngineer =
+      Boolean(
+        diagnosis.needsEngineer
+      );
 
     /* =====================================================
-       NORMALIZE OPTIONAL ARRAYS
-    ===================================================== */
-
-    if (
-      !Array.isArray(
-        diagnosis.immediateActions
-      )
-    ) {
-
-      diagnosis.immediateActions =
-        [];
-    }
-
-    if (
-      !Array.isArray(
-        diagnosis.furtherQuestions
-      )
-    ) {
-
-      diagnosis.furtherQuestions =
-        [];
-    }
-
-    if (
-      !Array.isArray(
-        diagnosis.safetyWarnings
-      )
-    ) {
-
-      diagnosis.safetyWarnings =
-        [];
-    }
-
-    /* =====================================================
-       SAVE AI RESULT TO SUPABASE
+       SAVE TO SUPABASE
     ===================================================== */
 
     console.log(
-      "Saving Retrofit AI analysis to Supabase..."
+      "Saving analysis to Supabase..."
     );
 
     const { error: supabaseError } =
       await supabase
         .from("retrofit_ai_cases")
         .insert({
-          symptom:
-
-            symptom,
+          symptom,
 
           affected_system:
-
             affectedSystem,
 
           ai_summary:
-
             diagnosis.summary,
 
-          ai_diagnoses:
-
-            diagnosis.diagnoses,
+          ai_diagnoses: [],
 
           ai_recommendations: {
+            check:
+              diagnosis.check,
 
-            immediateActions:
-              diagnosis.immediateActions,
+            question:
+              diagnosis.question,
 
-            furtherQuestions:
-              diagnosis.furtherQuestions,
+            needsEngineer:
+              diagnosis.needsEngineer,
 
-            safetyWarnings:
-              diagnosis.safetyWarnings,
+            safetyWarning:
+              diagnosis.safetyWarning,
+
+            conversation:
+              [
+                ...conversation,
+                {
+                  role: "user",
+                  content: symptom,
+                },
+                {
+                  role: "assistant",
+                  content:
+                    diagnosis.summary,
+                },
+              ],
           },
         });
-
-    /* =====================================================
-       SUPABASE ERROR
-    ===================================================== */
 
     if (
       supabaseError
     ) {
 
       console.error(
-        "SUPABASE INSERT ERROR:"
-      );
-
-      console.error(
+        "SUPABASE INSERT ERROR:",
         supabaseError
       );
 
-      throw new Error(
-        `Supabase database error: ${supabaseError.message}`
+      /*
+       * Supabase kayıt problemi AI sonucunu
+       * müşteriye göstermeyi engellemesin.
+       */
+
+      console.warn(
+        "AI result will still be returned to the user."
+      );
+
+    } else {
+
+      console.log(
+        "Retrofit AI analysis saved successfully."
       );
     }
 
-    console.log(
-      "Retrofit AI analysis saved to Supabase successfully."
-    );
-
     /* =====================================================
-       RETURN RESULT TO FRONTEND
+       RETURN
     ===================================================== */
 
     return NextResponse.json(
@@ -818,10 +874,6 @@ ${engineeringInput}`;
       errorMessage =
         error.message;
     }
-
-    /* =====================================================
-       CONNECTION ERROR
-    ===================================================== */
 
     if (
       error instanceof TypeError &&

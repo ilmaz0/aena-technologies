@@ -10,45 +10,34 @@ import {
    TYPES
 ========================================================= */
 
-type Diagnosis = {
-  id: string;
-  system: string;
-  fault: string;
-  probability: number;
-  explanation: string;
-  evidenceUsed: string[];
-  possibleCauses: string[];
-  recommendedChecks: string[];
-  recommendedActions: string[];
-  requiredTools?: string[];
-  safetyWarnings?: string[];
+type Severity =
+  | "low"
+  | "medium"
+  | "high"
+  | "critical";
+
+type ConversationMessage = {
+  role: "user" | "assistant";
+  content: string;
 };
 
 type RetrofitAIResponse = {
   summary: string;
-
-  severity:
-    | "low"
-    | "medium"
-    | "high"
-    | "critical";
-
-  diagnoses: Diagnosis[];
-
-  immediateActions: string[];
-
-  furtherQuestions: string[];
-
-  safetyWarnings: string[];
-
-  confidence: number;
+  check: string;
+  question: string;
+  severity: Severity;
+  needsEngineer: boolean;
+  safetyWarning: string;
 };
+
+type EvidenceFile = File;
 
 /* =========================================================
    PAGE
 ========================================================= */
 
 export default function RetrofitAIPage() {
+
   const [symptom, setSymptom] =
     useState("");
 
@@ -63,8 +52,16 @@ export default function RetrofitAIPage() {
   const [error, setError] =
     useState("");
 
+  const [conversation, setConversation] =
+    useState<ConversationMessage[]>(
+      []
+    );
+
   const [selectedFiles, setSelectedFiles] =
-    useState<File[]>([]);
+    useState<EvidenceFile[]>([]);
+
+  const [analysisStarted, setAnalysisStarted] =
+    useState(false);
 
   const imageInputRef =
     useRef<HTMLInputElement>(null);
@@ -82,6 +79,7 @@ export default function RetrofitAIPage() {
   function addFiles(
     files: FileList | null
   ) {
+
     if (!files) {
       return;
     }
@@ -90,6 +88,7 @@ export default function RetrofitAIPage() {
       Array.from(files);
 
     setSelectedFiles((prev) => {
+
       const combined = [
         ...prev,
         ...incoming,
@@ -121,6 +120,7 @@ export default function RetrofitAIPage() {
   function removeFile(
     index: number
   ) {
+
     setSelectedFiles((prev) =>
       prev.filter(
         (_, i) =>
@@ -136,18 +136,18 @@ export default function RetrofitAIPage() {
   async function analyzeMachine(
     e?: FormEvent
   ) {
+
     if (e) {
       e.preventDefault();
     }
 
     setError("");
-    setResult(null);
 
-    /*
-     * Problem validation
-     */
+    const currentMessage =
+      symptom.trim();
 
-    if (!symptom.trim()) {
+    if (!currentMessage) {
+
       setError(
         "Please describe what is happening with the machine."
       );
@@ -156,11 +156,12 @@ export default function RetrofitAIPage() {
     }
 
     if (
-      symptom.trim().length <
-      10
+      currentMessage.length <
+      3
     ) {
+
       setError(
-        "Please provide a little more information about the machine problem."
+        "Please provide a little more information."
       );
 
       return;
@@ -169,206 +170,175 @@ export default function RetrofitAIPage() {
     setLoading(true);
 
     try {
-      /*
-       * ---------------------------------------------------
-       * FORM DATA
-       * ---------------------------------------------------
-       */
+
+      /* ===================================================
+         FORM DATA
+      =================================================== */
 
       const formData =
         new FormData();
 
       formData.append(
         "symptom",
-        symptom.trim()
+        currentMessage
+      );
+
+      formData.append(
+        "conversation",
+        JSON.stringify(
+          conversation
+        )
       );
 
       selectedFiles.forEach(
         (file) => {
+
           formData.append(
             "files",
             file
           );
+
         }
       );
 
-      console.log(
-        "================================="
-      );
-
-      console.log(
-        "AENA RETROFIT AI REQUEST"
-      );
-
-      console.log(
-        "================================="
-      );
-
-      console.log(
-        "Symptom:",
-        symptom
-      );
-
-      console.log(
-        "Files:",
-        selectedFiles.map(
-          (file) => ({
-            name: file.name,
-            type: file.type,
-            size: file.size,
-          })
-        )
-      );
-
-      /*
-       * ---------------------------------------------------
-       * API REQUEST
-       * ---------------------------------------------------
-       */
+      /* ===================================================
+         API REQUEST
+      =================================================== */
 
       const response =
         await fetch(
           "/api/retrofit-ai",
           {
-            method: "POST",
-            body: formData,
+            method:
+              "POST",
+
+            body:
+              formData,
           }
         );
-
-      console.log(
-        "API STATUS:",
-        response.status
-      );
-
-      console.log(
-        "API STATUS TEXT:",
-        response.statusText
-      );
-
-      /*
-       * ---------------------------------------------------
-       * READ RAW RESPONSE
-       * ---------------------------------------------------
-       */
 
       const responseText =
         await response.text();
 
-      console.log(
-        "================================="
-      );
-
-      console.log(
-        "AENA RETROFIT AI RAW RESPONSE"
-      );
-
-      console.log(
-        responseText
-      );
-
-      console.log(
-        "================================="
-      );
-
-      /*
-       * ---------------------------------------------------
-       * PARSE RESPONSE
-       * ---------------------------------------------------
-       */
-
-      let data: any;
+      let data: RetrofitAIResponse;
 
       try {
+
         data =
           JSON.parse(
             responseText
           );
+
       } catch {
+
         throw new Error(
           `Server returned an invalid response.
 
 Status: ${response.status}
 
-Response:
 ${responseText.substring(
   0,
-  1500
+  1200
 )}`
         );
       }
 
-      /*
-       * ---------------------------------------------------
-       * HTTP ERROR
-       * ---------------------------------------------------
-       */
+      /* ===================================================
+         HTTP ERROR
+      =================================================== */
 
       if (!response.ok) {
+
         throw new Error(
-          data?.error ||
-            `Retrofit AI request failed with status ${response.status}.`
+          data &&
+          "error" in data
+            ? String(
+                (
+                  data as unknown as {
+                    error: string;
+                  }
+                ).error
+              )
+            : `Retrofit AI request failed with status ${response.status}.`
         );
       }
 
-      /*
-       * ---------------------------------------------------
-       * RESPONSE VALIDATION
-       * ---------------------------------------------------
-       */
+      /* ===================================================
+         VALIDATE
+      =================================================== */
 
       if (
         !data ||
-        typeof data !==
-          "object"
+        typeof data.summary !==
+          "string"
       ) {
+
         throw new Error(
           "The AI returned an invalid diagnosis."
         );
       }
 
-      if (
-        !data.summary
-      ) {
-        console.warn(
-          "AI response does not contain summary."
-        );
-      }
+      /* ===================================================
+         UPDATE CONVERSATION
+      =================================================== */
 
-      if (
-        !Array.isArray(
-          data.diagnoses
-        )
-      ) {
-        console.warn(
-          "AI response does not contain diagnoses array."
-        );
-      }
+      const newConversation =
+        [
+          ...conversation,
 
-      if (
-        typeof data.confidence !==
-        "number"
-      ) {
-        console.warn(
-          "AI response does not contain a valid confidence value."
-        );
-      }
+          {
+            role:
+              "user" as const,
 
-      /*
-       * ---------------------------------------------------
-       * SAVE RESULT
-       * ---------------------------------------------------
-       */console.log("=================================");
-         console.log("AENA FRONTEND PARSED DATA");
-        console.log(JSON.stringify(data, null, 2));
-        console.log("=================================");
+            content:
+              currentMessage,
+          },
+
+          {
+            role:
+              "assistant" as const,
+
+            content:
+              buildAssistantMessage(
+                data
+              ),
+          },
+        ];
+
+      setConversation(
+        newConversation
+      );
 
       setResult(
-        data as RetrofitAIResponse
+        data
+      );
+
+      setAnalysisStarted(
+        true
       );
 
       /*
-       * Scroll to result
+       * Kullanıcı cevabı gönderildikten sonra
+       * textarea temizlenir.
        */
+
+      setSymptom("");
+
+      /*
+       * İlk analizde dosyaları koruyoruz.
+       * Sonraki mesajlarda tekrar göndermemek için
+       * burada temizlemek daha doğru.
+       */
+
+      if (
+        conversation.length >
+        0
+      ) {
+
+        setSelectedFiles(
+          []
+        );
+      }
 
       window.scrollTo({
         top: 0,
@@ -376,20 +346,10 @@ ${responseText.substring(
       });
 
     } catch (err) {
-      console.error(
-        "================================="
-      );
 
       console.error(
-        "AENA RETROFIT AI ERROR"
-      );
-
-      console.error(
+        "AENA RETROFIT AI ERROR:",
         err
-      );
-
-      console.error(
-        "================================="
       );
 
       setError(
@@ -399,8 +359,52 @@ ${responseText.substring(
       );
 
     } finally {
+
       setLoading(false);
     }
+  }
+
+  /* =======================================================
+     ASSISTANT MESSAGE
+  ======================================================= */
+
+  function buildAssistantMessage(
+    data: RetrofitAIResponse
+  ) {
+
+    const parts: string[] =
+      [];
+
+    if (
+      data.summary
+    ) {
+
+      parts.push(
+        data.summary
+      );
+    }
+
+    if (
+      data.check
+    ) {
+
+      parts.push(
+        `İlk kontrol: ${data.check}`
+      );
+    }
+
+    if (
+      data.question
+    ) {
+
+      parts.push(
+        data.question
+      );
+    }
+
+    return parts.join(
+      "\n\n"
+    );
   }
 
   /* =======================================================
@@ -408,57 +412,40 @@ ${responseText.substring(
   ======================================================= */
 
   function startWhatsApp() {
-    /*
-     * Replace this with your real AENA WhatsApp number.
-     *
-     * Format:
-     * 905XXXXXXXXX
-     */
 
     const phone =
       "905061234843";
 
-    /*
-     * AI diagnosis
-     */
+    const conversationText =
+      conversation
+        .map(
+          (message) =>
+            `${
+              message.role ===
+              "user"
+                ? "Kullanıcı"
+                : "AENA Retrofit AI"
+            }:\n${message.content}`
+        )
+        .join(
+          "\n\n"
+        );
 
-    const diagnosisText =
-      result
-        ? `
+    const message = `Merhaba AENA,
 
-AENA AI preliminary assessment:
+Retrofit AI üzerinden makinemle ilgili ön analiz yaptım.
 
-Summary:
-${result.summary}
+Problem:
+${conversation.find(
+  (message) =>
+    message.role ===
+    "user"
+)?.content || ""}
 
-Severity:
-${result.severity}
+AI görüşmesi:
+${conversationText}
 
-Confidence:
-${result.confidence}%
-
-`
-        : "";
-
-    /*
-     * WhatsApp message
-     */
-
-    const message = `Hello AENA,
-
-I need engineering support for an industrial machine.
-
-Reported problem:
-
-${symptom}
-
-${diagnosisText}
-
-I would like to continue the diagnosis with an AENA engineer.`;
-
-    /*
-     * WhatsApp URL
-     */
+AENA mühendislik ekibiyle devam etmek istiyorum.`;
 
     const url =
       `https://wa.me/${phone}?text=` +
@@ -477,13 +464,20 @@ I would like to continue the diagnosis with an AENA engineer.`;
   ======================================================= */
 
   function startNewAnalysis() {
+
     setResult(null);
 
     setError("");
 
     setSymptom("");
 
+    setConversation([]);
+
     setSelectedFiles([]);
+
+    setAnalysisStarted(
+      false
+    );
 
     window.scrollTo({
       top: 0,
@@ -492,19 +486,20 @@ I would like to continue the diagnosis with an AENA engineer.`;
   }
 
   /* =======================================================
-     PAGE UI
+     UI
   ======================================================= */
 
   return (
+
     <main className="min-h-screen bg-[#020617] text-white">
 
-      {/* =====================================================
+      {/* ===================================================
           HEADER
-      ===================================================== */}
+      =================================================== */}
 
       <header className="border-b border-slate-800">
 
-        <div className="mx-auto max-w-5xl px-5 py-8">
+        <div className="mx-auto max-w-4xl px-5 py-8">
 
           <div className="flex items-center justify-between gap-4">
 
@@ -538,373 +533,78 @@ I would like to continue the diagnosis with an AENA engineer.`;
 
       </header>
 
-
-      {/* =====================================================
+      {/* ===================================================
           MAIN
-      ===================================================== */}
+      =================================================== */}
+
+      <section className="mx-auto max-w-4xl px-5 py-10">
+
+        {!analysisStarted && (
+
+          <InitialDiagnosisForm
+            symptom={
+              symptom
+            }
+            setSymptom={
+              setSymptom
+            }
+            loading={
+              loading
+            }
+            error={
+              error
+            }
+            selectedFiles={
+              selectedFiles
+            }
+            addFiles={
+              addFiles
+            }
+            removeFile={
+              removeFile
+            }
+            imageInputRef={
+              imageInputRef
+            }
+            videoInputRef={
+              videoInputRef
+            }
+            documentInputRef={
+              documentInputRef
+            }
+            onSubmit={
+              analyzeMachine
+            }
+          />
 
-      <section className="mx-auto max-w-5xl px-5 py-10">
-
-        {!result && (
-          <>
-
-            {/* =================================================
-                INTRODUCTION
-            ================================================= */}
-
-            <div className="mb-10 max-w-4xl">
-
-              <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-                Industrial Machine Troubleshooting
-              </p>
-
-              <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-                AI-Assisted Industrial Machine Fault Diagnosis
-              </h2>
-
-              <p className="mt-4 text-sm leading-8 text-slate-400">
-                AENA Retrofit AI helps engineers and maintenance teams
-                analyze industrial machine problems involving PLCs,
-                HMIs, variable frequency drives, servo systems, motors,
-                sensors, electrical panels and industrial communication.
-              </p>
-
-              <p className="mt-4 text-sm leading-8 text-slate-400">
-                Describe the machine symptom and provide available
-                technical evidence such as HMI screenshots, drive
-                displays, electrical panel photographs or machine
-                videos. The system analyzes the available information
-                and identifies possible fault paths, recommended
-                diagnostic checks and engineering actions.
-              </p>
-
-            </div>
-
-
-            {/* =================================================
-                DIAGNOSIS FORM
-            ================================================= */}
-
-            <form
-              onSubmit={
-                analyzeMachine
-              }
-              className="space-y-6"
-            >
-
-              {/* =========================================
-                  PROBLEM
-              ========================================= */}
-
-              <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
-
-                <div className="max-w-3xl">
-
-                  <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-                    Start diagnosis
-                  </p>
-
-                  <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-                    What is happening with your machine?
-                  </h2>
-
-                  <p className="mt-3 text-sm leading-7 text-slate-500">
-                    Describe the problem as you see it
-                    in the field. You do not need to
-                    know which component is causing
-                    the fault.
-                  </p>
-
-                </div>
-
-                <textarea
-                  value={symptom}
-                  onChange={(e) =>
-                    setSymptom(
-                      e.target.value
-                    )
-                  }
-                  placeholder={`Example:
-
-The extruder was running normally. When production speed increases, the motor current rises to around 90A, but the feeding motor continues running at the same speed. There is no alarm on the HMI.`}
-                  className="mt-7 min-h-[240px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
-                />
-
-                <div className="mt-3 flex justify-between text-xs text-slate-600">
-
-                  <span>
-                    {symptom.length} characters
-                  </span>
-
-                  <span>
-                    More detail = better diagnosis
-                  </span>
-
-                </div>
-
-              </section>
-
-
-              {/* =========================================
-                  EVIDENCE
-              ========================================= */}
-
-              <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
-
-                <div>
-
-                  <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-                    Optional evidence
-                  </p>
-
-                  <h2 className="mt-2 text-xl font-bold">
-                    Show AENA what you see
-                  </h2>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-500">
-                    Add photos, videos or engineering
-                    documents when available.
-                  </p>
-
-                </div>
-
-
-                <div className="mt-5 grid gap-3 sm:grid-cols-3">
-
-                  <EvidenceButton
-                    icon="📷"
-                    title="Photo"
-                    description="HMI, panel, drive or machine"
-                    onClick={() =>
-                      imageInputRef.current?.click()
-                    }
-                  />
-
-                  <EvidenceButton
-                    icon="🎥"
-                    title="Video"
-                    description="Machine behavior or fault"
-                    onClick={() =>
-                      videoInputRef.current?.click()
-                    }
-                  />
-
-                  <EvidenceButton
-                    icon="📄"
-                    title="Document"
-                    description="PLC, drive or electrical files"
-                    onClick={() =>
-                      documentInputRef.current?.click()
-                    }
-                  />
-
-                </div>
-
-
-                {/* IMAGE INPUT */}
-
-                <input
-                  ref={
-                    imageInputRef
-                  }
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="hidden"
-                  onChange={(e) => {
-
-                    addFiles(
-                      e.target.files
-                    );
-
-                    e.target.value =
-                      "";
-
-                  }}
-                />
-
-
-                {/* VIDEO INPUT */}
-
-                <input
-                  ref={
-                    videoInputRef
-                  }
-                  type="file"
-                  accept="video/*"
-                  multiple
-                  className="hidden"
-                  onChange={(e) => {
-
-                    addFiles(
-                      e.target.files
-                    );
-
-                    e.target.value =
-                      "";
-
-                  }}
-                />
-
-
-                {/* DOCUMENT INPUT */}
-
-                <input
-                  ref={
-                    documentInputRef
-                  }
-                  type="file"
-                  accept=".pdf,.zip,.rar,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.prj"
-                  multiple
-                  className="hidden"
-                  onChange={(e) => {
-
-                    addFiles(
-                      e.target.files
-                    );
-
-                    e.target.value =
-                      "";
-
-                  }}
-                />
-
-
-                {/* SELECTED FILES */}
-
-                {selectedFiles.length >
-                  0 && (
-
-                  <div className="mt-5 space-y-2">
-
-                    <p className="text-xs uppercase tracking-wider text-slate-500">
-                      Selected evidence
-                    </p>
-
-                    {selectedFiles.map(
-                      (
-                        file,
-                        index
-                      ) => (
-
-                        <div
-                          key={`${file.name}-${index}`}
-                          className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 px-4 py-3"
-                        >
-
-                          <div className="min-w-0">
-
-                            <p className="truncate text-sm text-slate-300">
-                              {file.name}
-                            </p>
-
-                            <p className="text-xs text-slate-600">
-
-                              {(
-                                file.size /
-                                1024 /
-                                1024
-                              ).toFixed(
-                                2
-                              )}{" "}
-                              MB
-
-                            </p>
-
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              removeFile(
-                                index
-                              )
-                            }
-                            className="ml-4 text-xs text-red-400 hover:text-red-300"
-                          >
-                            Remove
-                          </button>
-
-                        </div>
-
-                      )
-                    )}
-
-                  </div>
-
-                )}
-
-              </section>
-
-
-              {/* =========================================
-                  ERROR
-              ========================================= */}
-
-              {error && (
-
-                <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5">
-
-                  <p className="text-sm font-semibold text-red-400">
-                    Analysis Error
-                  </p>
-
-                  <pre className="mt-2 whitespace-pre-wrap text-sm leading-6 text-red-300">
-                    {error}
-                  </pre>
-
-                </div>
-
-              )}
-
-
-              {/* =========================================
-                  ANALYZE BUTTON
-              ========================================= */}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-2xl bg-orange-500 px-6 py-5 text-sm font-bold transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-
-                {loading
-                  ? "AENA AI is analyzing the machine..."
-                  : "Analyze Machine Problem →"}
-
-              </button>
-
-
-              {/* DISCLAIMER */}
-
-              <p className="text-center text-xs leading-5 text-slate-600">
-                Preliminary AI analysis only.
-                Final diagnosis may require
-                measurements, machine access
-                and engineering inspection.
-              </p>
-
-            </form>
-
-          </>
         )}
 
+        {analysisStarted && (
 
-        {/* =================================================
-            RESULTS
-        ================================================= */}
-
-        {result && (
-
-          <DiagnosisView
+          <ConversationView
+            conversation={
+              conversation
+            }
             result={
               result
             }
             symptom={
               symptom
             }
+            setSymptom={
+              setSymptom
+            }
+            loading={
+              loading
+            }
+            error={
+              error
+            }
             selectedFiles={
               selectedFiles
+            }
+            onSubmit={
+              analyzeMachine
             }
             onWhatsApp={
               startWhatsApp
@@ -922,22 +622,381 @@ The extruder was running normally. When production speed increases, the motor cu
   );
 }
 
-
 /* =========================================================
-   DIAGNOSIS VIEW
+   INITIAL FORM
 ========================================================= */
 
-function DiagnosisView({
+function InitialDiagnosisForm({
+  symptom,
+  setSymptom,
+  loading,
+  error,
+  selectedFiles,
+  addFiles,
+  removeFile,
+  imageInputRef,
+  videoInputRef,
+  documentInputRef,
+  onSubmit,
+}: {
+  symptom: string;
+  setSymptom: (
+    value: string
+  ) => void;
+
+  loading: boolean;
+
+  error: string;
+
+  selectedFiles: File[];
+
+  addFiles: (
+    files: FileList | null
+  ) => void;
+
+  removeFile: (
+    index: number
+  ) => void;
+
+  imageInputRef: React.RefObject<HTMLInputElement | null>;
+
+  videoInputRef: React.RefObject<HTMLInputElement | null>;
+
+  documentInputRef: React.RefObject<HTMLInputElement | null>;
+
+  onSubmit: (
+    e?: FormEvent
+  ) => void;
+}) {
+
+  return (
+
+    <div className="space-y-8">
+
+      {/* =================================================
+          INTRO
+      ================================================= */}
+
+      <div className="max-w-3xl">
+
+        <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+          Industrial Machine Troubleshooting
+        </p>
+
+        <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+          What is happening with your machine?
+        </h2>
+
+        <p className="mt-4 text-sm leading-8 text-slate-400">
+          Describe the problem as you see it in the field.
+          You do not need to know which component is causing
+          the fault.
+        </p>
+
+      </div>
+
+      {/* =================================================
+          FORM
+      ================================================= */}
+
+      <form
+        onSubmit={
+          onSubmit
+        }
+        className="space-y-6"
+      >
+
+        <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
+
+          <textarea
+            value={
+              symptom
+            }
+            onChange={(e) =>
+              setSymptom(
+                e.target.value
+              )
+            }
+            placeholder={`Example:
+
+The extruder runs normally at low speed. When production speed increases, the main motor starts to struggle and the current rises. There is no alarm on the HMI.`}
+            className="min-h-[220px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
+          />
+
+          <div className="mt-3 flex justify-between text-xs text-slate-600">
+
+            <span>
+              {symptom.length} characters
+            </span>
+
+            <span>
+              More detail helps the diagnosis
+            </span>
+
+          </div>
+
+        </section>
+
+        {/* =================================================
+            EVIDENCE
+        ================================================= */}
+
+        <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+
+          <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+            Optional evidence
+          </p>
+
+          <h2 className="mt-2 text-xl font-bold">
+            Show AENA what you see
+          </h2>
+
+          <p className="mt-2 text-sm leading-6 text-slate-500">
+            Add photos, videos or engineering documents
+            when available.
+          </p>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+
+            <EvidenceButton
+              icon="📷"
+              title="Photo"
+              description="HMI, panel, drive or machine"
+              onClick={() =>
+                imageInputRef.current?.click()
+              }
+            />
+
+            <EvidenceButton
+              icon="🎥"
+              title="Video"
+              description="Machine behavior or fault"
+              onClick={() =>
+                videoInputRef.current?.click()
+              }
+            />
+
+            <EvidenceButton
+              icon="📄"
+              title="Document"
+              description="PLC, drive or electrical files"
+              onClick={() =>
+                documentInputRef.current?.click()
+              }
+            />
+
+          </div>
+
+          <input
+            ref={
+              imageInputRef
+            }
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+
+              addFiles(
+                e.target.files
+              );
+
+              e.target.value =
+                "";
+
+            }}
+          />
+
+          <input
+            ref={
+              videoInputRef
+            }
+            type="file"
+            accept="video/*"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+
+              addFiles(
+                e.target.files
+              );
+
+              e.target.value =
+                "";
+
+            }}
+          />
+
+          <input
+            ref={
+              documentInputRef
+            }
+            type="file"
+            accept=".pdf,.zip,.rar,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.prj"
+            multiple
+            className="hidden"
+            onChange={(e) => {
+
+              addFiles(
+                e.target.files
+              );
+
+              e.target.value =
+                "";
+
+            }}
+          />
+
+          {selectedFiles.length >
+            0 && (
+
+            <div className="mt-5 space-y-2">
+
+              <p className="text-xs uppercase tracking-wider text-slate-500">
+                Selected evidence
+              </p>
+
+              {selectedFiles.map(
+                (
+                  file,
+                  index
+                ) => (
+
+                  <div
+                    key={`${file.name}-${index}`}
+                    className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 px-4 py-3"
+                  >
+
+                    <div className="min-w-0">
+
+                      <p className="truncate text-sm text-slate-300">
+                        {file.name}
+                      </p>
+
+                      <p className="text-xs text-slate-600">
+                        {(
+                          file.size /
+                          1024 /
+                          1024
+                        ).toFixed(
+                          2
+                        )}{" "}
+                        MB
+                      </p>
+
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        removeFile(
+                          index
+                        )
+                      }
+                      className="ml-4 text-xs text-red-400 hover:text-red-300"
+                    >
+                      Remove
+                    </button>
+
+                  </div>
+
+                )
+              )}
+
+            </div>
+
+          )}
+
+        </section>
+
+        {/* =================================================
+            ERROR
+        ================================================= */}
+
+        {error && (
+
+          <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5">
+
+            <p className="text-sm font-semibold text-red-400">
+              Analysis Error
+            </p>
+
+            <pre className="mt-2 whitespace-pre-wrap text-sm leading-6 text-red-300">
+              {error}
+            </pre>
+
+          </div>
+
+        )}
+
+        {/* =================================================
+            BUTTON
+        ================================================= */}
+
+        <button
+          type="submit"
+          disabled={
+            loading
+          }
+          className="w-full rounded-2xl bg-orange-500 px-6 py-5 text-sm font-bold transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+
+          {loading
+            ? "AENA AI is analyzing..."
+            : "Start AI Diagnosis →"}
+
+        </button>
+
+        <p className="text-center text-xs leading-5 text-slate-600">
+          Preliminary AI analysis only. Some problems may require
+          measurements, machine access and engineering inspection.
+        </p>
+
+      </form>
+
+    </div>
+  );
+}
+
+/* =========================================================
+   CONVERSATION VIEW
+========================================================= */
+
+function ConversationView({
+  conversation,
   result,
   symptom,
+  setSymptom,
+  loading,
+  error,
   selectedFiles,
+  onSubmit,
   onWhatsApp,
   onNewAnalysis,
 }: {
-  result: RetrofitAIResponse;
+  conversation: ConversationMessage[];
+
+  result:
+    RetrofitAIResponse | null;
+
   symptom: string;
+
+  setSymptom: (
+    value: string
+  ) => void;
+
+  loading: boolean;
+
+  error: string;
+
   selectedFiles: File[];
+
+  onSubmit: (
+    e?: FormEvent
+  ) => void;
+
   onWhatsApp: () => void;
+
   onNewAnalysis: () => void;
 }) {
 
@@ -945,364 +1004,238 @@ function DiagnosisView({
 
     <div className="space-y-6">
 
-      {/* RESULT HEADER */}
-
-      <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
-
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-
-          <div>
-
-            <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-              AENA Engineering Assessment
-            </p>
-
-            <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
-              Preliminary Diagnosis
-            </h2>
-
-          </div>
-
-          <SeverityBadge
-            severity={
-              result.severity
-            }
-          />
-
-        </div>
-
-
-        <p className="mt-6 text-base leading-8 text-slate-300">
-          {result.summary}
-        </p>
-
-
-        <div className="mt-6 flex flex-wrap gap-3">
-
-          <div className="rounded-xl border border-slate-800 bg-slate-950 px-4 py-3">
-
-            <span className="text-xs text-slate-500">
-              AI confidence
-            </span>
-
-            <p className="mt-1 font-bold text-orange-400">
-              {result.confidence}%
-            </p>
-
-          </div>
-
-
-          <div className="rounded-xl border border-slate-800 bg-slate-950 px-4 py-3">
-
-            <span className="text-xs text-slate-500">
-              Evidence
-            </span>
-
-            <p className="mt-1 font-bold text-slate-300">
-
-              {selectedFiles.length} file
-              {selectedFiles.length ===
-              1
-                ? ""
-                : "s"}
-
-            </p>
-
-          </div>
-
-        </div>
-
-      </section>
-
-
-      {/* USER PROBLEM */}
-
-      <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
-
-        <p className="text-xs uppercase tracking-[3px] text-slate-500">
-          Reported problem
-        </p>
-
-        <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-slate-300">
-          {symptom}
-        </p>
-
-      </section>
-
-
-      {/* DIAGNOSES */}
-
-      {result.diagnoses.map(
-        (diagnosis) => (
-
-          <section
-            key={
-              diagnosis.id
-            }
-            className="rounded-2xl border border-slate-800 bg-slate-950 p-6 sm:p-8"
-          >
-
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-
-              <div>
-
-                <p className="text-xs uppercase tracking-[3px] text-slate-500">
-                  {diagnosis.system}
-                </p>
-
-                <h3 className="mt-2 text-xl font-bold sm:text-2xl">
-                  {diagnosis.fault}
-                </h3>
-
-              </div>
-
-
-              <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 px-3 py-2 text-sm font-bold text-orange-400">
-                {diagnosis.probability}% probability
-              </div>
-
-            </div>
-
-
-            {/* ENGINEERING REASONING */}
-
-            <div className="mt-7">
-
-              <p className="text-xs uppercase tracking-[2px] text-orange-400">
-                Engineering reasoning
-              </p>
-
-              <p className="mt-3 text-sm leading-8 text-slate-300">
-                {diagnosis.explanation}
-              </p>
-
-            </div>
-
-
-            {/* EVIDENCE USED */}
-
-            {diagnosis.evidenceUsed &&
-              diagnosis.evidenceUsed.length >
-                0 && (
-
-                <ResultList
-                  title="Evidence used"
-                  items={
-                    diagnosis.evidenceUsed
-                  }
-                />
-
-              )}
-
-
-            {/* POSSIBLE CAUSES */}
-
-            <ResultList
-              title="Possible causes"
-              items={
-                diagnosis.possibleCauses
-              }
-            />
-
-
-            {/* CHECKS */}
-
-            <ResultList
-              title="Recommended checks"
-              items={
-                diagnosis.recommendedChecks
-              }
-            />
-
-
-            {/* ACTIONS */}
-
-            <ResultList
-              title="Recommended actions"
-              items={
-                diagnosis.recommendedActions
-              }
-            />
-
-
-            {/* TOOLS */}
-
-            {diagnosis.requiredTools &&
-              diagnosis.requiredTools.length >
-                0 && (
-
-                <ResultList
-                  title="Required tools"
-                  items={
-                    diagnosis.requiredTools
-                  }
-                />
-
-              )}
-
-
-            {/* SAFETY */}
-
-            {diagnosis.safetyWarnings &&
-              diagnosis.safetyWarnings.length >
-                0 && (
-
-                <div className="mt-7">
-
-                  <SafetyList
-                    items={
-                      diagnosis.safetyWarnings
-                    }
-                  />
-
-                </div>
-
-              )}
-
-          </section>
-
-        )
-      )}
-
-
-      {/* IMMEDIATE ACTIONS */}
-
-      {result.immediateActions &&
-        result.immediateActions.length >
-          0 && (
-
-        <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
-
-          <p className="text-xs uppercase tracking-[3px] text-orange-400">
-            First diagnostic step
-          </p>
-
-          <h2 className="mt-2 text-xl font-bold">
-            What should be checked first?
-          </h2>
-
-          <div className="mt-5 space-y-3">
-
-            {result.immediateActions.map(
-              (
-                item,
-                index
-              ) => (
-
-                <div
-                  key={index}
-                  className="flex gap-3 rounded-xl border border-slate-800 bg-slate-900 p-4"
-                >
-
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-orange-500/10 text-xs font-bold text-orange-400">
-                    {index + 1}
-                  </span>
-
-                  <p className="text-sm leading-7 text-slate-300">
-                    {item}
-                  </p>
-
-                </div>
-
-              )
-            )}
-
-          </div>
-
-        </section>
-
-      )}
-
-
-      {/* QUESTIONS */}
-
-      {result.furtherQuestions &&
-        result.furtherQuestions.length >
-          0 && (
-
-        <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
-
-          <p className="text-xs uppercase tracking-[3px] text-orange-400">
-            To narrow the diagnosis
-          </p>
-
-          <h2 className="mt-2 text-xl font-bold">
-            AENA needs a little more information
-          </h2>
-
-          <div className="mt-5 space-y-3">
-
-            {result.furtherQuestions.map(
-              (
-                question,
-                index
-              ) => (
-
-                <div
-                  key={index}
-                  className="rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm leading-7 text-slate-300"
-                >
-
-                  <span className="mr-2 font-bold text-orange-400">
-                    {index + 1}.
-                  </span>
-
-                  {question}
-
-                </div>
-
-              )
-            )}
-
-          </div>
-
-        </section>
-
-      )}
-
-
       {/* =================================================
-          WHATSAPP CTA
+          HEADER
       ================================================= */}
 
       <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
 
         <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-          Need deeper diagnosis?
+          AENA Retrofit AI
         </p>
 
-        <h2 className="mt-3 text-2xl font-bold">
-          Continue with an AENA engineer
+        <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
+          Troubleshooting in progress
         </h2>
 
-        <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
-          AI can narrow the possible fault paths,
-          but some machine problems require
-          measurements, PLC/drive diagnostics,
-          electrical drawings or physical inspection.
-        </p>
-
-        <button
-          type="button"
-          onClick={
-            onWhatsApp
-          }
-          className="mt-6 w-full rounded-xl bg-green-600 px-6 py-4 text-sm font-bold text-white transition hover:bg-green-500 sm:w-auto"
-        >
-          Continue with AENA on WhatsApp →
-        </button>
-
-        <p className="mt-3 text-xs text-slate-600">
-          The preliminary diagnosis can be included
-          in the WhatsApp conversation.
+        <p className="mt-3 text-sm leading-7 text-slate-400">
+          AI is narrowing the fault step by step.
+          You only need to answer the next question.
         </p>
 
       </section>
 
+      {/* =================================================
+          CONVERSATION
+      ================================================= */}
 
-      {/* NEW ANALYSIS */}
+      <section className="space-y-4">
 
-      <div className="text-center">
+        {conversation.map(
+          (
+            message,
+            index
+          ) => (
+
+            <div
+              key={index}
+              className={
+                message.role ===
+                "user"
+                  ? "flex justify-end"
+                  : "flex justify-start"
+              }
+            >
+
+              <div
+                className={
+                  message.role ===
+                  "user"
+                    ? "max-w-[90%] rounded-2xl rounded-br-md bg-orange-500 px-5 py-4 text-sm leading-7 text-white"
+                    : "max-w-[90%] rounded-2xl rounded-bl-md border border-slate-800 bg-slate-950 px-5 py-4 text-sm leading-7 text-slate-300"
+                }
+              >
+
+                <p className="mb-2 text-[10px] font-semibold uppercase tracking-[2px] opacity-60">
+
+                  {message.role ===
+                  "user"
+                    ? "You"
+                    : "AENA Retrofit AI"}
+
+                </p>
+
+                <p className="whitespace-pre-wrap">
+                  {message.content}
+                </p>
+
+              </div>
+
+            </div>
+
+          )
+        )}
+
+      </section>
+
+      {/* =================================================
+          CURRENT QUESTION
+      ================================================= */}
+
+      {result &&
+        result.question &&
+        !result.needsEngineer && (
+
+        <section className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6">
+
+          <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+            Next question
+          </p>
+
+          <p className="mt-3 text-lg font-semibold leading-8 text-white">
+            {result.question}
+          </p>
+
+          {/* =============================================
+              ANSWER FORM
+          ============================================= */}
+
+          <form
+            onSubmit={
+              onSubmit
+            }
+            className="mt-6"
+          >
+
+            <textarea
+              value={
+                symptom
+              }
+              onChange={(e) =>
+                setSymptom(
+                  e.target.value
+                )
+              }
+              placeholder="Write your answer here..."
+              className="min-h-[130px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
+            />
+
+            {error && (
+
+              <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+
+                <p className="text-sm text-red-300">
+                  {error}
+                </p>
+
+              </div>
+
+            )}
+
+            <button
+              type="submit"
+              disabled={
+                loading
+              }
+              className="mt-4 w-full rounded-xl bg-orange-500 px-6 py-4 text-sm font-bold transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+
+              {loading
+                ? "Analyzing..."
+                : "Continue Diagnosis →"}
+
+            </button>
+
+          </form>
+
+        </section>
+
+      )}
+
+      {/* =================================================
+          CHECK
+      ================================================= */}
+
+      {result &&
+        result.check && (
+
+        <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
+
+          <p className="text-xs uppercase tracking-[3px] text-orange-400">
+            Recommended check
+          </p>
+
+          <p className="mt-3 text-sm leading-7 text-slate-300">
+            {result.check}
+          </p>
+
+        </section>
+
+      )}
+
+      {/* =================================================
+          SAFETY
+      ================================================= */}
+
+      {result &&
+        result.safetyWarning && (
+
+        <section className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
+
+          <p className="text-xs uppercase tracking-[2px] text-red-400">
+            Safety
+          </p>
+
+          <p className="mt-3 text-sm leading-7 text-red-300">
+            {result.safetyWarning}
+          </p>
+
+        </section>
+
+      )}
+
+      {/* =================================================
+          ENGINEER CTA
+      ================================================= */}
+
+      {result &&
+        result.needsEngineer && (
+
+        <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
+
+          <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+            Continue with AENA
+          </p>
+
+          <h2 className="mt-3 text-2xl font-bold">
+            This problem may require engineering support
+          </h2>
+
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+            The AI has narrowed the problem as far as the available
+            information allows. An AENA engineer can continue with
+            measurements, PLC/drive diagnostics or machine inspection.
+          </p>
+
+          <button
+            type="button"
+            onClick={
+              onWhatsApp
+            }
+            className="mt-6 w-full rounded-xl bg-green-600 px-6 py-4 text-sm font-bold text-white transition hover:bg-green-500 sm:w-auto"
+          >
+            Continue with AENA on WhatsApp →
+          </button>
+
+        </section>
+
+      )}
+
+      {/* =================================================
+          NEW ANALYSIS
+      ================================================= */}
+
+      <div className="pt-4 text-center">
 
         <button
           type="button"
@@ -1316,25 +1249,19 @@ function DiagnosisView({
 
       </div>
 
+      {/* =================================================
+          DISCLAIMER
+      ================================================= */}
 
-      {/* GLOBAL SAFETY */}
-
-      {result.safetyWarnings &&
-        result.safetyWarnings.length >
-          0 && (
-
-        <SafetyList
-          items={
-            result.safetyWarnings
-          }
-        />
-
-      )}
+      <p className="text-center text-xs leading-5 text-slate-600">
+        Retrofit AI provides preliminary troubleshooting guidance.
+        Final diagnosis may require physical inspection and
+        engineering measurements.
+      </p>
 
     </div>
   );
 }
-
 
 /* =========================================================
    EVIDENCE BUTTON
@@ -1356,7 +1283,9 @@ function EvidenceButton({
 
     <button
       type="button"
-      onClick={onClick}
+      onClick={
+        onClick
+      }
       className="rounded-xl border border-slate-800 bg-slate-900 p-5 text-left transition hover:border-orange-500/50 hover:bg-slate-800"
     >
 
@@ -1373,154 +1302,5 @@ function EvidenceButton({
       </p>
 
     </button>
-
-  );
-}
-
-
-/* =========================================================
-   RESULT LIST
-========================================================= */
-
-function ResultList({
-  title,
-  items,
-}: {
-  title: string;
-  items: string[];
-}) {
-
-  if (
-    !items ||
-    items.length ===
-      0
-  ) {
-    return null;
-  }
-
-  return (
-
-    <div className="mt-7">
-
-      <p className="text-xs uppercase tracking-[2px] text-orange-400">
-        {title}
-      </p>
-
-      <ul className="mt-3 space-y-2">
-
-        {items.map(
-          (
-            item,
-            index
-          ) => (
-
-            <li
-              key={index}
-              className="rounded-xl border border-slate-800 bg-slate-900 p-4 text-sm leading-7 text-slate-300"
-            >
-              • {item}
-            </li>
-
-          )
-        )}
-
-      </ul>
-
-    </div>
-
-  );
-}
-
-
-/* =========================================================
-   SAFETY LIST
-========================================================= */
-
-function SafetyList({
-  items,
-}: {
-  items: string[];
-}) {
-
-  if (
-    !items ||
-    items.length ===
-      0
-  ) {
-    return null;
-  }
-
-  return (
-
-    <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6">
-
-      <p className="text-xs uppercase tracking-[2px] text-red-400">
-        Safety
-      </p>
-
-      <ul className="mt-4 space-y-2">
-
-        {items.map(
-          (
-            item,
-            index
-          ) => (
-
-            <li
-              key={index}
-              className="text-sm leading-7 text-red-300"
-            >
-              • {item}
-            </li>
-
-          )
-        )}
-
-      </ul>
-
-    </div>
-
-  );
-}
-
-
-/* =========================================================
-   SEVERITY BADGE
-========================================================= */
-
-function SeverityBadge({
-  severity,
-}: {
-  severity:
-    | "low"
-    | "medium"
-    | "high"
-    | "critical";
-}) {
-
-  const styles = {
-
-    low:
-      "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-
-    medium:
-      "border-yellow-500/30 bg-yellow-500/10 text-yellow-400",
-
-    high:
-      "border-orange-500/30 bg-orange-500/10 text-orange-400",
-
-    critical:
-      "border-red-500/30 bg-red-500/10 text-red-400",
-
-  };
-
-  return (
-
-    <div
-      className={`rounded-lg border px-3 py-2 text-xs font-bold uppercase tracking-wider ${styles[severity]}`}
-    >
-      Severity: {severity}
-    </div>
-
   );
 }
