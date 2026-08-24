@@ -27,7 +27,9 @@ type RetrofitAIResponse = {
   question: string;
   severity: Severity;
   needsEngineer: boolean;
+  aenaAction?: string;
   safetyWarning: string;
+  caseId?: string;
 };
 
 type EvidenceFile = File;
@@ -37,31 +39,28 @@ type EvidenceFile = File;
 ========================================================= */
 
 export default function RetrofitAIPage() {
-
-  const [symptom, setSymptom] =
-    useState("");
+  const [symptom, setSymptom] = useState("");
 
   const [loading, setLoading] =
     useState(false);
 
   const [result, setResult] =
-    useState<RetrofitAIResponse | null>(
-      null
-    );
+    useState<RetrofitAIResponse | null>(null);
 
   const [error, setError] =
     useState("");
 
   const [conversation, setConversation] =
-    useState<ConversationMessage[]>(
-      []
-    );
+    useState<ConversationMessage[]>([]);
 
   const [selectedFiles, setSelectedFiles] =
     useState<EvidenceFile[]>([]);
 
   const [analysisStarted, setAnalysisStarted] =
     useState(false);
+
+  const [caseId, setCaseId] =
+    useState<string | null>(null);
 
   const imageInputRef =
     useRef<HTMLInputElement>(null);
@@ -79,55 +78,75 @@ export default function RetrofitAIPage() {
   function addFiles(
     files: FileList | null
   ) {
+    if (!files) return;
 
-    if (!files) {
-      return;
-    }
-
-    const incoming =
-      Array.from(files);
+    const incoming = Array.from(files);
 
     setSelectedFiles((prev) => {
-
       const combined = [
         ...prev,
         ...incoming,
       ];
 
-      const unique =
-        combined.filter(
-          (
-            file,
-            index,
-            self
-          ) =>
-            index ===
-            self.findIndex(
-              (item) =>
-                item.name ===
-                  file.name &&
-                item.size ===
-                  file.size &&
-                item.lastModified ===
-                  file.lastModified
-            )
-        );
-
-      return unique;
+      return combined.filter(
+        (
+          file,
+          index,
+          self
+        ) =>
+          index ===
+          self.findIndex(
+            (item) =>
+              item.name === file.name &&
+              item.size === file.size &&
+              item.lastModified ===
+                file.lastModified
+          )
+      );
     });
   }
 
-  function removeFile(
-    index: number
-  ) {
-
+  function removeFile(index: number) {
     setSelectedFiles((prev) =>
       prev.filter(
-        (_, i) =>
-          i !== index
+        (_, i) => i !== index
       )
     );
   }
+
+  /* =======================================================
+     USER DIAGNOSTIC ROUND
+  ======================================================= */
+
+  const userMessageCount =
+    conversation.filter(
+      (message) =>
+        message.role === "user"
+    ).length;
+
+  /*
+   * We don't allow the first AI response to immediately
+   * hand the customer to WhatsApp.
+   *
+   * Minimum diagnostic interaction:
+   *
+   * 1 = initial problem
+   * 2 = first diagnostic answer
+   * 3 = second diagnostic answer
+   *
+   * After this point AI can decide that engineering
+   * intervention is appropriate.
+   */
+
+  const minimumDiagnosticRounds = 3;
+
+  const diagnosticComplete =
+    Boolean(
+      result &&
+        result.needsEngineer &&
+        userMessageCount >=
+          minimumDiagnosticRounds
+    );
 
   /* =======================================================
      AI ANALYSIS
@@ -136,7 +155,6 @@ export default function RetrofitAIPage() {
   async function analyzeMachine(
     e?: FormEvent
   ) {
-
     if (e) {
       e.preventDefault();
     }
@@ -147,34 +165,22 @@ export default function RetrofitAIPage() {
       symptom.trim();
 
     if (!currentMessage) {
-
       setError(
         "Please describe what is happening with the machine."
       );
-
       return;
     }
 
-    if (
-      currentMessage.length <
-      3
-    ) {
-
+    if (currentMessage.length < 3) {
       setError(
         "Please provide a little more information."
       );
-
       return;
     }
 
     setLoading(true);
 
     try {
-
-      /* ===================================================
-         FORM DATA
-      =================================================== */
-
       const formData =
         new FormData();
 
@@ -190,30 +196,31 @@ export default function RetrofitAIPage() {
         )
       );
 
+      if (caseId) {
+        formData.append(
+          "case_id",
+          caseId
+        );
+      }
+
+      /*
+       * Evidence is sent with the request.
+       */
       selectedFiles.forEach(
         (file) => {
-
           formData.append(
             "files",
             file
           );
-
         }
       );
-
-      /* ===================================================
-         API REQUEST
-      =================================================== */
 
       const response =
         await fetch(
           "/api/retrofit-ai",
           {
-            method:
-              "POST",
-
-            body:
-              formData,
+            method: "POST",
+            body: formData,
           }
         );
 
@@ -223,14 +230,11 @@ export default function RetrofitAIPage() {
       let data: RetrofitAIResponse;
 
       try {
-
         data =
           JSON.parse(
             responseText
           );
-
       } catch {
-
         throw new Error(
           `Server returned an invalid response.
 
@@ -243,14 +247,8 @@ ${responseText.substring(
         );
       }
 
-      /* ===================================================
-         HTTP ERROR
-      =================================================== */
-
       if (!response.ok) {
-
         throw new Error(
-          data &&
           "error" in data
             ? String(
                 (
@@ -263,45 +261,49 @@ ${responseText.substring(
         );
       }
 
-      /* ===================================================
-         VALIDATE
-      =================================================== */
-
       if (
         !data ||
         typeof data.summary !==
           "string"
       ) {
-
         throw new Error(
           "The AI returned an invalid diagnosis."
         );
       }
 
       /* ===================================================
-         UPDATE CONVERSATION
+         CASE ID
       =================================================== */
 
-      const newConversation =
+      if (data.caseId) {
+        setCaseId(
+          data.caseId
+        );
+      }
+
+      /* ===================================================
+         CONVERSATION
+      =================================================== */
+
+      const assistantMessage =
+        buildAssistantMessage(
+          data
+        );
+
+      const newConversation: ConversationMessage[] =
         [
           ...conversation,
 
           {
-            role:
-              "user" as const,
-
+            role: "user",
             content:
               currentMessage,
           },
 
           {
-            role:
-              "assistant" as const,
-
+            role: "assistant",
             content:
-              buildAssistantMessage(
-                data
-              ),
+              assistantMessage,
           },
         ];
 
@@ -309,35 +311,22 @@ ${responseText.substring(
         newConversation
       );
 
-      setResult(
-        data
-      );
+      setResult(data);
 
       setAnalysisStarted(
         true
       );
 
-      /*
-       * Kullanıcı cevabı gönderildikten sonra
-       * textarea temizlenir.
-       */
-
       setSymptom("");
 
       /*
-       * İlk analizde dosyaları koruyoruz.
-       * Sonraki mesajlarda tekrar göndermemek için
-       * burada temizlemek daha doğru.
+       * Initial evidence is only needed
+       * during the first analysis.
        */
-
       if (
-        conversation.length >
-        0
+        conversation.length === 0
       ) {
-
-        setSelectedFiles(
-          []
-        );
+        setSelectedFiles([]);
       }
 
       window.scrollTo({
@@ -346,7 +335,6 @@ ${responseText.substring(
       });
 
     } catch (err) {
-
       console.error(
         "AENA RETROFIT AI ERROR:",
         err
@@ -357,9 +345,7 @@ ${responseText.substring(
           ? err.message
           : "An unexpected error occurred."
       );
-
     } finally {
-
       setLoading(false);
     }
   }
@@ -371,34 +357,35 @@ ${responseText.substring(
   function buildAssistantMessage(
     data: RetrofitAIResponse
   ) {
+    const parts: string[] = [];
 
-    const parts: string[] =
-      [];
-
-    if (
-      data.summary
-    ) {
-
+    if (data.summary) {
       parts.push(
         data.summary
       );
     }
 
-    if (
-      data.check
-    ) {
-
+    if (data.check) {
       parts.push(
         `İlk kontrol: ${data.check}`
       );
     }
 
-    if (
-      data.question
-    ) {
-
+    if (data.question) {
       parts.push(
         data.question
+      );
+    }
+
+    if (data.aenaAction) {
+      parts.push(
+        `AENA çözüm yönü: ${data.aenaAction}`
+      );
+    }
+
+    if (data.safetyWarning) {
+      parts.push(
+        `Güvenlik: ${data.safetyWarning}`
       );
     }
 
@@ -412,7 +399,6 @@ ${responseText.substring(
   ======================================================= */
 
   function startWhatsApp() {
-
     const phone =
       "905061234843";
 
@@ -431,18 +417,16 @@ ${responseText.substring(
           "\n\n"
         );
 
-    const message = `Merhaba AENA,
+    const message =
+`Merhaba AENA,
 
-Retrofit AI üzerinden makinemle ilgili ön analiz yaptım.
+Retrofit AI üzerinden makinemle ilgili mühendislik ön analizi yaptım.
 
-Problem:
-${conversation.find(
-  (message) =>
-    message.role ===
-    "user"
-)?.content || ""}
+CASE ID:
+${caseId || "Belirtilmedi"}
 
-AI görüşmesi:
+PROBLEM VE TEŞHİS GÖRÜŞMESİ:
+
 ${conversationText}
 
 AENA mühendislik ekibiyle devam etmek istiyorum.`;
@@ -464,20 +448,13 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
   ======================================================= */
 
   function startNewAnalysis() {
-
     setResult(null);
-
     setError("");
-
     setSymptom("");
-
     setConversation([]);
-
     setSelectedFiles([]);
-
-    setAnalysisStarted(
-      false
-    );
+    setCaseId(null);
+    setAnalysisStarted(false);
 
     window.scrollTo({
       top: 0,
@@ -490,21 +467,14 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
   ======================================================= */
 
   return (
-
     <main className="min-h-screen bg-[#020617] text-white">
 
-      {/* ===================================================
-          HEADER
-      =================================================== */}
-
       <header className="border-b border-slate-800">
-
         <div className="mx-auto max-w-4xl px-5 py-8">
 
           <div className="flex items-center justify-between gap-4">
 
             <div>
-
               <p className="text-xs font-semibold uppercase tracking-[4px] text-orange-400">
                 AENA Technologies
               </p>
@@ -516,50 +486,30 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
               <p className="mt-2 text-sm text-slate-500">
                 Industrial machine troubleshooting assistant
               </p>
-
             </div>
 
             <div className="hidden items-center gap-2 text-xs text-emerald-400 sm:flex">
-
               <span className="h-2 w-2 rounded-full bg-emerald-400" />
-
               ONLINE
-
             </div>
 
           </div>
 
         </div>
-
       </header>
-
-      {/* ===================================================
-          MAIN
-      =================================================== */}
 
       <section className="mx-auto max-w-4xl px-5 py-10">
 
         {!analysisStarted && (
-
           <InitialDiagnosisForm
-            symptom={
-              symptom
-            }
-            setSymptom={
-              setSymptom
-            }
-            loading={
-              loading
-            }
-            error={
-              error
-            }
+            symptom={symptom}
+            setSymptom={setSymptom}
+            loading={loading}
+            error={error}
             selectedFiles={
               selectedFiles
             }
-            addFiles={
-              addFiles
-            }
+            addFiles={addFiles}
             removeFile={
               removeFile
             }
@@ -576,30 +526,20 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
               analyzeMachine
             }
           />
-
         )}
 
         {analysisStarted && (
-
           <ConversationView
             conversation={
               conversation
             }
-            result={
-              result
-            }
-            symptom={
-              symptom
-            }
+            result={result}
+            symptom={symptom}
             setSymptom={
               setSymptom
             }
-            loading={
-              loading
-            }
-            error={
-              error
-            }
+            loading={loading}
+            error={error}
             selectedFiles={
               selectedFiles
             }
@@ -612,8 +552,17 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
             onNewAnalysis={
               startNewAnalysis
             }
+            caseId={caseId}
+            diagnosticComplete={
+              diagnosticComplete
+            }
+            userMessageCount={
+              userMessageCount
+            }
+            minimumDiagnosticRounds={
+              minimumDiagnosticRounds
+            }
           />
-
         )}
 
       </section>
@@ -643,39 +592,33 @@ function InitialDiagnosisForm({
   setSymptom: (
     value: string
   ) => void;
-
   loading: boolean;
-
   error: string;
-
   selectedFiles: File[];
-
   addFiles: (
     files: FileList | null
   ) => void;
-
   removeFile: (
     index: number
   ) => void;
-
-  imageInputRef: React.RefObject<HTMLInputElement | null>;
-
-  videoInputRef: React.RefObject<HTMLInputElement | null>;
-
-  documentInputRef: React.RefObject<HTMLInputElement | null>;
-
+  imageInputRef:
+    React.RefObject<
+      HTMLInputElement | null
+    >;
+  videoInputRef:
+    React.RefObject<
+      HTMLInputElement | null
+    >;
+  documentInputRef:
+    React.RefObject<
+      HTMLInputElement | null
+    >;
   onSubmit: (
     e?: FormEvent
   ) => void;
 }) {
-
   return (
-
     <div className="space-y-8">
-
-      {/* =================================================
-          INTRO
-      ================================================= */}
 
       <div className="max-w-3xl">
 
@@ -695,23 +638,15 @@ function InitialDiagnosisForm({
 
       </div>
 
-      {/* =================================================
-          FORM
-      ================================================= */}
-
       <form
-        onSubmit={
-          onSubmit
-        }
+        onSubmit={onSubmit}
         className="space-y-6"
       >
 
         <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
 
           <textarea
-            value={
-              symptom
-            }
+            value={symptom}
             onChange={(e) =>
               setSymptom(
                 e.target.value
@@ -736,10 +671,6 @@ The extruder runs normally at low speed. When production speed increases, the ma
           </div>
 
         </section>
-
-        {/* =================================================
-            EVIDENCE
-        ================================================= */}
 
         <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
 
@@ -788,68 +719,48 @@ The extruder runs normally at low speed. When production speed increases, the ma
           </div>
 
           <input
-            ref={
-              imageInputRef
-            }
+            ref={imageInputRef}
             type="file"
             accept="image/*"
             multiple
             className="hidden"
             onChange={(e) => {
-
               addFiles(
                 e.target.files
               );
-
-              e.target.value =
-                "";
-
+              e.target.value = "";
             }}
           />
 
           <input
-            ref={
-              videoInputRef
-            }
+            ref={videoInputRef}
             type="file"
             accept="video/*"
             multiple
             className="hidden"
             onChange={(e) => {
-
               addFiles(
                 e.target.files
               );
-
-              e.target.value =
-                "";
-
+              e.target.value = "";
             }}
           />
 
           <input
-            ref={
-              documentInputRef
-            }
+            ref={documentInputRef}
             type="file"
             accept=".pdf,.zip,.rar,.doc,.docx,.xls,.xlsx,.csv,.txt,.log,.prj"
             multiple
             className="hidden"
             onChange={(e) => {
-
               addFiles(
                 e.target.files
               );
-
-              e.target.value =
-                "";
-
+              e.target.value = "";
             }}
           />
 
-          {selectedFiles.length >
-            0 && (
-
+          {selectedFiles.length > 0 && (
             <div className="mt-5 space-y-2">
 
               <p className="text-xs uppercase tracking-wider text-slate-500">
@@ -857,11 +768,7 @@ The extruder runs normally at low speed. When production speed increases, the ma
               </p>
 
               {selectedFiles.map(
-                (
-                  file,
-                  index
-                ) => (
-
+                (file, index) => (
                   <div
                     key={`${file.name}-${index}`}
                     className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-900 px-4 py-3"
@@ -878,9 +785,7 @@ The extruder runs normally at low speed. When production speed increases, the ma
                           file.size /
                           1024 /
                           1024
-                        ).toFixed(
-                          2
-                        )}{" "}
+                        ).toFixed(2)}{" "}
                         MB
                       </p>
 
@@ -899,22 +804,15 @@ The extruder runs normally at low speed. When production speed increases, the ma
                     </button>
 
                   </div>
-
                 )
               )}
 
             </div>
-
           )}
 
         </section>
 
-        {/* =================================================
-            ERROR
-        ================================================= */}
-
         {error && (
-
           <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5">
 
             <p className="text-sm font-semibold text-red-400">
@@ -926,25 +824,16 @@ The extruder runs normally at low speed. When production speed increases, the ma
             </pre>
 
           </div>
-
         )}
-
-        {/* =================================================
-            BUTTON
-        ================================================= */}
 
         <button
           type="submit"
-          disabled={
-            loading
-          }
+          disabled={loading}
           className="w-full rounded-2xl bg-orange-500 px-6 py-5 text-sm font-bold transition hover:bg-orange-600 hover:shadow-lg hover:shadow-orange-500/20 disabled:cursor-not-allowed disabled:opacity-60"
         >
-
           {loading
             ? "AENA AI is analyzing..."
             : "Start AI Diagnosis →"}
-
         </button>
 
         <p className="text-center text-xs leading-5 text-slate-600">
@@ -969,44 +858,54 @@ function ConversationView({
   setSymptom,
   loading,
   error,
-  selectedFiles,
   onSubmit,
   onWhatsApp,
   onNewAnalysis,
+  caseId,
+  diagnosticComplete,
+  userMessageCount,
+  minimumDiagnosticRounds,
 }: {
   conversation: ConversationMessage[];
-
-  result:
-    RetrofitAIResponse | null;
-
+  result: RetrofitAIResponse | null;
   symptom: string;
-
   setSymptom: (
     value: string
   ) => void;
-
   loading: boolean;
-
   error: string;
-
   selectedFiles: File[];
-
   onSubmit: (
     e?: FormEvent
   ) => void;
-
   onWhatsApp: () => void;
-
   onNewAnalysis: () => void;
+  caseId: string | null;
+  diagnosticComplete: boolean;
+  userMessageCount: number;
+  minimumDiagnosticRounds: number;
 }) {
+  /*
+   * If AI prematurely says needsEngineer=true,
+   * we still do NOT show WhatsApp.
+   */
+  const showEngineerCTA =
+    diagnosticComplete;
+
+  /*
+   * Normal AI question.
+   */
+  const hasQuestion =
+    Boolean(
+      result?.question
+    );
 
   return (
-
     <div className="space-y-6">
 
-      {/* =================================================
+      {/* ===================================================
           HEADER
-      ================================================= */}
+      =================================================== */}
 
       <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
 
@@ -1020,23 +919,25 @@ function ConversationView({
 
         <p className="mt-3 text-sm leading-7 text-slate-400">
           AI is narrowing the fault step by step.
-          You only need to answer the next question.
+          Each answer changes the diagnostic direction.
         </p>
+
+        {caseId && (
+          <p className="mt-3 text-[11px] text-slate-600">
+            Diagnostic session: {caseId}
+          </p>
+        )}
 
       </section>
 
-      {/* =================================================
+      {/* ===================================================
           CONVERSATION
-      ================================================= */}
+      =================================================== */}
 
       <section className="space-y-4">
 
         {conversation.map(
-          (
-            message,
-            index
-          ) => (
-
+          (message, index) => (
             <div
               key={index}
               className={
@@ -1057,12 +958,10 @@ function ConversationView({
               >
 
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-[2px] opacity-60">
-
                   {message.role ===
                   "user"
                     ? "You"
                     : "AENA Retrofit AI"}
-
                 </p>
 
                 <p className="whitespace-pre-wrap">
@@ -1072,168 +971,282 @@ function ConversationView({
               </div>
 
             </div>
-
           )
         )}
 
       </section>
 
-      {/* =================================================
-          CURRENT QUESTION
-      ================================================= */}
+      {/* ===================================================
+          DIAGNOSTIC PROGRESS
+      =================================================== */}
+
+      {!showEngineerCTA &&
+        result &&
+        result.needsEngineer && (
+          <section className="rounded-2xl border border-yellow-500/20 bg-yellow-500/5 p-5">
+
+            <p className="text-xs font-semibold uppercase tracking-[3px] text-yellow-400">
+              Diagnostic evidence
+            </p>
+
+            <p className="mt-3 text-sm leading-7 text-slate-400">
+              The current evidence suggests that
+              engineering intervention may eventually
+              be required, but the diagnostic session
+              should continue before a field engineer
+              is contacted.
+            </p>
+
+            <p className="mt-3 text-xs text-slate-600">
+              Diagnostic stage:{" "}
+              {userMessageCount} /{" "}
+              {minimumDiagnosticRounds}
+            </p>
+
+          </section>
+        )}
+
+      {/* ===================================================
+          NEXT QUESTION
+      =================================================== */}
+
+      {!showEngineerCTA &&
+        hasQuestion && (
+          <section className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6">
+
+            <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+              Next diagnostic question
+            </p>
+
+            <p className="mt-3 text-lg font-semibold leading-8 text-white">
+              {result?.question}
+            </p>
+
+            <form
+              onSubmit={onSubmit}
+              className="mt-6"
+            >
+
+              <textarea
+                value={symptom}
+                onChange={(e) =>
+                  setSymptom(
+                    e.target.value
+                  )
+                }
+                placeholder="Write your answer here..."
+                className="min-h-[130px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
+              />
+
+              {error && (
+                <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+
+                  <p className="text-sm text-red-300">
+                    {error}
+                  </p>
+
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-4 w-full rounded-xl bg-orange-500 px-6 py-4 text-sm font-bold transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading
+                  ? "Analyzing..."
+                  : "Continue Diagnosis →"}
+              </button>
+
+            </form>
+
+          </section>
+        )}
+
+      {/* ===================================================
+          IF AI DID NOT PRODUCE QUESTION
+          BUT ENGINEER HANDOFF IS NOT YET ALLOWED
+      =================================================== */}
+
+      {!showEngineerCTA &&
+        result &&
+        !hasQuestion && (
+          <section className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6">
+
+            <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+              Continue diagnostic evidence
+            </p>
+
+            <p className="mt-3 text-sm leading-7 text-slate-400">
+              The preliminary evidence is not yet sufficient
+              to finalize the engineering direction.
+              Add the next observable machine behavior or
+              measurement so the diagnostic path can continue.
+            </p>
+
+            <form
+              onSubmit={onSubmit}
+              className="mt-6"
+            >
+
+              <textarea
+                value={symptom}
+                onChange={(e) =>
+                  setSymptom(
+                    e.target.value
+                  )
+                }
+                placeholder="Example: Motor current is 82 A at the normal production speed and rises to 108 A when the speed drops..."
+                className="min-h-[130px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
+              />
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-4 w-full rounded-xl bg-orange-500 px-6 py-4 text-sm font-bold transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading
+                  ? "Analyzing..."
+                  : "Add Evidence →"}
+              </button>
+
+            </form>
+
+          </section>
+        )}
+
+      {/* ===================================================
+          RECOMMENDED CHECK
+      =================================================== */}
 
       {result &&
-        result.question &&
-        !result.needsEngineer && (
+        result.check && (
+          <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
 
-        <section className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-6">
+            <p className="text-xs uppercase tracking-[3px] text-orange-400">
+              Recommended check
+            </p>
 
-          <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-            Next question
-          </p>
+            <p className="mt-3 text-sm leading-7 text-slate-300">
+              {result.check}
+            </p>
 
-          <p className="mt-3 text-lg font-semibold leading-8 text-white">
-            {result.question}
-          </p>
+          </section>
+        )}
 
-          {/* =============================================
-              ANSWER FORM
-          ============================================= */}
+      {/* ===================================================
+          SAFETY
+      =================================================== */}
 
-          <form
-            onSubmit={
-              onSubmit
-            }
-            className="mt-6"
-          >
+      {result &&
+        result.safetyWarning && (
+          <section className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
 
-            <textarea
-              value={
-                symptom
-              }
-              onChange={(e) =>
-                setSymptom(
-                  e.target.value
-                )
-              }
-              placeholder="Write your answer here..."
-              className="min-h-[130px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
-            />
+            <p className="text-xs uppercase tracking-[2px] text-red-400">
+              Safety
+            </p>
 
-            {error && (
+            <p className="mt-3 text-sm leading-7 text-red-300">
+              {result.safetyWarning}
+            </p>
 
-              <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+          </section>
+        )}
 
-                <p className="text-sm text-red-300">
-                  {error}
+      {/* ===================================================
+          AENA ENGINEERING HANDOFF
+      =================================================== */}
+
+      {showEngineerCTA &&
+        result && (
+          <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
+
+            <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+              AENA Engineering
+            </p>
+
+            <h2 className="mt-3 text-2xl font-bold">
+              Engineering intervention is now recommended
+            </h2>
+
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+              The diagnostic session has collected enough
+              evidence to move from preliminary troubleshooting
+              toward an engineering assessment.
+            </p>
+
+            {result.aenaAction && (
+              <div className="mt-5 rounded-2xl border border-slate-800 bg-slate-950 p-5">
+
+                <p className="text-xs font-semibold uppercase tracking-[2px] text-orange-400">
+                  What AENA can do
+                </p>
+
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  {result.aenaAction}
+                </p>
+
+              </div>
+            )}
+
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+
+              <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+
+                <p className="text-xs text-slate-500">
+                  Diagnostic stage
+                </p>
+
+                <p className="mt-2 text-lg font-bold text-white">
+                  {userMessageCount}
+                  {" "}
+                  interactions
                 </p>
 
               </div>
 
-            )}
+              <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+
+                <p className="text-xs text-slate-500">
+                  Severity
+                </p>
+
+                <p className="mt-2 text-lg font-bold uppercase text-white">
+                  {result.severity}
+                </p>
+
+              </div>
+
+              <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
+
+                <p className="text-xs text-slate-500">
+                  Case
+                </p>
+
+                <p className="mt-2 truncate text-sm font-bold text-white">
+                  {caseId || "N/A"}
+                </p>
+
+              </div>
+
+            </div>
 
             <button
-              type="submit"
-              disabled={
-                loading
+              type="button"
+              onClick={
+                onWhatsApp
               }
-              className="mt-4 w-full rounded-xl bg-orange-500 px-6 py-4 text-sm font-bold transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+              className="mt-6 w-full rounded-xl bg-green-600 px-6 py-4 text-sm font-bold text-white transition hover:bg-green-500 sm:w-auto"
             >
-
-              {loading
-                ? "Analyzing..."
-                : "Continue Diagnosis →"}
-
+              Continue with AENA Engineering →
             </button>
 
-          </form>
+          </section>
+        )}
 
-        </section>
-
-      )}
-
-      {/* =================================================
-          CHECK
-      ================================================= */}
-
-      {result &&
-        result.check && (
-
-        <section className="rounded-2xl border border-slate-800 bg-slate-950 p-6">
-
-          <p className="text-xs uppercase tracking-[3px] text-orange-400">
-            Recommended check
-          </p>
-
-          <p className="mt-3 text-sm leading-7 text-slate-300">
-            {result.check}
-          </p>
-
-        </section>
-
-      )}
-
-      {/* =================================================
-          SAFETY
-      ================================================= */}
-
-      {result &&
-        result.safetyWarning && (
-
-        <section className="rounded-2xl border border-red-500/20 bg-red-500/5 p-5">
-
-          <p className="text-xs uppercase tracking-[2px] text-red-400">
-            Safety
-          </p>
-
-          <p className="mt-3 text-sm leading-7 text-red-300">
-            {result.safetyWarning}
-          </p>
-
-        </section>
-
-      )}
-
-      {/* =================================================
-          ENGINEER CTA
-      ================================================= */}
-
-      {result &&
-        result.needsEngineer && (
-
-        <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
-
-          <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
-            Continue with AENA
-          </p>
-
-          <h2 className="mt-3 text-2xl font-bold">
-            This problem may require engineering support
-          </h2>
-
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
-            The AI has narrowed the problem as far as the available
-            information allows. An AENA engineer can continue with
-            measurements, PLC/drive diagnostics or machine inspection.
-          </p>
-
-          <button
-            type="button"
-            onClick={
-              onWhatsApp
-            }
-            className="mt-6 w-full rounded-xl bg-green-600 px-6 py-4 text-sm font-bold text-white transition hover:bg-green-500 sm:w-auto"
-          >
-            Continue with AENA on WhatsApp →
-          </button>
-
-        </section>
-
-      )}
-
-      {/* =================================================
+      {/* ===================================================
           NEW ANALYSIS
-      ================================================= */}
+      =================================================== */}
 
       <div className="pt-4 text-center">
 
@@ -1248,10 +1261,6 @@ function ConversationView({
         </button>
 
       </div>
-
-      {/* =================================================
-          DISCLAIMER
-      ================================================= */}
 
       <p className="text-center text-xs leading-5 text-slate-600">
         Retrofit AI provides preliminary troubleshooting guidance.
@@ -1278,14 +1287,10 @@ function EvidenceButton({
   description: string;
   onClick: () => void;
 }) {
-
   return (
-
     <button
       type="button"
-      onClick={
-        onClick
-      }
+      onClick={onClick}
       className="rounded-xl border border-slate-800 bg-slate-900 p-5 text-left transition hover:border-orange-500/50 hover:bg-slate-800"
     >
 
