@@ -922,11 +922,8 @@ function ConversationView({
           Each answer changes the diagnostic direction.
         </p>
 
-        {caseId && (
-          <p className="mt-3 text-[11px] text-slate-600">
-            Diagnostic session: {caseId}
-          </p>
-        )}
+        
+        
 
       </section>
 
