@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  useRef,
   useState,
   FormEvent,
+  ChangeEvent,
 } from "react";
 
 /* =========================================================
@@ -69,6 +69,48 @@ export default function RetrofitAIPage() {
     useState<string | null>(null);
 
   /* =======================================================
+     FILES
+  ======================================================= */
+
+  const [files, setFiles] =
+    useState<File[]>([]);
+
+  /* =======================================================
+     FILE HANDLING
+  ======================================================= */
+
+  function handleFiles(
+    event: ChangeEvent<HTMLInputElement>
+  ) {
+    const selectedFiles =
+      Array.from(
+        event.target.files || []
+      );
+
+    if (!selectedFiles.length) {
+      return;
+    }
+
+    setFiles((previous) => [
+      ...previous,
+      ...selectedFiles,
+    ]);
+
+    event.target.value = "";
+  }
+
+  function removeFile(
+    index: number
+  ) {
+    setFiles((previous) =>
+      previous.filter(
+        (_, fileIndex) =>
+          fileIndex !== index
+      )
+    );
+  }
+
+  /* =======================================================
      AI ANALYSIS
   ======================================================= */
 
@@ -104,6 +146,10 @@ export default function RetrofitAIPage() {
       const formData =
         new FormData();
 
+      /* ===================================================
+         BASIC DATA
+      =================================================== */
+
       formData.append(
         "symptom",
         currentMessage
@@ -116,12 +162,31 @@ export default function RetrofitAIPage() {
         )
       );
 
+      /* ===================================================
+         CASE ID
+      =================================================== */
+
       if (caseId) {
         formData.append(
           "case_id",
           caseId
         );
       }
+
+      /* ===================================================
+         FILES
+      =================================================== */
+
+      files.forEach((file) => {
+        formData.append(
+          "files",
+          file
+        );
+      });
+
+      /* ===================================================
+         API
+      =================================================== */
 
       const response =
         await fetch(
@@ -225,6 +290,12 @@ ${responseText.substring(
       );
 
       setSymptom("");
+
+      /*
+       * Files are kept during the current
+       * diagnosis so they can be reused
+       * in subsequent diagnostic rounds.
+       */
 
       window.scrollTo({
         top: 0,
@@ -331,6 +402,16 @@ ${responseText.substring(
           "\n\n"
         );
 
+    const fileText =
+      files.length > 0
+        ? files
+            .map(
+              (file) =>
+                `- ${file.name} (${file.type || "unknown"})`
+            )
+            .join("\n")
+        : "Dosya eklenmedi.";
+
     const message =
 `Merhaba AENA,
 
@@ -339,6 +420,15 @@ Retrofit AI üzerinden makinemle ilgili mühendislik ön analizi yaptım.
 PROBLEM VE TEŞHİS GÖRÜŞMESİ:
 
 ${conversationText}
+
+EKLENEN KANITLAR:
+${fileText}
+
+AI SONUCU:
+${result?.summary || ""}
+
+SEVİYE:
+${result?.severity || ""}
 
 AENA mühendislik ekibiyle devam etmek istiyorum.`;
 
@@ -365,6 +455,7 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
     setConversation([]);
     setCaseId(null);
     setAnalysisStarted(false);
+    setFiles([]);
 
     window.scrollTo({
       top: 0,
@@ -416,6 +507,9 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
           <InitialDiagnosisForm
             symptom={symptom}
             setSymptom={setSymptom}
+            files={files}
+            onFiles={handleFiles}
+            onRemoveFile={removeFile}
             loading={loading}
             error={error}
             onSubmit={analyzeMachine}
@@ -450,6 +544,11 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
             userMessageCount={
               userMessageCount
             }
+            files={files}
+            onFiles={handleFiles}
+            onRemoveFile={
+              removeFile
+            }
           />
         )}
 
@@ -466,16 +565,33 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
 function InitialDiagnosisForm({
   symptom,
   setSymptom,
+  files,
+  onFiles,
+  onRemoveFile,
   loading,
   error,
   onSubmit,
 }: {
   symptom: string;
+
   setSymptom: (
     value: string
   ) => void;
+
+  files: File[];
+
+  onFiles: (
+    event: ChangeEvent<HTMLInputElement>
+  ) => void;
+
+  onRemoveFile: (
+    index: number
+  ) => void;
+
   loading: boolean;
+
   error: string;
+
   onSubmit: (
     e?: FormEvent
   ) => void;
@@ -506,7 +622,15 @@ function InitialDiagnosisForm({
         className="space-y-6"
       >
 
+        {/* =================================================
+            SYMPTOM
+        ================================================= */}
+
         <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
+
+          <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+            Machine problem
+          </p>
 
           <textarea
             value={symptom}
@@ -518,7 +642,7 @@ function InitialDiagnosisForm({
             placeholder={`Example:
 
 The extruder runs normally at low speed. When production speed increases, the main motor starts to struggle and the current rises. There is no alarm on the HMI.`}
-            className="min-h-[220px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
+            className="mt-5 min-h-[220px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
           />
 
           <div className="mt-3 flex justify-between text-xs text-slate-600">
@@ -535,6 +659,22 @@ The extruder runs normally at low speed. When production speed increases, the ma
 
         </section>
 
+        {/* =================================================
+            EVIDENCE
+        ================================================= */}
+
+        <EvidenceUpload
+          files={files}
+          onFiles={onFiles}
+          onRemoveFile={
+            onRemoveFile
+          }
+        />
+
+        {/* =================================================
+            ERROR
+        ================================================= */}
+
         {error && (
           <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5">
 
@@ -548,6 +688,10 @@ The extruder runs normally at low speed. When production speed increases, the ma
 
           </div>
         )}
+
+        {/* =================================================
+            SUBMIT
+        ================================================= */}
 
         <button
           type="submit"
@@ -571,6 +715,205 @@ The extruder runs normally at low speed. When production speed increases, the ma
 }
 
 /* =========================================================
+   EVIDENCE UPLOAD
+========================================================= */
+
+function EvidenceUpload({
+  files,
+  onFiles,
+  onRemoveFile,
+}: {
+  files: File[];
+
+  onFiles: (
+    event: ChangeEvent<HTMLInputElement>
+  ) => void;
+
+  onRemoveFile: (
+    index: number
+  ) => void;
+}) {
+  return (
+    <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
+
+      <div>
+
+        <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
+          Machine evidence
+        </p>
+
+        <p className="mt-2 text-sm leading-6 text-slate-500">
+          Add photos, videos, drawings, project files or
+          technical documents related to the problem.
+        </p>
+
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+
+        {/* PHOTO */}
+
+        <label className="cursor-pointer rounded-2xl border border-slate-700 bg-slate-900 p-5 transition hover:border-orange-500 hover:bg-slate-900/80">
+
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={onFiles}
+            className="hidden"
+          />
+
+          <div className="text-2xl">
+            📷
+          </div>
+
+          <p className="mt-3 text-sm font-semibold text-white">
+            Add Photos
+          </p>
+
+          <p className="mt-1 text-xs text-slate-500">
+            Machine, panel, motor, drive, wiring
+          </p>
+
+        </label>
+
+        {/* VIDEO */}
+
+        <label className="cursor-pointer rounded-2xl border border-slate-700 bg-slate-900 p-5 transition hover:border-orange-500 hover:bg-slate-900/80">
+
+          <input
+            type="file"
+            accept="video/*"
+            multiple
+            onChange={onFiles}
+            className="hidden"
+          />
+
+          <div className="text-2xl">
+            🎥
+          </div>
+
+          <p className="mt-3 text-sm font-semibold text-white">
+            Add Video
+          </p>
+
+          <p className="mt-1 text-xs text-slate-500">
+            Fault behavior, vibration, sound, motion
+          </p>
+
+        </label>
+
+        {/* DOCUMENT */}
+
+        <label className="cursor-pointer rounded-2xl border border-slate-700 bg-slate-900 p-5 transition hover:border-orange-500 hover:bg-slate-900/80">
+
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.dwg,.dxf"
+            multiple
+            onChange={onFiles}
+            className="hidden"
+          />
+
+          <div className="text-2xl">
+            📄
+          </div>
+
+          <p className="mt-3 text-sm font-semibold text-white">
+            Add Project / Document
+          </p>
+
+          <p className="mt-1 text-xs text-slate-500">
+            Drawings, manuals, parameters, project files
+          </p>
+
+        </label>
+
+      </div>
+
+      {/* FILE LIST */}
+
+      {files.length > 0 && (
+
+        <div className="mt-6 space-y-2">
+
+          <p className="text-xs font-semibold uppercase tracking-[2px] text-slate-500">
+            Attached evidence
+          </p>
+
+          {files.map(
+            (file, index) => (
+
+              <div
+                key={`${file.name}-${index}`}
+                className="flex items-center justify-between gap-4 rounded-xl border border-slate-800 bg-slate-900 px-4 py-3"
+              >
+
+                <div className="min-w-0">
+
+                  <p className="truncate text-sm text-slate-300">
+                    {file.name}
+                  </p>
+
+                  <p className="mt-1 text-xs text-slate-600">
+                    {file.type ||
+                      "Unknown file type"}{" "}
+                    ·{" "}
+                    {formatFileSize(
+                      file.size
+                    )}
+                  </p>
+
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    onRemoveFile(
+                      index
+                    )
+                  }
+                  className="shrink-0 text-xs font-semibold text-red-400 hover:text-red-300"
+                >
+                  Remove
+                </button>
+
+              </div>
+
+            )
+          )}
+
+        </div>
+      )}
+
+    </section>
+  );
+}
+
+/* =========================================================
+   FILE SIZE
+========================================================= */
+
+function formatFileSize(
+  bytes: number
+) {
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  if (bytes < 1024 * 1024) {
+    return `${(
+      bytes / 1024
+    ).toFixed(1)} KB`;
+  }
+
+  return `${(
+    bytes /
+    (1024 * 1024)
+  ).toFixed(1)} MB`;
+}
+
+/* =========================================================
    CONVERSATION VIEW
 ========================================================= */
 
@@ -587,23 +930,47 @@ function ConversationView({
   caseId,
   diagnosticComplete,
   userMessageCount,
+  files,
+  onFiles,
+  onRemoveFile,
 }: {
   conversation: ConversationMessage[];
+
   result: RetrofitAIResponse | null;
+
   symptom: string;
+
   setSymptom: (
     value: string
   ) => void;
+
   loading: boolean;
+
   error: string;
+
   onSubmit: (
     e?: FormEvent
   ) => void;
+
   onWhatsApp: () => void;
+
   onNewAnalysis: () => void;
+
   caseId: string | null;
+
   diagnosticComplete: boolean;
+
   userMessageCount: number;
+
+  files: File[];
+
+  onFiles: (
+    event: ChangeEvent<HTMLInputElement>
+  ) => void;
+
+  onRemoveFile: (
+    index: number
+  ) => void;
 }) {
 
   const showEngineerCTA =
@@ -617,7 +984,9 @@ function ConversationView({
   return (
     <div className="space-y-6">
 
-      {/* HEADER */}
+      {/* =================================================
+          HEADER
+      ================================================= */}
 
       <section className="rounded-3xl border border-orange-500/30 bg-orange-500/5 p-6 sm:p-8">
 
@@ -636,12 +1005,15 @@ function ConversationView({
 
       </section>
 
-      {/* CONVERSATION */}
+      {/* =================================================
+          CONVERSATION
+      ================================================= */}
 
       <section className="space-y-4">
 
         {conversation.map(
           (message, index) => (
+
             <div
               key={index}
               className={
@@ -675,12 +1047,15 @@ function ConversationView({
               </div>
 
             </div>
+
           )
         )}
 
       </section>
 
-      {/* DIAGNOSTIC QUESTION */}
+      {/* =================================================
+          DIAGNOSTIC QUESTION
+      ================================================= */}
 
       {!showEngineerCTA &&
         hasQuestion && (
@@ -711,6 +1086,18 @@ function ConversationView({
                 className="min-h-[130px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
               />
 
+              {/* EVIDENCE DURING DIAGNOSIS */}
+
+              <div className="mt-6">
+                <EvidenceUpload
+                  files={files}
+                  onFiles={onFiles}
+                  onRemoveFile={
+                    onRemoveFile
+                  }
+                />
+              </div>
+
               {error && (
                 <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
 
@@ -736,7 +1123,9 @@ function ConversationView({
           </section>
         )}
 
-      {/* NO QUESTION BEFORE HANDOFF */}
+      {/* =================================================
+          NO QUESTION BEFORE HANDOFF
+      ================================================= */}
 
       {!showEngineerCTA &&
         result &&
@@ -756,7 +1145,9 @@ function ConversationView({
           </section>
         )}
 
-      {/* CHECK */}
+      {/* =================================================
+          CHECK
+      ================================================= */}
 
       {result &&
         result.check && (
@@ -774,7 +1165,9 @@ function ConversationView({
           </section>
         )}
 
-      {/* SAFETY */}
+      {/* =================================================
+          SAFETY
+      ================================================= */}
 
       {result &&
         result.safetyWarning && (
@@ -792,7 +1185,9 @@ function ConversationView({
           </section>
         )}
 
-      {/* AENA ENGINEERING */}
+      {/* =================================================
+          AENA ENGINEERING
+      ================================================= */}
 
       {showEngineerCTA &&
         result && (
@@ -829,6 +1224,48 @@ function ConversationView({
               </div>
             )}
 
+            {/* ATTACHED EVIDENCE */}
+
+            {files.length > 0 && (
+
+              <div className="mt-5 rounded-2xl border border-slate-800 bg-slate-950 p-5">
+
+                <p className="text-xs font-semibold uppercase tracking-[2px] text-slate-500">
+                  Attached evidence
+                </p>
+
+                <div className="mt-3 space-y-2">
+
+                  {files.map(
+                    (file, index) => (
+
+                      <div
+                        key={`${file.name}-${index}`}
+                        className="flex items-center justify-between gap-3 text-sm"
+                      >
+
+                        <span className="truncate text-slate-300">
+                          {file.name}
+                        </span>
+
+                        <span className="shrink-0 text-xs text-slate-600">
+                          {formatFileSize(
+                            file.size
+                          )}
+                        </span>
+
+                      </div>
+
+                    )
+                  )}
+
+                </div>
+
+              </div>
+            )}
+
+            {/* STATS */}
+
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
 
               <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
@@ -858,6 +1295,8 @@ function ConversationView({
 
             </div>
 
+            {/* WHATSAPP */}
+
             <button
               type="button"
               onClick={
@@ -871,7 +1310,9 @@ function ConversationView({
           </section>
         )}
 
-      {/* NEW ANALYSIS */}
+      {/* =================================================
+          NEW ANALYSIS
+      ================================================= */}
 
       <div className="pt-4 text-center">
 

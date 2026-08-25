@@ -8,9 +8,14 @@ export const dynamic = "force-dynamic";
 ========================================================= */
 
 const OLLAMA_URL = process.env.OLLAMA_URL;
+
 const OLLAMA_MODEL =
   process.env.OLLAMA_MODEL || "gemma3:4b";
 
+/*
+ * Retrofit AI always uses exactly five
+ * diagnostic interactions before engineering handoff.
+ */
 const MAX_DIAGNOSTIC_INTERACTIONS = 5;
 
 /* =========================================================
@@ -22,22 +27,24 @@ type ConversationMessage = {
   content: string;
 };
 
+type Severity =
+  | "low"
+  | "medium"
+  | "high"
+  | "critical";
+
 type AIResponse = {
   summary: string;
   check: string;
   question: string;
-  severity:
-    | "low"
-    | "medium"
-    | "high"
-    | "critical";
+  severity: Severity;
   needsEngineer: boolean;
   aenaAction: string;
   safetyWarning: string;
 };
 
 /* =========================================================
-   AENA ENGINEERING PROMPT
+   AENA RETROFIT AI ENGINEERING PROMPT
 ========================================================= */
 
 const AENA_ENGINEERING_PROMPT = `
@@ -47,111 +54,174 @@ You are AENA Retrofit AI.
 You are an industrial engineering diagnostic assistant
 developed by AENA Technologies.
 
-Your job is to perform a SHORT, TARGETED industrial
-machine diagnosis and then connect the case to AENA
-engineering.
-
 You are NOT a generic chatbot.
 
-You are NOT a specification collector.
+You are NOT a specification collection assistant.
 
-You are NOT a long questionnaire.
+You are NOT a long-form troubleshooting chatbot.
 
-=========================================================
-CORE OBJECTIVE
-=========================================================
+Your purpose is:
 
-The goal is to narrow the likely engineering cause
-through a maximum of FIVE diagnostic interactions.
-
-Every user answer is evidence.
-
-Each new question must depend on the previous evidence.
-
-Do not restart the diagnosis.
-
-Do not repeat answered questions.
-
-Do not ask for unnecessary machine specifications.
-
-The conversation must move toward an engineering
-conclusion quickly.
+REAL MACHINE PROBLEM
+→ FIVE TARGETED DIAGNOSTIC QUESTIONS
+→ ENGINEERING ASSESSMENT
+→ AENA ENGINEERING HANDOFF
 
 =========================================================
-DIAGNOSTIC FLOW
+MANDATORY FIVE-INTERACTION PROTOCOL
 =========================================================
 
-Interaction 1:
+The diagnostic process MUST contain exactly FIVE
+user diagnostic interactions.
 
-Analyze the initial machine problem.
+DO NOT finish the diagnosis early.
+
+Even if the likely cause becomes obvious after
+interaction 1, 2, 3 or 4, continue the diagnostic
+process.
+
+The purpose of the five interactions is to progressively
+increase diagnostic confidence.
+
+Each interaction must contain EXACTLY ONE question.
+
+=========================================================
+INTERACTION 1
+=========================================================
+
+Understand the dominant machine symptom.
+
+Identify the most important observable behavior.
 
 Ask ONE high-value diagnostic question.
 
-Interaction 2:
+Prefer questions about:
+
+- speed
+- current
+- pressure
+- temperature
+- alarm
+- vibration
+- actual machine behavior
+- drive behavior
+
+=========================================================
+INTERACTION 2
+=========================================================
 
 Use the previous answer as evidence.
 
-Ask ONE new question that separates the most likely
-remaining causes.
+Separate the leading cause families.
 
-Interaction 3:
+For example:
 
-Narrow the differential diagnosis.
+electrical / drive
 
-Ask ONE high-value question if necessary.
+VERSUS
 
-Interaction 4:
+mechanical / process
 
-Perform the final important technical distinction.
+Ask ONE question that materially separates them.
 
-Ask ONE high-value question if necessary.
+=========================================================
+INTERACTION 3
+=========================================================
 
-Interaction 5:
+Narrow the remaining cause family.
 
-STOP.
+Use measurable machine behavior whenever possible.
 
-Do NOT ask another question.
+Ask ONE diagnostic question.
 
-Produce the engineering assessment.
+=========================================================
+INTERACTION 4
+=========================================================
 
-Set:
+Verify the strongest remaining hypothesis.
+
+Ask ONE final high-value technical question.
+
+Do not collect unnecessary specifications.
+
+=========================================================
+INTERACTION 5
+=========================================================
+
+This is the FINAL diagnostic interaction.
+
+Ask ONE FINAL diagnostic question.
+
+After the user answers interaction 5,
+the backend will force the engineering handoff.
+
+Do not attempt to continue the conversation.
+
+=========================================================
+AFTER INTERACTION 5
+=========================================================
+
+The backend will force:
 
 question = ""
 
 needsEngineer = true
 
+Therefore your response at interaction 5 must contain
+a concise engineering assessment.
+
+Provide:
+
+summary
+
+check
+
+aenaAction
+
+severity
+
+safetyWarning
+
+Do not ask another question.
+
 =========================================================
-IMPORTANT
+CRITICAL HANDOFF RULE
 =========================================================
 
-The purpose is NOT to use all five questions blindly.
+The five-interaction protocol is mandatory.
 
-If the engineering direction becomes sufficiently clear
-before interaction 5, you may stop asking questions.
+NEVER recommend engineering handoff before interaction 5.
 
-However, never create a generic question just to extend
-the conversation.
+NEVER set needsEngineer=true before interaction 5.
 
-If another question is needed, it must materially change
-the diagnosis.
+NEVER finish the diagnostic early.
+
+NEVER create a generic "provide more information"
+question.
+
+NEVER create a "continue diagnostic evidence" state.
+
+The backend has the final authority over the
+five-interaction limit.
 
 =========================================================
 QUESTION RULE
 =========================================================
 
-At most ONE question.
+Ask EXACTLY ONE question.
 
-Never return:
+Never ask:
 
 - multiple questions
 - numbered questions
 - question lists
 - questionnaires
-- two questions joined together
+- two questions joined with "and"
 
-A question must distinguish between realistic causes.
+Every question must distinguish between realistic
+engineering causes.
 
-Before asking a question internally identify:
+Before generating the question internally determine:
 
 CAUSE A
 
@@ -159,20 +229,18 @@ versus
 
 CAUSE B
 
-Then determine whether the user's answer would change
-the diagnosis.
-
-If not, do not ask it.
+Then ask the question whose answer would help
+distinguish those causes.
 
 =========================================================
 QUESTION PRIORITY
 =========================================================
 
-Prefer:
+Use this priority:
 
 1. Observable machine behavior
 2. Operating condition
-3. Measured electrical data
+3. Electrical measurements
 4. Drive behavior
 5. Mechanical behavior
 6. Process behavior
@@ -185,12 +253,10 @@ Specifications are LAST.
 GOOD QUESTIONS
 =========================================================
 
-Examples:
-
 "When the problem occurs, does motor current increase?"
 
 "When the motor slows down, does the drive frequency
-command remain constant?"
+reference remain constant?"
 
 "Does actual speed fall while commanded speed remains
 unchanged?"
@@ -221,8 +287,8 @@ Do NOT ask:
 
 "What is the machine age?"
 
-unless that information directly changes the current
-diagnosis.
+unless the answer directly separates the current
+engineering causes.
 
 =========================================================
 ENGINEERING REASONING
@@ -246,7 +312,7 @@ Extruder motor slows at high production speed.
 Possible causes:
 
 - Process load
-- Excessive pressure
+- Excessive barrel pressure
 - Mechanical resistance
 - Screw/barrel problem
 - Bearing/gearbox problem
@@ -259,7 +325,7 @@ Possible causes:
 
 If:
 
-frequency command remains constant
+frequency reference remains constant
 AND
 actual speed decreases
 AND
@@ -277,7 +343,7 @@ Do not declare a component defective without evidence.
 MEASUREMENT FIRST
 =========================================================
 
-Prefer:
+Prefer measurable evidence:
 
 - Motor current
 - Drive frequency
@@ -300,12 +366,14 @@ Never invent alarm codes.
 
 Never invent parameter values.
 
+Never present assumptions as measurements.
+
 =========================================================
-AENA ENGINEERING
+AENA ENGINEERING ACTION
 =========================================================
 
-When the diagnostic direction is sufficiently clear,
-explain specifically what AENA should do.
+When the five diagnostic interactions are complete,
+provide a specific engineering action.
 
 Examples:
 
@@ -318,7 +386,7 @@ and review motor-drive parameters."
 PLC issue:
 
 "AENA can inspect PLC logic, interlocks, analog scaling,
-HMI commands and modify the control sequence."
+HMI commands and control sequence."
 
 Mechanical issue:
 
@@ -331,27 +399,12 @@ Process issue:
 material condition and motor load and optimize
 the process control."
 
-Never use generic advertising such as:
+Never use:
 
 "AENA can help."
 
-=========================================================
-FIFTH INTERACTION
-=========================================================
-
-If interaction >= 5:
-
-question = ""
-
-needsEngineer = true
-
-summary = concise engineering assessment
-
-check = most useful physical/measurement verification
-
-aenaAction = specific engineering intervention
-
-No additional question is allowed.
+The engineering action must explain WHAT AENA
+would actually measure, inspect, modify or verify.
 
 =========================================================
 LANGUAGE
@@ -385,37 +438,46 @@ Required structure:
 ABSOLUTE RULES
 =========================================================
 
-1. Maximum five diagnostic interactions.
+1. EXACTLY five diagnostic interactions.
 
-2. Ask at most ONE question per interaction.
+2. Interaction 1-4:
+   ask exactly one question.
 
-3. Every question must have diagnostic value.
+3. Interaction 1-4:
+   needsEngineer MUST be false.
 
-4. Never repeat a question.
+4. Interaction 5:
+   provide the final diagnostic question.
 
-5. Never collect specifications unnecessarily.
+5. After interaction 5:
+   question MUST be empty.
 
-6. Use previous answers as evidence.
+6. After interaction 5:
+   needsEngineer MUST be true.
 
-7. Do not restart diagnosis.
+7. Never repeat a previous question.
 
-8. Prefer measurable evidence.
+8. Never ask unnecessary specifications.
 
-9. Do not invent measurements.
+9. Use previous answers as evidence.
 
-10. Do not claim certainty without evidence.
+10. Do not restart diagnosis.
 
-11. At interaction 5 or higher, question MUST be empty.
+11. Prefer measurable evidence.
 
-12. At interaction 5 or higher, needsEngineer MUST be true.
+12. Do not invent measurements.
 
-13. At interaction 5 or higher, provide AENA engineering action.
+13. Do not claim certainty without evidence.
 
-14. Do not create generic "provide more information"
-questions.
+14. Never create generic information requests.
 
-15. The purpose is diagnosis followed by engineering
-conversion, not an endless conversation.
+15. Never create a "continue diagnostic evidence" state.
+
+16. Never hand the customer to AENA before the
+    five-interaction diagnostic protocol is complete.
+
+17. The five-interaction protocol overrides all
+    other reasoning.
 
 `;
 
@@ -423,14 +485,17 @@ conversion, not an endless conversation.
    HELPERS
 ========================================================= */
 
-function cleanQuestion(question: string): string {
+function cleanQuestion(
+  question: string
+): string {
   if (!question) {
     return "";
   }
 
-  const normalized = question
-    .replace(/\s+/g, " ")
-    .trim();
+  const normalized =
+    question
+      .replace(/\s+/g, " ")
+      .trim();
 
   if (!normalized) {
     return "";
@@ -439,7 +504,9 @@ function cleanQuestion(question: string): string {
   const questionMarkIndex =
     normalized.indexOf("?");
 
-  if (questionMarkIndex !== -1) {
+  if (
+    questionMarkIndex !== -1
+  ) {
     return normalized
       .substring(
         0,
@@ -448,7 +515,11 @@ function cleanQuestion(question: string): string {
       .trim();
   }
 
-  return normalized;
+  /*
+   * If the model forgot the question mark,
+   * keep the sentence but add it.
+   */
+  return `${normalized}?`;
 }
 
 function buildConversationAssistantMessage(
@@ -457,7 +528,9 @@ function buildConversationAssistantMessage(
   const parts: string[] = [];
 
   if (diagnosis.summary) {
-    parts.push(diagnosis.summary);
+    parts.push(
+      diagnosis.summary
+    );
   }
 
   if (diagnosis.check) {
@@ -484,7 +557,9 @@ function buildConversationAssistantMessage(
     );
   }
 
-  return parts.join("\n\n");
+  return parts.join(
+    "\n\n"
+  );
 }
 
 /* =========================================================
@@ -495,13 +570,19 @@ export async function POST(
   request: Request
 ) {
   try {
+    /* =====================================================
+       ENVIRONMENT
+    ===================================================== */
+
     if (!OLLAMA_URL) {
       return NextResponse.json(
         {
           error:
             "OLLAMA_URL environment variable is not configured.",
         },
-        { status: 500 }
+        {
+          status: 500,
+        }
       );
     }
 
@@ -513,18 +594,25 @@ export async function POST(
       await request.formData();
 
     const symptomValue =
-      formData.get("symptom");
+      formData.get(
+        "symptom"
+      );
 
     if (
-      typeof symptomValue !== "string" ||
-      symptomValue.trim().length < 3
+      typeof symptomValue !==
+        "string" ||
+      symptomValue
+        .trim()
+        .length < 3
     ) {
       return NextResponse.json(
         {
           error:
             "Please describe what is happening with the machine.",
         },
-        { status: 400 }
+        {
+          status: 400,
+        }
       );
     }
 
@@ -536,10 +624,13 @@ export async function POST(
     ===================================================== */
 
     const caseIdValue =
-      formData.get("case_id");
+      formData.get(
+        "case_id"
+      );
 
     const caseId =
-      typeof caseIdValue === "string" &&
+      typeof caseIdValue ===
+        "string" &&
       caseIdValue.trim()
         ? caseIdValue.trim()
         : null;
@@ -554,7 +645,8 @@ export async function POST(
       );
 
     const affectedSystem =
-      typeof affectedSystemValue === "string" &&
+      typeof affectedSystemValue ===
+        "string" &&
       affectedSystemValue.trim()
         ? affectedSystemValue.trim()
         : null;
@@ -564,7 +656,8 @@ export async function POST(
     ===================================================== */
 
     let conversation:
-      ConversationMessage[] = [];
+      ConversationMessage[] =
+      [];
 
     const conversationValue =
       formData.get(
@@ -572,7 +665,8 @@ export async function POST(
       );
 
     if (
-      typeof conversationValue === "string" &&
+      typeof conversationValue ===
+        "string" &&
       conversationValue.trim()
     ) {
       try {
@@ -581,7 +675,11 @@ export async function POST(
             conversationValue
           );
 
-        if (Array.isArray(parsed)) {
+        if (
+          Array.isArray(
+            parsed
+          )
+        ) {
           conversation =
             parsed.filter(
               (
@@ -589,10 +687,13 @@ export async function POST(
               ): item is ConversationMessage =>
                 item &&
                 (
-                  item.role === "user" ||
-                  item.role === "assistant"
+                  item.role ===
+                    "user" ||
+                  item.role ===
+                    "assistant"
                 ) &&
-                typeof item.content === "string"
+                typeof item.content ===
+                  "string"
             );
         }
       } catch {
@@ -603,13 +704,16 @@ export async function POST(
     }
 
     /* =====================================================
-       INTERACTION COUNT
+       DIAGNOSTIC INTERACTION
     ===================================================== */
 
     const userMessages =
       conversation.filter(
-        (message) =>
-          message.role === "user"
+        (
+          message
+        ) =>
+          message.role ===
+          "user"
       );
 
     const diagnosticRound =
@@ -620,7 +724,7 @@ export async function POST(
       MAX_DIAGNOSTIC_INTERACTIONS;
 
     console.log(
-      "Diagnostic interaction:",
+      "AENA Retrofit AI diagnostic interaction:",
       diagnosticRound
     );
 
@@ -629,12 +733,21 @@ export async function POST(
     ===================================================== */
 
     const files =
-      formData.getAll("files");
+      formData.getAll(
+        "files"
+      );
 
-    const evidenceDescription: string[] = [];
+    const evidenceDescription:
+      string[] = [];
 
-    for (const item of files) {
-      if (!(item instanceof File)) {
+    for (
+      const item of files
+    ) {
+      if (
+        !(
+          item instanceof File
+        )
+      ) {
         continue;
       }
 
@@ -648,17 +761,25 @@ export async function POST(
     ===================================================== */
 
     const conversationText =
-      conversation.length > 0
+      conversation.length >
+      0
         ? conversation
             .map(
-              (message) =>
+              (
+                message
+              ) =>
                 `${
-                  message.role === "user"
+                  message.role ===
+                  "user"
                     ? "USER"
                     : "AENA AI"
-                }: ${message.content}`
+                }: ${
+                  message.content
+                }`
             )
-            .join("\n\n")
+            .join(
+              "\n\n"
+            )
         : "No previous conversation.";
 
     /* =====================================================
@@ -677,7 +798,10 @@ ${symptom}
 AFFECTED SYSTEM
 =========================================================
 
-${affectedSystem || "Not specified."}
+${
+  affectedSystem ||
+  "Not specified."
+}
 
 =========================================================
 PREVIOUS CONVERSATION
@@ -690,8 +814,11 @@ ATTACHED EVIDENCE
 =========================================================
 
 ${
-  evidenceDescription.length > 0
-    ? evidenceDescription.join("\n")
+  evidenceDescription.length >
+  0
+    ? evidenceDescription.join(
+        "\n"
+      )
     : "No files attached."
 }
 
@@ -701,51 +828,99 @@ CURRENT DIAGNOSTIC INTERACTION
 
 ${diagnosticRound}
 
-Maximum:
+=========================================================
+MAXIMUM DIAGNOSTIC INTERACTIONS
+=========================================================
 
 ${MAX_DIAGNOSTIC_INTERACTIONS}
 
-Diagnostic limit reached:
+=========================================================
+MANDATORY STATE
+=========================================================
 
-${diagnosticLimitReached}
+${
+  diagnosticLimitReached
+    ? `
+FINAL INTERACTION REACHED.
+
+This is interaction 5.
+
+The diagnostic protocol is complete.
+
+DO NOT ASK ANOTHER QUESTION.
+
+Return:
+
+question = ""
+
+needsEngineer = true
+
+Provide the engineering assessment.
+`
+    : `
+DIAGNOSTIC PROTOCOL IS NOT COMPLETE.
+
+This is interaction ${diagnosticRound} of 5.
+
+You MUST ask exactly ONE diagnostic question.
+
+needsEngineer MUST be false.
+
+Do NOT finish the diagnosis.
+
+Do NOT hand the customer to AENA Engineering yet.
+
+Do NOT return an empty question.
+
+Do NOT say "continue diagnostic evidence".
+
+Do NOT ask for generic information.
+`
+}
 
 =========================================================
-YOUR TASK
+QUESTION GENERATION
 =========================================================
 
 Analyze the complete conversation.
 
 Treat the current user message as new evidence.
 
-Do not repeat previous questions.
+Identify the strongest remaining differential:
 
-Determine the most likely remaining cause family.
+CAUSE A
+versus
+CAUSE B
 
-If a high-value question can materially separate
-the remaining causes AND interaction is below 5,
-ask exactly ONE question.
+Then ask exactly ONE question that can distinguish
+between them.
 
-If interaction is 5 or higher:
+The question MUST use the previous evidence.
 
-DO NOT ASK A QUESTION.
+Never repeat a previous question.
 
-Move directly to AENA engineering assessment.
+Never ask for unnecessary specifications.
 
 =========================================================
-IMPORTANT
+FINAL ENGINEERING ASSESSMENT
 =========================================================
 
-Never output a generic request such as:
+Only when interaction 5 is reached:
 
-"Please provide more information."
+Provide:
 
-Never output:
+1. Concise summary of the most likely engineering
+   direction.
 
-"Continue diagnostic evidence."
+2. Most useful physical measurement or verification.
 
-Never ask for information merely because it is missing.
+3. Specific AENA engineering action.
 
-The question must be specific and diagnostic.
+4. Appropriate severity.
+
+Do not claim a component is defective without evidence.
+
+=========================================================
 `;
 
     const prompt = `
@@ -755,11 +930,12 @@ ${engineeringInput}
 `;
 
     /* =====================================================
-       OLLAMA
+       OLLAMA REQUEST
     ===================================================== */
 
     const ollamaBody = {
-      model: OLLAMA_MODEL,
+      model:
+        OLLAMA_MODEL,
 
       prompt,
 
@@ -821,6 +997,10 @@ ${engineeringInput}
       },
     };
 
+    /* =====================================================
+       OLLAMA
+    ===================================================== */
+
     const ollamaResponse =
       await fetch(
         OLLAMA_URL,
@@ -832,13 +1012,16 @@ ${engineeringInput}
               "application/json",
           },
 
-          body: JSON.stringify(
-            ollamaBody
-          ),
+          body:
+            JSON.stringify(
+              ollamaBody
+            ),
         }
       );
 
-    if (!ollamaResponse.ok) {
+    if (
+      !ollamaResponse.ok
+    ) {
       const errorText =
         await ollamaResponse.text();
 
@@ -868,8 +1051,11 @@ ${engineeringInput}
 
     try {
       diagnosis =
-        typeof output === "string"
-          ? JSON.parse(output)
+        typeof output ===
+          "string"
+          ? JSON.parse(
+              output
+            )
           : output;
     } catch {
       throw new Error(
@@ -885,35 +1071,40 @@ ${engineeringInput}
       typeof diagnosis.summary !==
       "string"
     ) {
-      diagnosis.summary = "";
+      diagnosis.summary =
+        "";
     }
 
     if (
       typeof diagnosis.check !==
       "string"
     ) {
-      diagnosis.check = "";
+      diagnosis.check =
+        "";
     }
 
     if (
       typeof diagnosis.question !==
       "string"
     ) {
-      diagnosis.question = "";
+      diagnosis.question =
+        "";
     }
 
     if (
       typeof diagnosis.aenaAction !==
       "string"
     ) {
-      diagnosis.aenaAction = "";
+      diagnosis.aenaAction =
+        "";
     }
 
     if (
       typeof diagnosis.safetyWarning !==
       "string"
     ) {
-      diagnosis.safetyWarning = "";
+      diagnosis.safetyWarning =
+        "";
     }
 
     if (
@@ -941,13 +1132,63 @@ ${engineeringInput}
       );
 
     /* =====================================================
-       HARD RULE: INTERACTION 5
+       HARD STATE MACHINE
     ===================================================== */
+
+    /*
+     * INTERACTIONS 1-4
+     *
+     * Engineering handoff is FORBIDDEN.
+     */
+
+    if (
+      !diagnosticLimitReached
+    ) {
+      diagnosis.needsEngineer =
+        false;
+
+      /*
+       * The model is required to generate a question.
+       *
+       * If it failed to generate one, do NOT handoff.
+       * Instead return an explicit technical error so
+       * the problem is visible during development.
+       */
+
+      if (
+        !diagnosis.question
+      ) {
+        console.error(
+          "AENA AI failed to generate diagnostic question at interaction:",
+          diagnosticRound
+        );
+
+        throw new Error(
+          `AI did not generate a diagnostic question at interaction ${diagnosticRound}.`
+        );
+      }
+
+      /*
+       * Never allow the model to prematurely produce
+       * an engineering action.
+       */
+
+      diagnosis.aenaAction =
+        "";
+
+    }
+
+    /*
+     * INTERACTION 5
+     *
+     * Engineering handoff is MANDATORY.
+     */
 
     if (
       diagnosticLimitReached
     ) {
-      diagnosis.question = "";
+      diagnosis.question =
+        "";
 
       diagnosis.needsEngineer =
         true;
@@ -958,35 +1199,19 @@ ${engineeringInput}
         diagnosis.aenaAction =
           "AENA mühendislik ekibi mevcut teşhis verilerini saha ölçümleriyle doğrulamalı; motor akımı, sürücü tork/akım limiti, frekans referansı, gerçek hız ve proses yükünü birlikte değerlendirerek gerekli optimizasyon veya retrofit müdahalesini belirlemelidir.";
       }
-    }
-
-    /* =====================================================
-       PREVENT INVALID STATE
-    ===================================================== */
-
-    /*
-     * AI has no meaningful question and has not reached
-     * engineering handoff.
-     *
-     * Do NOT create a generic question.
-     *
-     * Instead, make the current engineering direction
-     * explicit. The frontend will not show a free-text
-     * "continue evidence" box.
-     */
-
-    if (
-      !diagnosis.question &&
-      !diagnosis.needsEngineer &&
-      !diagnosticLimitReached
-    ) {
-      diagnosis.needsEngineer = true;
 
       if (
-        !diagnosis.aenaAction
+        !diagnosis.check
       ) {
-        diagnosis.aenaAction =
-          "Mevcut kanıtlar doğrultusunda AENA mühendislik ekibi ölçüm ve saha doğrulaması yaparak teşhisi kesinleştirmelidir.";
+        diagnosis.check =
+          "Motor akımı, sürücü tork/akım limiti, frekans referansı ve gerçek hızın aynı zaman aralığında ölçülerek proses yüküyle karşılaştırılması.";
+      }
+
+      if (
+        !diagnosis.summary
+      ) {
+        diagnosis.summary =
+          "Beş aşamalı ön teşhis tamamlandı. Mevcut kanıtlar mühendislik doğrulaması gerektiren belirgin bir arıza yönüne işaret ediyor.";
       }
     }
 
@@ -1014,7 +1239,7 @@ ${engineeringInput}
       ];
 
     /* =====================================================
-       SUPABASE
+       SUPABASE CASE DATA
     ===================================================== */
 
     const caseData = {
@@ -1055,12 +1280,17 @@ ${engineeringInput}
       },
     };
 
+    /* =====================================================
+       SUPABASE
+    ===================================================== */
+
     let savedCaseId =
       caseId;
 
     if (caseId) {
       const {
-        error: supabaseError,
+        error:
+          supabaseError,
       } =
         await supabase
           .from(
@@ -1074,7 +1304,9 @@ ${engineeringInput}
             caseId
           );
 
-      if (supabaseError) {
+      if (
+        supabaseError
+      ) {
         console.error(
           "SUPABASE UPDATE ERROR:",
           supabaseError
@@ -1082,8 +1314,10 @@ ${engineeringInput}
       }
     } else {
       const {
-        data: insertedCase,
-        error: supabaseError,
+        data:
+          insertedCase,
+        error:
+          supabaseError,
       } =
         await supabase
           .from(
@@ -1092,10 +1326,14 @@ ${engineeringInput}
           .insert(
             caseData
           )
-          .select("id")
+          .select(
+            "id"
+          )
           .single();
 
-      if (supabaseError) {
+      if (
+        supabaseError
+      ) {
         console.error(
           "SUPABASE INSERT ERROR:",
           supabaseError
@@ -1134,9 +1372,17 @@ ${engineeringInput}
 
       caseId:
         savedCaseId,
+
+      diagnosticInteraction:
+        diagnosticRound,
+
+      diagnosticComplete:
+        diagnosticLimitReached,
     });
 
-  } catch (error) {
+  } catch (
+    error
+  ) {
     console.error(
       "AENA RETROFIT AI ERROR:",
       error
@@ -1156,7 +1402,9 @@ ${engineeringInput}
       error instanceof TypeError &&
       error.message
         .toLowerCase()
-        .includes("fetch")
+        .includes(
+          "fetch"
+        )
     ) {
       errorMessage =
         `Cannot connect to Ollama at ${OLLAMA_URL}. Make sure the Ollama endpoint is reachable.`;
