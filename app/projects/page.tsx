@@ -2,21 +2,34 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Industrial Automation & Machine Retrofit Projects",
+  title: "Industrial Machine Retrofit and Automation Projects",
 
   description:
-    "Explore AENA Technologies industrial automation, machine retrofit, electrical engineering and machine modernization projects including recycling, extrusion, packaging, production monitoring and industrial machinery.",
+    "Explore industrial machine retrofit, automation, electrical engineering and production monitoring projects by AENA Technologies, including recycling, extrusion, packaging and drive system applications.",
+
+  keywords: [
+    "industrial machine retrofit projects",
+    "industrial automation projects",
+    "machine modernization projects",
+    "electrical engineering projects",
+    "PLC automation projects",
+    "industrial retrofit projects",
+    "recycling automation projects",
+    "extrusion machine retrofit",
+    "production monitoring systems",
+    "drive system retrofit",
+    "industrial automation Turkey",
+  ],
 
   alternates: {
-    canonical: "/projects",
+    canonical: "https://www.aenatechnologies.com/projects",
   },
 
   openGraph: {
-    title:
-      "Industrial Automation & Machine Retrofit Projects | AENA Technologies",
+    title: "Industrial Machine Retrofit and Automation Projects",
 
     description:
-      "Industrial automation and machine retrofit case studies covering recycling lines, extrusion machinery, packaging machines, drive systems, production monitoring and electrical modernization.",
+      "Explore real industrial machine retrofit, automation, electrical engineering and production monitoring projects completed by AENA Technologies.",
 
     url: "https://www.aenatechnologies.com/projects",
 
@@ -26,136 +39,290 @@ export const metadata: Metadata = {
   },
 };
 
+const projects = [
+  {
+    title: "Stretch Transfer Machine Retrofit",
+
+    category: "Machine Retrofit",
+
+    description:
+      "Electrical, PLC and mechanical modernization of an existing stretch transfer machine that was out of operation due to an obsolete control system.",
+
+    challenge:
+      "The machine was completely out of operation due to an obsolete electrical control system.",
+
+    solution:
+      "Redesigned the electrical cabinet, developed new PLC software, optimized the mechanical system and recommissioned the machine.",
+
+    result:
+      "Production was restored at the customer's target operating speed.",
+
+    href: "/projects/stretch-transfer-machine",
+
+    serviceHref: "/services/machine-retrofit",
+    serviceLabel: "Machine Retrofit",
+  },
+
+  {
+    title: "PET Flake Washing Line",
+
+    category: "Recycling Automation",
+
+    description:
+      "Electrical and automation engineering for a PET flake recycling washing line including automatic dosing, level control and slip-ring integration.",
+
+    challenge:
+      "The customer required a coordinated automated system for PET flake washing and material processing.",
+
+    solution:
+      "Designed the electrical system, developed PLC software and integrated automatic dosing, level control and slip-ring systems.",
+
+    result:
+      "The recycling washing line was successfully commissioned with stable automatic operation.",
+
+    href: "/projects/flake-washing-line",
+
+    serviceHref: "/services/industrial-automation",
+    serviceLabel: "Industrial Automation",
+  },
+
+  {
+    title: "Granule Recycling Shift Monitoring System",
+
+    category: "Production Monitoring",
+
+    description:
+      "Production monitoring system using Siemens Siwarex weighing technology to track granule production quantities by shift, day, month and year.",
+
+    challenge:
+      "Production quantities needed to be monitored by shift and recorded for structured production analysis.",
+
+    solution:
+      "Integrated Siemens Siwarex load-cell technology with the industrial automation system to collect and organize production data.",
+
+    result:
+      "Production quantities can be monitored by shift and analyzed through structured production data and Excel-based reporting.",
+
+    href: "/projects/granule-shift-monitoring",
+
+    serviceHref: "/services/industrial-automation",
+    serviceLabel: "Industrial Automation",
+  },
+
+  {
+    title: "Stretch Film Extrusion Line Retrofit",
+
+    category: "Machine Retrofit",
+
+    description:
+      "Electrical and automation modernization of an existing stretch film extrusion line to improve production stability and operational reliability.",
+
+    challenge:
+      "Aging electrical equipment, pressure measurement systems and cooling components affected production reliability.",
+
+    solution:
+      "Modernized electrical components, reviewed pressure sensors and cooling systems and optimized drive and machine operating parameters.",
+
+    result:
+      "The existing mechanical structure was retained while electrical and process-control reliability was improved.",
+
+    href: "/projects/stretch-film-extrusion-line",
+
+    serviceHref: "/services/machine-retrofit",
+    serviceLabel: "Machine Retrofit",
+  },
+
+  {
+    title: "Colines Thickness Gauge",
+
+    category: "Process Control",
+
+    description:
+      "Restoration and calibration of an inoperative thickness measurement system for an industrial extrusion application.",
+
+    challenge:
+      "The thickness measurement system was completely inoperative.",
+
+    solution:
+      "Restored the electronics, recalibrated the measurement system and prepared the system for automatic heater-zone correction.",
+
+    result:
+      "The thickness measurement system was returned to full operation.",
+
+    href: "/projects/colines-thickness-gauge",
+
+    serviceHref: "/services/industrial-automation",
+    serviceLabel: "Industrial Automation",
+  },
+
+  {
+    title: "Cable Pay-Off Machine",
+
+    category: "Drive Systems",
+
+    description:
+      "Drive system optimization for a cable pay-off machine experiencing unstable cable unwinding caused by incorrect drive parameters.",
+
+    challenge:
+      "Incorrect drive parameters caused unstable cable unwinding.",
+
+    solution:
+      "Optimized the Siemens drive parameters and tuned the machine control system.",
+
+    result:
+      "Smooth and reliable machine operation was restored.",
+
+    href: "/projects/cable-pay-off-drive",
+
+    serviceHref: "/services/drive-systems",
+    serviceLabel: "Drive Systems",
+  },
+
+  {
+    title: "Plastic Bag Cutting Machine Retrofit",
+
+    category: "Machine Retrofit",
+
+    description:
+      "Electrical and automation modernization of a plastic bag cutting machine including servo systems, drives, sensors and machine control.",
+
+    challenge:
+      "The existing machine required electrical and automation improvements for more reliable operation and easier maintenance.",
+
+    solution:
+      "Modernized the electrical and control infrastructure, integrated servo and drive systems, replaced sensors and recommissioned the machine.",
+
+    result:
+      "The existing mechanical structure was retained while the electrical and automation system was modernized.",
+
+    href: "/projects/hemigstone-bag-cutting-machine",
+
+    serviceHref: "/services/machine-retrofit",
+    serviceLabel: "Machine Retrofit",
+  },
+];
+
+const projectCategories = [
+  {
+    title: "Machine Retrofit",
+    description:
+      "Electrical, PLC, drive and control modernization for existing industrial machinery.",
+    href: "/services/machine-retrofit",
+  },
+
+  {
+    title: "Industrial Automation",
+    description:
+      "PLC, HMI, process control and automation engineering for industrial production systems.",
+    href: "/services/industrial-automation",
+  },
+
+  {
+    title: "Drive Systems",
+    description:
+      "Drive commissioning, parameter optimization and motion-control solutions for industrial machines.",
+    href: "/services/drive-systems",
+  },
+
+  {
+    title: "Electrical Engineering",
+    description:
+      "Electrical system design, cabinet modernization and industrial control engineering.",
+    href: "/services/electrical-engineering",
+  },
+];
+
 export default function ProjectsPage() {
-  const projects = [
-    {
-      title: "Stretch Transfer Machine",
-
-      challenge:
-        "The machine was completely out of operation due to an obsolete electrical control system.",
-
-      solution:
-        "Redesigned the electrical cabinet, developed new PLC software, optimized the mechanical system and recommissioned the machine.",
-
-      result:
-        "Production was restored at the customer's target operating speed.",
-
-      href: "/projects/stretch-transfer-machine",
-    },
-
-    {
-      title: "PET Flake Washing Line",
-
-      challenge:
-        "The customer required a completely new automated recycling washing system.",
-
-      solution:
-        "Designed the electrical system, PLC software, automatic dosing, slip-ring integration and level control.",
-
-      result:
-        "Successfully commissioned with stable automatic operation.",
-
-      href: "/projects/flake-washing-line",
-    },
-
-    {
-      title: "Granule Recycling Shift Monitoring System",
-
-      challenge:
-        "Production quantities needed to be monitored by shift and recorded in a structured format for daily, monthly and yearly production analysis.",
-
-      solution:
-        "Developed a production monitoring system using Siemens Siwarex load-cell technology and Siemens automation infrastructure to collect weighing data and organize production quantities according to production shifts and dates.",
-
-      result:
-        "Production quantities can be monitored by shift and analyzed through structured production data and Excel-based reporting.",
-
-      href: "/projects/granule-shift-monitoring",
-    },
-
-    {
-      title: "Stretch Film Extrusion Line",
-
-      challenge:
-        "Aging electrical equipment reduced production reliability.",
-
-      solution:
-        "Renewed electrical cabinet components, pressure sensors, cooling systems and optimized machine operation.",
-
-      result:
-        "Improved production stability and reduced downtime.",
-
-      href: "/projects/stretch-film-extrusion-line",
-    },
-
-    {
-      title: "Colines Thickness Gauge",
-
-      challenge:
-        "The thickness measurement system was completely inoperative.",
-
-      solution:
-        "Restored electronics, recalibrated the gauge and prepared the system for automatic heater-zone correction.",
-
-      result:
-        "Thickness measurement system returned to full operation.",
-
-      href: "/projects/colines-thickness-gauge",
-    },
-
-    {
-      title: "Cable Pay-Off Machine",
-
-      challenge:
-        "Incorrect drive parameters caused unstable cable unwinding.",
-
-      solution:
-        "Optimized Siemens drive parameters and tuned the control system.",
-
-      result:
-        "Smooth and reliable machine operation was restored.",
-
-      href: "/projects/cable-pay-off-drive",
-    },
-
-    {
-      title: "Plastic Bag Cutting Machine Retrofit",
-
-      challenge:
-        "The existing machine required electrical and automation improvements to achieve more reliable operation and easier maintenance.",
-
-      solution:
-        "Modernized the electrical and control infrastructure, integrated servo and drive systems, replaced sensors and recommissioned the machine.",
-
-      result:
-        "The existing mechanical structure was retained while the electrical and automation system was modernized.",
-
-      href: "/projects/hemigstone-bag-cutting-machine",
-    },
-  ];
-
   return (
     <main className="bg-slate-950 text-white">
 
       {/* HERO */}
 
-      <section className="border-b border-slate-800 py-24">
+      <section className="border-b border-slate-800 py-24 sm:py-28">
 
-        <div className="mx-auto max-w-7xl px-8">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
 
           <p className="font-semibold uppercase tracking-[4px] text-orange-400">
-            Portfolio
+            AENA Technologies Portfolio
           </p>
 
-          <h1 className="mt-4 text-6xl font-extrabold">
-            Engineering Case Studies
+          <h1 className="mt-5 max-w-5xl text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
+            Industrial Machine Retrofit
+            <span className="block text-orange-500">
+              & Automation Projects
+            </span>
           </h1>
 
-          <p className="mt-8 max-w-3xl text-xl leading-8 text-slate-400">
-            Real industrial automation, machine retrofit, production
-            monitoring and electrical engineering projects completed by
-            AENA Technologies.
+          <p className="mt-8 max-w-4xl text-lg leading-8 text-slate-400 sm:text-xl">
+            Explore real industrial automation, machine retrofit, electrical
+            engineering, drive system and production monitoring projects
+            completed by AENA Technologies.
           </p>
+
+          <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-500">
+            Our project experience covers recycling systems, extrusion
+            machinery, production monitoring, process control, electrical
+            modernization and industrial machine automation.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      {/* PROJECT CATEGORIES */}
+
+      <section className="border-b border-slate-800 bg-slate-900/40 py-20 sm:py-24">
+
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+
+          <div className="max-w-3xl">
+
+            <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+              Engineering Capabilities
+            </p>
+
+            <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
+              Industrial Automation & Retrofit Engineering
+            </h2>
+
+            <p className="mt-6 text-lg leading-8 text-slate-400">
+              Our projects combine electrical engineering, automation,
+              machine modernization and drive-system expertise to extend the
+              operating life and improve the performance of industrial
+              machinery.
+            </p>
+
+          </div>
+
+
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+
+            {projectCategories.map((category) => (
+
+              <Link
+                key={category.title}
+                href={category.href}
+                className="group rounded-2xl border border-slate-800 bg-slate-900 p-7 transition duration-300 hover:-translate-y-1 hover:border-orange-500/50"
+              >
+
+                <h3 className="text-xl font-bold transition group-hover:text-orange-400">
+                  {category.title}
+                </h3>
+
+                <p className="mt-4 text-sm leading-7 text-slate-400">
+                  {category.description}
+                </p>
+
+                <span className="mt-6 inline-block text-sm font-bold uppercase tracking-[1.5px] text-orange-400">
+                  Explore Service →
+                </span>
+
+              </Link>
+
+            ))}
+
+          </div>
 
         </div>
 
@@ -164,112 +331,235 @@ export default function ProjectsPage() {
 
       {/* PROJECTS */}
 
-      <section className="py-24">
+      <section className="py-24 sm:py-28">
 
-        <div className="mx-auto max-w-7xl space-y-10 px-8">
+        <div className="mx-auto max-w-7xl space-y-10 px-6 lg:px-8">
 
-          {projects.map((project) => (
+          <div className="max-w-3xl">
 
-            <div
-              key={project.title}
-              className="rounded-3xl border border-slate-800 bg-slate-900 p-10"
-            >
+            <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+              Case Studies
+            </p>
 
-              <h2 className="text-3xl font-bold">
-                {project.title}
-              </h2>
+            <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
+              Selected Industrial Projects
+            </h2>
+
+            <p className="mt-6 text-lg leading-8 text-slate-400">
+              Selected examples of machine retrofit, automation and
+              electrical engineering work carried out for industrial
+              production systems.
+            </p>
+
+          </div>
 
 
-              <div className="mt-10 grid gap-8 md:grid-cols-3">
+          <div className="mt-14 space-y-10">
 
-                {/* CHALLENGE */}
+            {projects.map((project) => (
 
-                <div>
+              <article
+                key={project.title}
+                className="rounded-3xl border border-slate-800 bg-slate-900 p-8 sm:p-10"
+              >
 
-                  <h3 className="font-bold text-orange-400">
-                    Challenge
-                  </h3>
+                {/* PROJECT HEADER */}
 
-                  <p className="mt-3 leading-8 text-slate-400">
-                    {project.challenge}
-                  </p>
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+
+                  <div>
+
+                    <p className="text-sm font-semibold uppercase tracking-[3px] text-orange-400">
+                      {project.category}
+                    </p>
+
+                    <h3 className="mt-3 text-2xl font-bold sm:text-3xl">
+                      {project.title}
+                    </h3>
+
+                  </div>
+
+                  <Link
+                    href={project.serviceHref}
+                    className="w-fit text-sm font-semibold text-slate-400 transition hover:text-orange-400"
+                  >
+                    {project.serviceLabel} →
+                  </Link>
+
+                </div>
+
+
+                {/* DESCRIPTION */}
+
+                <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-400">
+                  {project.description}
+                </p>
+
+
+                {/* PROJECT DETAILS */}
+
+                <div className="mt-10 grid gap-8 md:grid-cols-3">
+
+                  <div>
+
+                    <h4 className="font-bold text-orange-400">
+                      Challenge
+                    </h4>
+
+                    <p className="mt-3 leading-8 text-slate-400">
+                      {project.challenge}
+                    </p>
+
+                  </div>
+
+
+                  <div>
+
+                    <h4 className="font-bold text-orange-400">
+                      Engineering Solution
+                    </h4>
+
+                    <p className="mt-3 leading-8 text-slate-400">
+                      {project.solution}
+                    </p>
+
+                  </div>
+
+
+                  <div>
+
+                    <h4 className="font-bold text-orange-400">
+                      Result
+                    </h4>
+
+                    <p className="mt-3 leading-8 text-slate-400">
+                      {project.result}
+                    </p>
+
+                  </div>
 
                 </div>
 
 
-                {/* SOLUTION */}
+                {/* VIEW PROJECT */}
 
-                <div>
+                <div className="mt-10 border-t border-slate-800 pt-8">
 
-                  <h3 className="font-bold text-orange-400">
-                    Engineering Solution
-                  </h3>
+                  <Link
+                    href={project.href}
+                    className="
+                      inline-flex
+                      items-center
+                      rounded-xl
+                      border
+                      border-orange-500/70
+                      bg-orange-500
+                      px-6
+                      py-3
+                      text-sm
+                      font-bold
+                      uppercase
+                      tracking-[1.5px]
+                      text-white
+                      transition
+                      duration-300
+                      hover:bg-orange-600
+                      hover:shadow-lg
+                      hover:shadow-orange-500/20
+                    "
+                  >
+                    View Project
 
-                  <p className="mt-3 leading-8 text-slate-400">
-                    {project.solution}
-                  </p>
+                    <span className="ml-3 text-lg">
+                      →
+                    </span>
+
+                  </Link>
 
                 </div>
 
+              </article>
 
-                {/* RESULT */}
+            ))}
 
-                <div>
+          </div>
 
-                  <h3 className="font-bold text-orange-400">
-                    Result
-                  </h3>
+        </div>
 
-                  <p className="mt-3 leading-8 text-slate-400">
-                    {project.result}
-                  </p>
-
-                </div>
-
-              </div>
+      </section>
 
 
-              {/* VIEW PROJECT */}
+      {/* ENGINEERING APPROACH */}
 
-              <div className="mt-10 border-t border-slate-800 pt-8">
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24 sm:py-28">
 
-                <Link
-                  href={project.href}
-                  className="
-                    inline-flex
-                    items-center
-                    rounded-xl
-                    border
-                    border-orange-500/70
-                    bg-orange-500
-                    px-6
-                    py-3
-                    text-sm
-                    font-bold
-                    uppercase
-                    tracking-[1.5px]
-                    text-white
-                    transition
-                    duration-300
-                    hover:bg-orange-600
-                    hover:shadow-lg
-                    hover:shadow-orange-500/20
-                  "
-                >
+        <div className="mx-auto max-w-5xl px-6 text-center lg:px-8">
 
-                  View Project
+          <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+            Our Approach
+          </p>
 
-                  <span className="ml-3 text-lg">
-                    →
-                  </span>
+          <h2 className="mt-4 text-3xl font-bold sm:text-4xl">
+            Modernize Existing Machinery Instead of Replacing It
+          </h2>
 
-                </Link>
+          <p className="mt-8 text-lg leading-8 text-slate-400">
+            Industrial machines can often be upgraded without replacing the
+            complete mechanical system. By modernizing electrical controls,
+            PLC systems, drives, sensors and automation infrastructure,
+            existing equipment can be brought back into reliable production.
+          </p>
 
-              </div>
+          <p className="mt-6 text-lg leading-8 text-slate-500">
+            AENA Technologies evaluates the existing machine architecture and
+            develops retrofit solutions based on the actual production and
+            automation requirements.
+          </p>
 
-            </div>
+          <Link
+            href="/services/machine-retrofit"
+            className="mt-10 inline-flex items-center rounded-xl border border-orange-500 px-7 py-3 font-bold text-orange-400 transition hover:bg-orange-500 hover:text-white"
+          >
+            Explore Machine Retrofit Services
+            <span className="ml-3 text-lg">
+              →
+            </span>
+          </Link>
 
-          ))}
+        </div>
+
+      </section>
+
+
+      {/* CTA */}
+
+      <section className="bg-orange-500 py-20 sm:py-24">
+
+        <div className="mx-auto max-w-5xl px-6 text-center lg:px-8">
+
+          <p className="text-sm font-bold uppercase tracking-[3px] text-orange-100">
+            Industrial Engineering Support
+          </p>
+
+          <h2 className="mt-4 text-3xl font-bold sm:text-5xl">
+            Have an Aging Machine or Automation Problem?
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-orange-100">
+            Tell us about your machine, electrical system, automation problem
+            or modernization requirement. We can evaluate the existing
+            equipment and determine a suitable engineering approach.
+          </p>
+
+          <Link
+            href="/contact"
+            className="mt-10 inline-flex items-center rounded-xl bg-white px-8 py-4 font-bold text-orange-500 transition hover:bg-slate-100"
+          >
+            Request a Project Evaluation
+            <span className="ml-3 text-lg">
+              →
+            </span>
+          </Link>
 
         </div>
 

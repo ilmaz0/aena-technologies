@@ -30,15 +30,86 @@ export default function Footer() {
 
           <ul className="space-y-3 text-slate-400">
 
-            <li>Machine Retrofit</li>
+            <li>
+              <Link
+                href="/services/machine-retrofit"
+                className="transition hover:text-orange-400"
+              >
+                Machine Retrofit
+              </Link>
+            </li>
 
-            <li>PLC Programming</li>
+            <li>
+              <Link
+                href="/services/industrial-automation"
+                className="transition hover:text-orange-400"
+              >
+                Industrial Automation
+              </Link>
+            </li>
 
-            <li>Electrical Engineering</li>
+            <li>
+              <Link
+                href="/services/plc-programming"
+                className="transition hover:text-orange-400"
+              >
+                PLC Programming
+              </Link>
+            </li>
 
-            <li>Commissioning</li>
+            <li>
+              <Link
+                href="/services/electrical-engineering"
+                className="transition hover:text-orange-400"
+              >
+                Electrical Engineering
+              </Link>
+            </li>
 
-            <li>SCADA Systems</li>
+            <li>
+              <Link
+                href="/services/scada-hmi"
+                className="transition hover:text-orange-400"
+              >
+                SCADA & HMI
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/services/drive-systems"
+                className="transition hover:text-orange-400"
+              >
+                Drive Systems
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/services/servo-motion-control"
+                className="transition hover:text-orange-400"
+              >
+                Servo & Motion Control
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/services/commissioning"
+                className="transition hover:text-orange-400"
+              >
+                Commissioning
+              </Link>
+            </li>
+
+            <li>
+              <Link
+                href="/services/industrial-troubleshooting"
+                className="transition hover:text-orange-400"
+              >
+                Industrial Troubleshooting
+              </Link>
+            </li>
 
           </ul>
         </div>
@@ -54,31 +125,46 @@ export default function Footer() {
           <ul className="space-y-3 text-slate-400">
 
             <li>
-              <Link href="/">
+              <Link
+                href="/"
+                className="transition hover:text-orange-400"
+              >
                 Home
               </Link>
             </li>
 
             <li>
-              <Link href="/about">
+              <Link
+                href="/about"
+                className="transition hover:text-orange-400"
+              >
                 About
               </Link>
             </li>
 
             <li>
-              <Link href="/services">
+              <Link
+                href="/services"
+                className="transition hover:text-orange-400"
+              >
                 Services
               </Link>
             </li>
 
             <li>
-              <Link href="/projects">
+              <Link
+                href="/projects"
+                className="transition hover:text-orange-400"
+              >
                 Projects
               </Link>
             </li>
 
             <li>
-              <Link href="/contact">
+              <Link
+                href="/contact"
+                className="transition hover:text-orange-400"
+              >
                 Contact
               </Link>
             </li>
@@ -101,7 +187,12 @@ export default function Footer() {
             </li>
 
             <li>
-              info@aenatechnologies.com
+              <a
+                href="mailto:info@aenatechnologies.com"
+                className="transition hover:text-orange-400"
+              >
+                info@aenatechnologies.com
+              </a>
             </li>
 
             <li>
