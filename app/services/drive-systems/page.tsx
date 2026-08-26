@@ -1,9 +1,58 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Industrial Drive Systems & VFD Services",
+export const metadata: Metadata = {
+  title: "Industrial Drive & VFD Services | Troubleshooting & Replacement",
+
   description:
-    "Industrial AC drive and VFD services including drive commissioning, parameterization, troubleshooting, obsolete drive replacement, PLC communication mapping, protocol conversion and gateway-based drive integration by AENA Technologies.",
+    "Industrial drive and VFD services including drive troubleshooting, commissioning, parameterization, obsolete drive replacement, PLC communication, data mapping and retrofit integration.",
+
+  keywords: [
+    "industrial drive services",
+    "industrial drive troubleshooting",
+    "VFD troubleshooting",
+    "AC drive troubleshooting",
+    "VFD fault diagnosis",
+    "AC drive fault diagnosis",
+    "industrial VFD services",
+    "drive commissioning",
+    "VFD commissioning",
+    "drive parameterization",
+    "VFD parameterization",
+    "obsolete drive replacement",
+    "old drive replacement",
+    "industrial drive replacement",
+    "VFD replacement",
+    "drive retrofit",
+    "industrial drive retrofit",
+    "PLC drive communication",
+    "PLC VFD communication",
+    "drive communication fault",
+    "VFD communication fault",
+    "drive communication mapping",
+    "control word status word mapping",
+    "drive parameter migration",
+    "legacy drive integration",
+    "industrial gateway integration",
+    "PLC drive integration",
+    "machine automation",
+    "industrial automation Turkey",
+    "VFD services Turkey",
+    "industrial drive services Turkey",
+  ],
+
+  alternates: {
+    canonical: "https://www.aenatechnologies.com/services/drive-systems",
+  },
+
+  openGraph: {
+    title: "Industrial Drive & VFD Services | AENA Technologies",
+    description:
+      "Industrial drive troubleshooting, commissioning, replacement, PLC communication and retrofit integration for machines and production lines.",
+    url: "https://www.aenatechnologies.com/services/drive-systems",
+    siteName: "AENA Technologies",
+    type: "website",
+  },
 };
 
 export default function DriveSystemsPage() {
@@ -12,6 +61,7 @@ export default function DriveSystemsPage() {
     "VFD commissioning",
     "Drive parameterization",
     "Drive troubleshooting",
+    "VFD fault diagnosis",
     "Motor drive integration",
     "Speed control",
     "Acceleration and deceleration optimization",
@@ -26,6 +76,39 @@ export default function DriveSystemsPage() {
     "Gateway-based communication",
     "Protocol conversion",
     "Legacy automation modernization",
+  ];
+
+  const commonProblems = [
+    {
+      title: "VFD Overcurrent & Drive Faults",
+      text:
+        "Investigation of overcurrent, overload, motor-related faults and other drive alarms affecting machine operation.",
+    },
+    {
+      title: "Drive Communication Problems",
+      text:
+        "Analysis of communication failures between PLCs, drives, HMIs and other industrial automation equipment.",
+    },
+    {
+      title: "Obsolete Drive Replacement",
+      text:
+        "Evaluation and replacement of discontinued or unavailable drives while considering existing machine control requirements.",
+    },
+    {
+      title: "New Drive Not Communicating",
+      text:
+        "Analysis of protocol, register, telegram, control word and feedback differences when replacing an existing drive.",
+    },
+    {
+      title: "Drive Parameter Problems",
+      text:
+        "Configuration and optimization of motor, speed, acceleration, deceleration and control parameters.",
+    },
+    {
+      title: "PLC Compatibility After Drive Replacement",
+      text:
+        "Evaluation of communication mapping and interface adaptation when the replacement drive does not match the original drive structure.",
+    },
   ];
 
   return (
@@ -43,21 +126,38 @@ export default function DriveSystemsPage() {
           <h1 className="mt-4 max-w-5xl text-5xl font-extrabold leading-tight sm:text-6xl">
             AC Drive & VFD
             <span className="block text-orange-500">
-              Engineering & Integration
+              Troubleshooting, Replacement & Integration
             </span>
           </h1>
 
           <p className="mt-8 max-w-4xl text-xl leading-8 text-slate-400">
-            Industrial AC drive, VFD, motor control, commissioning,
-            troubleshooting and drive replacement solutions for machinery and
-            production lines.
+            Industrial AC drive and VFD services for troubleshooting,
+            commissioning, parameterization, obsolete drive replacement,
+            PLC communication and machine retrofit applications.
           </p>
 
           <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-500">
-            AENA Technologies supports drive installation, parameterization,
-            commissioning, troubleshooting and modernization of industrial
-            motor control systems.
+            AENA Technologies supports industrial machinery and production
+            lines where drive faults, communication problems, obsolete
+            equipment or replacement-drive compatibility require electrical,
+            automation and control engineering.
           </p>
+
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link
+              href="/contact"
+              className="rounded-xl bg-orange-500 px-7 py-4 font-bold text-white transition hover:bg-orange-600"
+            >
+              Discuss Your Drive Problem
+            </Link>
+
+            <Link
+              href="/services/plc-programming"
+              className="rounded-xl border border-slate-700 bg-slate-900 px-7 py-4 font-bold text-white transition hover:border-orange-500"
+            >
+              PLC Engineering
+            </Link>
+          </div>
 
         </div>
       </section>
@@ -66,7 +166,6 @@ export default function DriveSystemsPage() {
       {/* OVERVIEW */}
 
       <section className="py-24">
-
         <div className="mx-auto grid max-w-7xl gap-16 px-8 lg:grid-cols-2">
 
           <div>
@@ -90,28 +189,78 @@ export default function DriveSystemsPage() {
             </p>
 
             <p>
-              Correct drive selection and commissioning are important for
-              maintaining machine performance, motor protection and reliable
-              production.
+              Drive problems can originate from motor conditions, mechanical
+              loads, parameter settings, electrical connections, control
+              signals or industrial communication systems.
             </p>
 
             <p>
-              AENA Technologies can support both new drive installations and
-              replacement of obsolete or faulty drives in existing industrial
-              machinery.
+              AENA Technologies can investigate existing drive systems,
+              identify the relevant control and electrical factors and
+              determine a suitable troubleshooting, replacement or
+              modernization approach.
             </p>
 
           </div>
 
         </div>
+      </section>
 
+
+      {/* COMMON PROBLEMS */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="text-center">
+
+            <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+              Drive Problems
+            </p>
+
+            <h2 className="mt-4 text-4xl font-bold sm:text-5xl">
+              Industrial Drive Problems We Can Investigate
+            </h2>
+
+            <p className="mx-auto mt-6 max-w-4xl text-lg leading-8 text-slate-400">
+              Drive faults are not always caused by the drive itself.
+              Troubleshooting may require checking the motor, machine load,
+              control signals, parameters, PLC communication and electrical
+              infrastructure.
+            </p>
+
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+            {commonProblems.map((problem) => (
+              <div
+                key={problem.title}
+                className="rounded-2xl border border-slate-800 bg-slate-900 p-7 transition duration-300 hover:-translate-y-1 hover:border-orange-500"
+              >
+
+                <div className="mb-5 h-1 w-12 rounded-full bg-orange-500" />
+
+                <h3 className="text-xl font-bold">
+                  {problem.title}
+                </h3>
+
+                <p className="mt-4 leading-7 text-slate-400">
+                  {problem.text}
+                </p>
+
+              </div>
+            ))}
+
+          </div>
+
+        </div>
       </section>
 
 
       {/* CAPABILITIES */}
 
-      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
+      <section className="py-24">
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="text-center">
@@ -131,7 +280,6 @@ export default function DriveSystemsPage() {
             </p>
 
           </div>
-
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
@@ -157,14 +305,59 @@ export default function DriveSystemsPage() {
           </div>
 
         </div>
+      </section>
 
+
+      {/* TROUBLESHOOTING */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+        <div className="mx-auto max-w-7xl px-8">
+
+          <div className="grid gap-16 lg:grid-cols-2">
+
+            <div>
+
+              <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+                Drive Troubleshooting
+              </p>
+
+              <h2 className="mt-4 text-4xl font-bold">
+                AC Drive Fault Diagnosis & Troubleshooting
+              </h2>
+
+            </div>
+
+            <div className="space-y-6 text-lg leading-8 text-slate-400">
+
+              <p>
+                A drive alarm does not necessarily mean that the drive itself
+                has failed. Overcurrent, overload, overheating, communication
+                faults and unstable operation may involve several parts of
+                the machine.
+              </p>
+
+              <p>
+                Troubleshooting can include checking motor current, operating
+                conditions, drive parameters, control signals, feedback,
+                PLC communication and the machine's mechanical load.
+              </p>
+
+              <p>
+                The objective is to identify the actual source of the problem
+                before unnecessary drive or motor replacement.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
       </section>
 
 
       {/* COMMISSIONING */}
 
       <section className="py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="grid gap-16 lg:grid-cols-2">
@@ -197,7 +390,7 @@ export default function DriveSystemsPage() {
 
               <p>
                 AENA Technologies supports drive testing and commissioning
-                after installation or machine modernization.
+                after installation, replacement or machine modernization.
               </p>
 
             </div>
@@ -205,71 +398,12 @@ export default function DriveSystemsPage() {
           </div>
 
         </div>
-
-      </section>
-
-
-      {/* TROUBLESHOOTING */}
-
-      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
-        <div className="mx-auto max-w-7xl px-8">
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
-
-              <h3 className="text-2xl font-bold">
-                Drive Fault Diagnosis
-              </h3>
-
-              <p className="mt-4 leading-8 text-slate-400">
-                Investigation of drive alarms, motor faults, communication
-                errors, overcurrent, overload and other operating problems.
-              </p>
-
-            </div>
-
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
-
-              <h3 className="text-2xl font-bold">
-                Parameter Optimization
-              </h3>
-
-              <p className="mt-4 leading-8 text-slate-400">
-                Optimization of drive parameters according to motor
-                characteristics, machine load and required production
-                performance.
-              </p>
-
-            </div>
-
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
-
-              <h3 className="text-2xl font-bold">
-                Machine Integration
-              </h3>
-
-              <p className="mt-4 leading-8 text-slate-400">
-                Integration of drives with PLCs, HMIs, sensors and existing
-                machine control systems.
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
       </section>
 
 
       {/* OBSOLETE DRIVE */}
 
-      <section className="py-24">
-
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="grid gap-16 lg:grid-cols-2">
@@ -297,14 +431,14 @@ export default function DriveSystemsPage() {
               <p>
                 Replacing the drive requires more than selecting a motor drive
                 with the same power rating. Communication, control signals,
-                feedback values and machine behavior may also need to be
-                considered.
+                feedback values, motor characteristics and machine behavior
+                may also need to be considered.
               </p>
 
               <p>
                 AENA Technologies evaluates the existing drive, motor,
-                PLC architecture and machine requirements before selecting a
-                suitable replacement approach.
+                PLC architecture and machine requirements before determining
+                a suitable replacement approach.
               </p>
 
             </div>
@@ -312,14 +446,12 @@ export default function DriveSystemsPage() {
           </div>
 
         </div>
-
       </section>
 
 
       {/* COMMUNICATION PROBLEM */}
 
-      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
+      <section className="py-24">
         <div className="mx-auto max-w-5xl px-8 text-center">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
@@ -339,25 +471,23 @@ export default function DriveSystemsPage() {
 
           <p className="mt-6 text-lg leading-8 text-slate-400">
             If the existing PLC expects the original drive&apos;s
-            communication structure, simply installing the replacement device
-            may not be sufficient.
+            communication structure, simply installing the replacement
+            device may not be sufficient.
           </p>
 
           <p className="mt-6 text-lg leading-8 text-slate-400">
             In suitable applications, communication mapping or a gateway
-            integration layer can be evaluated to bridge the existing control
-            system with the replacement drive.
+            integration layer can be evaluated to bridge the existing
+            control system with the replacement drive.
           </p>
 
         </div>
-
       </section>
 
 
       {/* MAPPING */}
 
-      <section className="py-24">
-
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="text-center">
@@ -379,7 +509,6 @@ export default function DriveSystemsPage() {
 
           </div>
 
-
           <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2">
 
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
@@ -389,7 +518,6 @@ export default function DriveSystemsPage() {
               </h3>
 
               <ul className="mt-6 space-y-3 text-slate-400">
-
                 <li>Control Word</li>
                 <li>Status Word</li>
                 <li>Speed Reference</li>
@@ -397,11 +525,9 @@ export default function DriveSystemsPage() {
                 <li>Fault Code</li>
                 <li>Current Feedback</li>
                 <li>Torque Feedback</li>
-
               </ul>
 
             </div>
-
 
             <div className="rounded-2xl border border-orange-500/40 bg-slate-900 p-8">
 
@@ -410,7 +536,6 @@ export default function DriveSystemsPage() {
               </h3>
 
               <ul className="mt-6 space-y-3 text-slate-400">
-
                 <li>Mapped Control Data</li>
                 <li>Mapped Status Data</li>
                 <li>Mapped Speed Command</li>
@@ -418,7 +543,6 @@ export default function DriveSystemsPage() {
                 <li>Mapped Fault Information</li>
                 <li>Current Feedback</li>
                 <li>Torque Feedback</li>
-
               </ul>
 
             </div>
@@ -426,14 +550,12 @@ export default function DriveSystemsPage() {
           </div>
 
         </div>
-
       </section>
 
 
       {/* GATEWAY */}
 
-      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
+      <section className="py-24">
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="grid gap-16 lg:grid-cols-2">
@@ -476,14 +598,12 @@ export default function DriveSystemsPage() {
           </div>
 
         </div>
-
       </section>
 
 
       {/* ARCHITECTURE */}
 
-      <section className="py-24">
-
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
         <div className="mx-auto max-w-5xl px-8 text-center">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
@@ -499,7 +619,6 @@ export default function DriveSystemsPage() {
             integrating a replacement drive into an existing industrial
             communication system.
           </p>
-
 
           <div className="mt-12 grid gap-4 md:grid-cols-3">
 
@@ -519,7 +638,6 @@ export default function DriveSystemsPage() {
 
             </div>
 
-
             <div className="rounded-2xl border border-orange-500 bg-slate-900 p-6">
 
               <p className="text-sm uppercase tracking-[2px] text-orange-400">
@@ -535,7 +653,6 @@ export default function DriveSystemsPage() {
               </p>
 
             </div>
-
 
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
 
@@ -556,14 +673,12 @@ export default function DriveSystemsPage() {
           </div>
 
         </div>
-
       </section>
 
 
       {/* PLC PROGRAM PROTECTION */}
 
-      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
-
+      <section className="py-24">
         <div className="mx-auto max-w-5xl px-8 text-center">
 
           <p className="font-semibold uppercase tracking-[3px] text-orange-400">
@@ -591,14 +706,43 @@ export default function DriveSystemsPage() {
           </p>
 
         </div>
-
       </section>
 
 
-      {/* COMMISSIONING */}
+      {/* RETROFIT */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-24">
+        <div className="mx-auto max-w-5xl px-8 text-center">
+
+          <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+            Industrial Drive Retrofit
+          </p>
+
+          <h2 className="mt-4 text-4xl font-bold">
+            Drive Replacement Without Replacing the Entire Machine
+          </h2>
+
+          <p className="mt-8 text-lg leading-8 text-slate-400">
+            A machine does not necessarily need to be completely replaced
+            when its drive system becomes obsolete. Drive modernization can
+            extend machine operating life while retaining usable mechanical
+            and electrical systems.
+          </p>
+
+          <p className="mt-6 text-lg leading-8 text-slate-400">
+            Retrofit projects may include drive replacement, parameter
+            migration, PLC communication mapping, electrical cabinet
+            revision, motor integration, software modifications and
+            commissioning.
+          </p>
+
+        </div>
+      </section>
+
+
+      {/* COMMISSIONING SUPPORT */}
 
       <section className="py-24">
-
         <div className="mx-auto max-w-7xl px-8">
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -616,7 +760,6 @@ export default function DriveSystemsPage() {
 
             </div>
 
-
             <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
 
               <h3 className="text-2xl font-bold">
@@ -630,8 +773,7 @@ export default function DriveSystemsPage() {
 
             </div>
 
-
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 bg-slate-900 p-8">
+            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-8">
 
               <h3 className="text-2xl font-bold">
                 Production Support
@@ -647,23 +789,68 @@ export default function DriveSystemsPage() {
           </div>
 
         </div>
+      </section>
 
+
+      {/* PROJECT INFORMATION */}
+
+      <section className="border-y border-slate-800 bg-slate-900/40 py-20">
+        <div className="mx-auto max-w-5xl px-8 text-center">
+
+          <p className="font-semibold uppercase tracking-[3px] text-orange-400">
+            Drive Project Assessment
+          </p>
+
+          <h2 className="mt-4 text-4xl font-bold">
+            What Information Helps Us Evaluate a Drive Problem?
+          </h2>
+
+          <p className="mt-6 text-lg leading-8 text-slate-400">
+            For troubleshooting or drive replacement projects, providing the
+            available equipment information can help determine the required
+            engineering approach.
+          </p>
+
+          <div className="mt-10 grid gap-4 text-left sm:grid-cols-2 lg:grid-cols-3">
+
+            {[
+              "Drive manufacturer and model",
+              "Motor power and nameplate data",
+              "PLC manufacturer and model",
+              "Drive fault code",
+              "Communication protocol",
+              "Machine type and application",
+            ].map((item) => (
+              <div
+                key={item}
+                className="rounded-xl border border-slate-800 bg-slate-900 p-5"
+              >
+                <span className="text-orange-400">✓</span>
+                <span className="ml-3 font-semibold">
+                  {item}
+                </span>
+              </div>
+            ))}
+
+          </div>
+
+        </div>
       </section>
 
 
       {/* CTA */}
 
       <section className="bg-orange-500 py-20">
-
         <div className="mx-auto max-w-5xl px-8 text-center">
 
           <h2 className="text-4xl font-bold sm:text-5xl">
-            Need to Replace or Integrate an Industrial Drive?
+            Need to Troubleshoot or Replace an Industrial Drive?
           </h2>
 
           <p className="mt-6 text-xl text-orange-100">
-            Tell us about your existing drive, PLC and communication system.
-            We can evaluate the replacement and integration requirements.
+            Tell us about your existing drive, motor, PLC and machine
+            problem. We can evaluate the troubleshooting, replacement or
+            integration requirements.
           </p>
 
           <Link
@@ -674,7 +861,6 @@ export default function DriveSystemsPage() {
           </Link>
 
         </div>
-
       </section>
 
     </main>
