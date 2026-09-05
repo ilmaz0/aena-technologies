@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Industrial Machine Retrofit and Automation Projects",
 
   description:
-    "Explore industrial machine retrofit, automation, electrical engineering and production monitoring projects by AENA Technologies, including recycling, extrusion, packaging and drive system applications.",
+    "Explore industrial machine retrofit, automation, electrical engineering and production monitoring projects by AENA Technologies, including EPS, recycling, extrusion, packaging, marble processing, copper wire bending and drive system applications.",
 
   keywords: [
     "industrial machine retrofit projects",
@@ -14,8 +14,34 @@ export const metadata: Metadata = {
     "electrical engineering projects",
     "PLC automation projects",
     "industrial retrofit projects",
+
+    "EPS machine retrofit",
+    "polystyrene foam machine retrofit",
+    "EPS machine drive commissioning",
+    "Rexroth drive commissioning",
+    "Rexroth drive retrofit",
+
     "recycling automation projects",
     "extrusion machine retrofit",
+
+    "marble processing machine retrofit",
+    "marble machine retrofit",
+    "marble processing line modernization",
+    "marble machinery automation",
+
+    "copper wire bending machine",
+    "copper wire bending machine retrofit",
+    "copper wire bending automation",
+    "copper wire bending encoder fault",
+    "encoder fault detection",
+    "encoder fault diagnosis",
+    "Lenze drive diagnostics",
+    "Lenze drive encoder fault",
+    "Lenze drive troubleshooting",
+    "motor encoder diagnostics",
+    "slip ring encoder system",
+    "carbon brush encoder system",
+
     "production monitoring systems",
     "drive system retrofit",
     "industrial automation Turkey",
@@ -29,7 +55,7 @@ export const metadata: Metadata = {
     title: "Industrial Machine Retrofit and Automation Projects",
 
     description:
-      "Explore real industrial machine retrofit, automation, electrical engineering and production monitoring projects completed by AENA Technologies.",
+      "Explore real industrial machine retrofit, automation, electrical engineering, EPS machine, marble processing, copper wire bending and production monitoring projects completed by AENA Technologies.",
 
     url: "https://www.aenatechnologies.com/projects",
 
@@ -179,6 +205,29 @@ const projects = [
   },
 
   {
+    title: "Marble Processing Line Retrofit",
+
+    category: "Machine Retrofit",
+
+    description:
+      "Electrical and automation modernization of an existing marble processing line including motor and drive replacement, PLC integration and safety sensor implementation.",
+
+    challenge:
+      "The existing marble processing line required modernization to improve machine safety, operating stability and overall usability.",
+
+    solution:
+      "Replaced the existing motor and drive system, integrated PLC control and added safety sensors to modernize the machine while retaining the existing production line.",
+
+    result:
+      "The existing marble processing line became safer, more stable and more reliable for continued production operation.",
+
+    href: "/projects/marble-process-revision",
+
+    serviceHref: "/services/machine-retrofit",
+    serviceLabel: "Machine Retrofit",
+  },
+
+  {
     title: "Plastic Bag Cutting Machine Retrofit",
 
     category: "Machine Retrofit",
@@ -200,34 +249,88 @@ const projects = [
     serviceHref: "/services/machine-retrofit",
     serviceLabel: "Machine Retrofit",
   },
+
+  {
+    title: "EPS Machine Retrofit",
+
+    category: "Machine Retrofit",
+
+    description:
+      "Drive system recommissioning for an existing polystyrene foam (EPS) machine to restore machine operation and return the production equipment to service.",
+
+    challenge:
+      "The existing EPS machine was unable to operate because of a fault affecting the Rexroth drive.",
+
+    solution:
+      "The Rexroth drive was reactivated and recommissioned as part of the machine restoration process.",
+
+    result:
+      "The existing EPS machine was successfully brought back into operation without replacing the complete production system.",
+
+    href: "/projects/eps-machine-retrofit",
+
+    serviceHref: "/services/machine-retrofit",
+    serviceLabel: "Machine Retrofit",
+  },
+
+  {
+    title: "Copper Wire Bending Process",
+
+    category: "Drive Diagnostics",
+
+    description:
+      "Encoder fault detection in a copper wire bending process using Lenze drive diagnostics, motor operating characteristics and the encoder feedback path through the slip-ring and carbon-brush system.",
+
+    challenge:
+      "The copper wire bending machine experienced an encoder-related operating problem. The fault needed to be isolated between the motor encoder, feedback connection and drive system.",
+
+    solution:
+      "The Lenze drive system was evaluated together with the motor operating characteristics and encoder feedback behavior. The slip-ring and carbon-brush connection used in the feedback path was also considered during the diagnostic process.",
+
+    result:
+      "The encoder-related fault was isolated from other possible causes, allowing the problem to be identified through systematic drive and feedback analysis.",
+
+    href: "/projects/copper-wire-bending",
+
+    serviceHref: "/services/drive-systems",
+    serviceLabel: "Drive Systems",
+  },
 ];
 
 const projectCategories = [
   {
     title: "Machine Retrofit",
+
     description:
       "Electrical, PLC, drive and control modernization for existing industrial machinery.",
+
     href: "/services/machine-retrofit",
   },
 
   {
     title: "Industrial Automation",
+
     description:
       "PLC, HMI, process control and automation engineering for industrial production systems.",
+
     href: "/services/industrial-automation",
   },
 
   {
     title: "Drive Systems",
+
     description:
       "Drive commissioning, parameter optimization and motion-control solutions for industrial machines.",
+
     href: "/services/drive-systems",
   },
 
   {
     title: "Electrical Engineering",
+
     description:
       "Electrical system design, cabinet modernization and industrial control engineering.",
+
     href: "/services/electrical-engineering",
   },
 ];
@@ -247,22 +350,30 @@ export default function ProjectsPage() {
           </p>
 
           <h1 className="mt-5 max-w-5xl text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
+
             Industrial Machine Retrofit
+
             <span className="block text-orange-500">
               & Automation Projects
             </span>
+
           </h1>
 
           <p className="mt-8 max-w-4xl text-lg leading-8 text-slate-400 sm:text-xl">
+
             Explore real industrial automation, machine retrofit, electrical
             engineering, drive system and production monitoring projects
             completed by AENA Technologies.
+
           </p>
 
           <p className="mt-6 max-w-4xl text-lg leading-8 text-slate-500">
-            Our project experience covers recycling systems, extrusion
-            machinery, production monitoring, process control, electrical
-            modernization and industrial machine automation.
+
+            Our project experience covers EPS machines, recycling systems,
+            extrusion machinery, marble processing, copper wire bending,
+            encoder diagnostics, production monitoring, process control,
+            electrical modernization and industrial machine automation.
+
           </p>
 
         </div>
@@ -287,10 +398,12 @@ export default function ProjectsPage() {
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-slate-400">
+
               Our projects combine electrical engineering, automation,
               machine modernization and drive-system expertise to extend the
               operating life and improve the performance of industrial
               machinery.
+
             </p>
 
           </div>
@@ -346,9 +459,11 @@ export default function ProjectsPage() {
             </h2>
 
             <p className="mt-6 text-lg leading-8 text-slate-400">
-              Selected examples of machine retrofit, automation and
-              electrical engineering work carried out for industrial
-              production systems.
+
+              Selected examples of machine retrofit, automation, drive
+              diagnostics and electrical engineering work carried out for
+              industrial production systems.
+
             </p>
 
           </div>
@@ -468,6 +583,7 @@ export default function ProjectsPage() {
                       hover:shadow-orange-500/20
                     "
                   >
+
                     View Project
 
                     <span className="ml-3 text-lg">
@@ -504,26 +620,33 @@ export default function ProjectsPage() {
           </h2>
 
           <p className="mt-8 text-lg leading-8 text-slate-400">
+
             Industrial machines can often be upgraded without replacing the
             complete mechanical system. By modernizing electrical controls,
             PLC systems, drives, sensors and automation infrastructure,
             existing equipment can be brought back into reliable production.
+
           </p>
 
           <p className="mt-6 text-lg leading-8 text-slate-500">
+
             AENA Technologies evaluates the existing machine architecture and
             develops retrofit solutions based on the actual production and
             automation requirements.
+
           </p>
 
           <Link
             href="/services/machine-retrofit"
             className="mt-10 inline-flex items-center rounded-xl border border-orange-500 px-7 py-3 font-bold text-orange-400 transition hover:bg-orange-500 hover:text-white"
           >
+
             Explore Machine Retrofit Services
+
             <span className="ml-3 text-lg">
               →
             </span>
+
           </Link>
 
         </div>
@@ -546,19 +669,24 @@ export default function ProjectsPage() {
           </h2>
 
           <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-orange-100">
+
             Tell us about your machine, electrical system, automation problem
             or modernization requirement. We can evaluate the existing
             equipment and determine a suitable engineering approach.
+
           </p>
 
           <Link
             href="/contact"
             className="mt-10 inline-flex items-center rounded-xl bg-white px-8 py-4 font-bold text-orange-500 transition hover:bg-slate-100"
           >
+
             Request a Project Evaluation
+
             <span className="ml-3 text-lg">
               →
             </span>
+
           </Link>
 
         </div>

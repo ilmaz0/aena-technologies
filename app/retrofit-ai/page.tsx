@@ -21,6 +21,22 @@ type ConversationMessage = {
   content: string;
 };
 
+type DiagnosticQuestion = {
+  id: string;
+  question: string;
+  domain: string;
+  targetHypotheses: string[];
+  separates: string[];
+  priority: number;
+  requiresMeasurement: boolean;
+  expectedEvidence: string;
+};
+
+type RetrofitAIIntent =
+  | "non_technical"
+  | "technical_information"
+  | "technical_answer";
+
 type RetrofitAIResponse = {
   summary: string;
   check: string;
@@ -30,8 +46,16 @@ type RetrofitAIResponse = {
   aenaAction?: string;
   safetyWarning: string;
   caseId?: string;
-};
 
+ intent?:
+    | "non_technical"
+    | "technical_information"
+    | "technical_answer";
+
+
+
+  nextQuestion?: DiagnosticQuestion | null;
+};
 /* =========================================================
    CONSTANTS
 ========================================================= */
@@ -43,29 +67,45 @@ const MAX_DIAGNOSTIC_INTERACTIONS = 5;
 ========================================================= */
 
 export default function RetrofitAIPage() {
+  /* =======================================================
+     BASIC STATE
+  ======================================================= */
+
   const [symptom, setSymptom] =
+    useState("");
+
+  const [initialSymptom, setInitialSymptom] =
     useState("");
 
   const [loading, setLoading] =
     useState(false);
 
   const [result, setResult] =
-    useState<RetrofitAIResponse | null>(
-      null
-    );
+    useState<RetrofitAIResponse | null>(null);
 
   const [error, setError] =
     useState("");
 
+  /* =======================================================
+     CONVERSATION
+  ======================================================= */
+
   const [conversation, setConversation] =
-    useState<ConversationMessage[]>(
-      []
-    );
+    useState<ConversationMessage[]>([]);
 
   const [analysisStarted, setAnalysisStarted] =
     useState(false);
+    const [nonTechnicalMode, setNonTechnicalMode] =
+  useState(false);
+
+  /* =======================================================
+     CASE / QUESTION STATE
+  ======================================================= */
 
   const [caseId, setCaseId] =
+    useState<string | null>(null);
+
+  const [currentQuestionId, setCurrentQuestionId] =
     useState<string | null>(null);
 
   /* =======================================================
@@ -143,49 +183,181 @@ export default function RetrofitAIPage() {
     setLoading(true);
 
     try {
-      const formData =
-        new FormData();
+ /* ===================================================
+   DETERMINE REQUEST TYPE
+=================================================== */
+
+/*
+ * There are only two possible technical states:
+ *
+ * 1. User is answering an existing diagnostic question
+ * 2. User is starting a new diagnostic case
+ *
+ * If the previous interaction was non-technical,
+ * there is no case/question, so the next message
+ * must become a NEW machine symptom.
+ */
+
+const isAnswerToDiagnosticQuestion =
+  Boolean(
+    caseId &&
+    currentQuestionId &&
+    !nonTechnicalMode
+  );
+
+const isNewDiagnosticRequest =
+  !isAnswerToDiagnosticQuestion;
+
+/*
+ * New diagnostic request:
+ *   symptom = current user message
+ *
+ * Existing diagnostic session:
+ *   symptom = original machine problem
+ *   answer = current user message
+ */
+
+if (isNewDiagnosticRequest) {
+  setInitialSymptom(
+    currentMessage
+  );
+}
+
+const machineSymptom =
+  isNewDiagnosticRequest
+    ? currentMessage
+    : initialSymptom;
+
+/* ===================================================
+   FORM DATA
+=================================================== */
+
+const formData =
+  new FormData();
+
+formData.append(
+  "symptom",
+  machineSymptom
+);
+
+/*
+ * If we are coming out of non-technical mode,
+ * do not send the old casual conversation to the
+ * diagnostic engine.
+ */
+
+const conversationForAPI =
+  nonTechnicalMode
+    ? []
+    : conversation;
+
+formData.append(
+  "conversation",
+  JSON.stringify(
+    conversationForAPI
+  )
+);
+
+/* ===================================================
+   CASE ID
+=================================================== */
+
+if (
+  isAnswerToDiagnosticQuestion &&
+  caseId
+) {
+  formData.append(
+    "case_id",
+    caseId
+  );
+}
+
+/* ===================================================
+   DIAGNOSTIC ANSWER
+=================================================== */
+
+if (
+  isAnswerToDiagnosticQuestion &&
+  currentQuestionId
+) {
+  formData.append(
+    "question_id",
+    currentQuestionId
+  );
+
+  formData.append(
+    "answer",
+    currentMessage
+  );
+}
+
+/* ===================================================
+   FILES
+=================================================== */
+
+files.forEach((file) => {
+  formData.append(
+    "files",
+    file
+  );
+});
+
+/* ===================================================
+   DEBUG
+=================================================== */
+
+console.log(
+  "========== AENA CLIENT REQUEST =========="
+);
+
+console.log(
+  "CASE ID:",
+  caseId
+);
+
+console.log(
+  "NEW DIAGNOSTIC REQUEST:",
+  isNewDiagnosticRequest
+);
+
+console.log(
+  "ANSWER TO DIAGNOSTIC QUESTION:",
+  isAnswerToDiagnosticQuestion
+);
+
+console.log(
+  "NON-TECHNICAL MODE:",
+  nonTechnicalMode
+);
+
+console.log(
+  "INITIAL SYMPTOM:",
+  machineSymptom
+);
+
+console.log(
+  "CURRENT QUESTION ID:",
+  currentQuestionId
+);
+
+console.log(
+  "CURRENT ANSWER:",
+  isAnswerToDiagnosticQuestion
+    ? currentMessage
+    : ""
+);
+
+console.log(
+  "CONVERSATION SENT TO API:",
+  conversationForAPI
+);
+
+console.log(
+  "=========================================="
+);
 
       /* ===================================================
-         BASIC DATA
-      =================================================== */
-
-      formData.append(
-        "symptom",
-        currentMessage
-      );
-
-      formData.append(
-        "conversation",
-        JSON.stringify(
-          conversation
-        )
-      );
-
-      /* ===================================================
-         CASE ID
-      =================================================== */
-
-      if (caseId) {
-        formData.append(
-          "case_id",
-          caseId
-        );
-      }
-
-      /* ===================================================
-         FILES
-      =================================================== */
-
-      files.forEach((file) => {
-        formData.append(
-          "files",
-          file
-        );
-      });
-
-      /* ===================================================
-         API
+         API REQUEST
       =================================================== */
 
       const response =
@@ -202,6 +374,10 @@ export default function RetrofitAIPage() {
 
       let data:
         RetrofitAIResponse;
+
+      /* ===================================================
+         PARSE RESPONSE
+      =================================================== */
 
       try {
         data =
@@ -221,6 +397,10 @@ ${responseText.substring(
         );
       }
 
+      /* ===================================================
+         API ERROR
+      =================================================== */
+
       if (!response.ok) {
         throw new Error(
           (
@@ -231,6 +411,10 @@ ${responseText.substring(
             `Retrofit AI request failed with status ${response.status}.`
         );
       }
+
+      /* ===================================================
+         VALIDATE RESPONSE
+      =================================================== */
 
       if (
         !data ||
@@ -243,7 +427,7 @@ ${responseText.substring(
       }
 
       /* ===================================================
-         CASE
+         CASE ID
       =================================================== */
 
       if (data.caseId) {
@@ -253,7 +437,65 @@ ${responseText.substring(
       }
 
       /* ===================================================
-         CONVERSATION
+         NEXT QUESTION
+      =================================================== */
+
+      /*
+       * Backend may return:
+       *
+       * nextQuestion: {
+       *   id: "q_drive_fault",
+       *   question: "...",
+       * }
+       *
+       * We store the ID here.
+       *
+       * This is critical because the NEXT request
+       * must answer THIS question.
+       */
+
+      const nextQuestion =
+        data.nextQuestion;
+
+      if (
+        nextQuestion &&
+        nextQuestion.id
+      ) {
+        console.log(
+          "NEXT QUESTION RECEIVED:",
+          nextQuestion.id
+        );
+
+        setCurrentQuestionId(
+          nextQuestion.id
+        );
+      } else if (
+        data.question
+      ) {
+        /*
+         * If backend only returns "question"
+         * but does not return nextQuestion.id,
+         * we cannot safely assign a new ID.
+         *
+         * Keep current ID unchanged rather than
+         * inventing one.
+         */
+        console.log(
+          "QUESTION RECEIVED WITHOUT NEXT QUESTION ID:",
+          data.question
+        );
+      } else {
+        /*
+         * No question means diagnostic stage
+         * may be complete.
+         */
+        setCurrentQuestionId(
+          null
+        );
+      }
+
+      /* ===================================================
+         ASSISTANT MESSAGE
       =================================================== */
 
       const assistantMessage =
@@ -261,41 +503,131 @@ ${responseText.substring(
           data
         );
 
+      /* ===================================================
+         USER MESSAGE
+      =================================================== */
+
+      const userConversationMessage: ConversationMessage =
+        {
+          role: "user",
+          content:
+            currentMessage,
+        };
+
+      /* ===================================================
+         ASSISTANT MESSAGE
+      =================================================== */
+
+      const assistantConversationMessage: ConversationMessage =
+        {
+          role: "assistant",
+          content:
+            assistantMessage,
+        };
+
+      /* ===================================================
+         UPDATE CONVERSATION
+      =================================================== */
+
       const newConversation:
         ConversationMessage[] =
         [
           ...conversation,
 
-          {
-            role: "user",
-            content:
-              currentMessage,
-          },
+          userConversationMessage,
 
-          {
-            role: "assistant",
-            content:
-              assistantMessage,
-          },
+          assistantConversationMessage,
         ];
 
       setConversation(
         newConversation
       );
 
-      setResult(data);
+      /* ===================================================
+         RESULT
+      =================================================== */
 
-      setAnalysisStarted(
-        true
-      );
+      setResult(
+  data
+);
+
+if (
+  data.intent === "non_technical"
+) {
+  /*
+   * Stay outside the diagnostic engine.
+   * The next user message may become a new
+   * technical symptom.
+   */
+
+  setNonTechnicalMode(
+    true
+  );
+
+  setAnalysisStarted(
+    false
+  );
+
+  setCaseId(null);
+
+  setCurrentQuestionId(null);
+
+} else {
+  /*
+   * Technical message detected.
+   * Diagnostic mode starts.
+   */
+
+  setNonTechnicalMode(
+    false
+  );
+
+  setAnalysisStarted(
+    true
+  );
+}
+
+      /* ===================================================
+         CLEAR ANSWER FIELD
+      =================================================== */
 
       setSymptom("");
 
-      /*
-       * Files are kept during the current
-       * diagnosis so they can be reused
-       * in subsequent diagnostic rounds.
-       */
+      /* ===================================================
+         DEBUG RESPONSE
+      =================================================== */
+
+      console.log(
+        "========== AENA CLIENT RESPONSE =========="
+      );
+
+      console.log(
+        "CASE ID:",
+        data.caseId
+      );
+
+      console.log(
+        "QUESTION:",
+        data.question
+      );
+
+      console.log(
+        "NEXT QUESTION:",
+        data.nextQuestion
+      );
+
+      console.log(
+        "NEXT QUESTION ID:",
+        data.nextQuestion?.id
+      );
+
+      console.log(
+        "=========================================="
+      );
+
+      /* ===================================================
+         SCROLL
+      =================================================== */
 
       window.scrollTo({
         top: 0,
@@ -313,6 +645,7 @@ ${responseText.substring(
           ? err.message
           : "An unexpected error occurred."
       );
+
     } finally {
       setLoading(false);
     }
@@ -339,9 +672,18 @@ ${responseText.substring(
       );
     }
 
-    if (data.question) {
+    /*
+     * Prefer nextQuestion.question
+     * when available.
+     */
+
+    const questionText =
+      data.nextQuestion?.question ||
+      data.question;
+
+    if (questionText) {
       parts.push(
-        data.question
+        questionText
       );
     }
 
@@ -375,8 +717,14 @@ ${responseText.substring(
   const diagnosticComplete =
     Boolean(
       result &&
+      (
         userMessageCount >=
-          MAX_DIAGNOSTIC_INTERACTIONS
+          MAX_DIAGNOSTIC_INTERACTIONS ||
+        (
+          !result.question &&
+          !result.nextQuestion
+        )
+      )
     );
 
   /* =======================================================
@@ -450,11 +798,22 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
 
   function startNewAnalysis() {
     setResult(null);
+
     setError("");
+
     setSymptom("");
+
+    setInitialSymptom("");
+
     setConversation([]);
+
     setCaseId(null);
+
+    setCurrentQuestionId(null);
+
     setAnalysisStarted(false);
+    setNonTechnicalMode(false);
+
     setFiles([]);
 
     window.scrollTo({
@@ -471,6 +830,7 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
     <main className="min-h-screen bg-[#020617] text-white">
 
       <header className="border-b border-slate-800">
+
         <div className="mx-auto max-w-4xl px-5 py-8">
 
           <div className="flex items-center justify-between gap-4">
@@ -492,18 +852,23 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
             </div>
 
             <div className="hidden items-center gap-2 text-xs text-emerald-400 sm:flex">
+
               <span className="h-2 w-2 rounded-full bg-emerald-400" />
+
               ONLINE
+
             </div>
 
           </div>
 
         </div>
+
       </header>
 
       <section className="mx-auto max-w-4xl px-5 py-10">
 
         {!analysisStarted && (
+
           <InitialDiagnosisForm
             symptom={symptom}
             setSymptom={setSymptom}
@@ -514,42 +879,60 @@ AENA mühendislik ekibiyle devam etmek istiyorum.`;
             error={error}
             onSubmit={analyzeMachine}
           />
+
         )}
 
         {analysisStarted && (
+
           <ConversationView
             conversation={
               conversation
             }
+
             result={result}
+
             symptom={symptom}
+
             setSymptom={
               setSymptom
             }
+
             loading={loading}
+
             error={error}
+
             onSubmit={
               analyzeMachine
             }
+
             onWhatsApp={
               startWhatsApp
             }
+
             onNewAnalysis={
               startNewAnalysis
             }
+
             caseId={caseId}
+
             diagnosticComplete={
               diagnosticComplete
             }
+
             userMessageCount={
               userMessageCount
             }
+
             files={files}
+
             onFiles={handleFiles}
+
             onRemoveFile={
               removeFile
             }
+
           />
+
         )}
 
       </section>
@@ -622,10 +1005,6 @@ function InitialDiagnosisForm({
         className="space-y-6"
       >
 
-        {/* =================================================
-            SYMPTOM
-        ================================================= */}
-
         <section className="rounded-3xl border border-slate-800 bg-slate-950 p-6 sm:p-8">
 
           <p className="text-xs font-semibold uppercase tracking-[3px] text-orange-400">
@@ -659,10 +1038,6 @@ The extruder runs normally at low speed. When production speed increases, the ma
 
         </section>
 
-        {/* =================================================
-            EVIDENCE
-        ================================================= */}
-
         <EvidenceUpload
           files={files}
           onFiles={onFiles}
@@ -671,11 +1046,8 @@ The extruder runs normally at low speed. When production speed increases, the ma
           }
         />
 
-        {/* =================================================
-            ERROR
-        ================================================= */}
-
         {error && (
+
           <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-5">
 
             <p className="text-sm font-semibold text-red-400">
@@ -687,11 +1059,8 @@ The extruder runs normally at low speed. When production speed increases, the ma
             </pre>
 
           </div>
-        )}
 
-        {/* =================================================
-            SUBMIT
-        ================================================= */}
+        )}
 
         <button
           type="submit"
@@ -831,8 +1200,6 @@ function EvidenceUpload({
 
       </div>
 
-      {/* FILE LIST */}
-
       {files.length > 0 && (
 
         <div className="mt-6 space-y-2">
@@ -884,6 +1251,7 @@ function EvidenceUpload({
           )}
 
         </div>
+
       )}
 
     </section>
@@ -972,13 +1340,22 @@ function ConversationView({
     index: number
   ) => void;
 }) {
-
   const showEngineerCTA =
     diagnosticComplete;
 
+  /*
+   * Prefer nextQuestion.question.
+   * Fallback to question for backward compatibility.
+   */
+
+  const activeQuestion =
+    result?.nextQuestion?.question ||
+    result?.question ||
+    "";
+
   const hasQuestion =
     Boolean(
-      result?.question
+      activeQuestion
     );
 
   return (
@@ -1067,7 +1444,7 @@ function ConversationView({
             </p>
 
             <p className="mt-3 text-lg font-semibold leading-8 text-white">
-              {result?.question}
+              {activeQuestion}
             </p>
 
             <form
@@ -1086,9 +1463,8 @@ function ConversationView({
                 className="min-h-[130px] w-full resize-none rounded-2xl border border-slate-700 bg-slate-900 p-5 text-sm leading-7 text-white outline-none placeholder:text-slate-600 focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20"
               />
 
-              {/* EVIDENCE DURING DIAGNOSIS */}
-
               <div className="mt-6">
+
                 <EvidenceUpload
                   files={files}
                   onFiles={onFiles}
@@ -1096,9 +1472,11 @@ function ConversationView({
                     onRemoveFile
                   }
                 />
+
               </div>
 
               {error && (
+
                 <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-4">
 
                   <p className="text-sm text-red-300">
@@ -1106,6 +1484,7 @@ function ConversationView({
                   </p>
 
                 </div>
+
               )}
 
               <button
@@ -1113,18 +1492,21 @@ function ConversationView({
                 disabled={loading}
                 className="mt-4 w-full rounded-xl bg-orange-500 px-6 py-4 text-sm font-bold transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
               >
+
                 {loading
                   ? "Analyzing..."
                   : "Continue Diagnosis →"}
+
               </button>
 
             </form>
 
           </section>
+
         )}
 
       {/* =================================================
-          NO QUESTION BEFORE HANDOFF
+          NO QUESTION
       ================================================= */}
 
       {!showEngineerCTA &&
@@ -1143,6 +1525,7 @@ function ConversationView({
             </p>
 
           </section>
+
         )}
 
       {/* =================================================
@@ -1163,6 +1546,7 @@ function ConversationView({
             </p>
 
           </section>
+
         )}
 
       {/* =================================================
@@ -1183,6 +1567,7 @@ function ConversationView({
             </p>
 
           </section>
+
         )}
 
       {/* =================================================
@@ -1203,10 +1588,10 @@ function ConversationView({
             </h2>
 
             <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
-              The five-step diagnostic process has been
-              completed. The case can now move from
-              preliminary diagnosis toward engineering
-              verification and intervention.
+              The diagnostic process has been completed.
+              The case can now move from preliminary
+              diagnosis toward engineering verification
+              and intervention.
             </p>
 
             {result.aenaAction && (
@@ -1222,9 +1607,8 @@ function ConversationView({
                 </p>
 
               </div>
-            )}
 
-            {/* ATTACHED EVIDENCE */}
+            )}
 
             {files.length > 0 && (
 
@@ -1262,9 +1646,8 @@ function ConversationView({
                 </div>
 
               </div>
-            )}
 
-            {/* STATS */}
+            )}
 
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
 
@@ -1295,8 +1678,6 @@ function ConversationView({
 
             </div>
 
-            {/* WHATSAPP */}
-
             <button
               type="button"
               onClick={
@@ -1308,6 +1689,7 @@ function ConversationView({
             </button>
 
           </section>
+
         )}
 
       {/* =================================================
